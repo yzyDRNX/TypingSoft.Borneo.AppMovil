@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.LoginPage"
+             BackgroundColor="White">
+    <StackLayout Spacing="0">
+        <!-- Header -->
+        <BoxView BackgroundColor="Black" 
+                 HeightRequest="50"/>
+
+        <!-- Main content -->
+        <Grid VerticalOptions="FillAndExpand">
+            <StackLayout VerticalOptions="Center" 
+                         HorizontalOptions="Center" 
+                         Spacing="10">
+                <!-- User icon -->
+                <Frame BackgroundColor="#222222" 
+                       WidthRequest="90" 
+                       HeightRequest="90" 
+                       Padding="0" 
+                       CornerRadius="0" 
+                       HorizontalOptions="Center">
+                    <Label Text="👤" 
+                           TextColor="White" 
+                           FontSize="50" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <!-- Login text -->
+                <Label Text="login" 
+                       TextColor="Black" 
+                       FontSize="16" 
+                       HorizontalOptions="Center" 
+                       Margin="0,5,0,10"/>
+
+                <!-- Login button to scan QR -->
+                <Button Text="Escanear QR para ingresar" 
+                        BackgroundColor="Black" 
+                        TextColor="White" 
+                        WidthRequest="240" 
+                        HeightRequest="50" 
+                        CornerRadius="5"
+                        Clicked="OnScanQRClicked"/>
+            </StackLayout>
+        </Grid>
+
+        <!-- Footer -->
+        <BoxView BackgroundColor="Black" 
+                 HeightRequest="50"/>
+    </StackLayout>
+</ContentPage>

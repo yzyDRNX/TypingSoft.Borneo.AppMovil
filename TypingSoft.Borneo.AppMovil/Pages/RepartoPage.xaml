@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.RepartoPage"
+             BackgroundColor="White">
+    <StackLayout Spacing="0">
+        <!-- Header section -->
+        <Grid BackgroundColor="Black" Padding="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Unidad." 
+                   TextColor="White" 
+                   Grid.Row="0" 
+                   Grid.Column="0"
+                   Margin="5,5,0,0"/>
+
+            <Label Text="EE-001." 
+                   TextColor="White" 
+                   Grid.Row="0" 
+                   Grid.Column="1"
+                   Margin="5,5,0,0"/>
+
+            <Label Text="Fecha." 
+                   TextColor="White" 
+                   Grid.Row="1" 
+                   Grid.Column="0"
+                   Margin="5,0,0,5"/>
+
+            <Label Text="01- Octubre - 2017" 
+                   TextColor="White" 
+                   Grid.Row="1" 
+                   Grid.Column="1"
+                   Margin="5,0,0,5"/>
+        </Grid>
+
+        <!-- Blue title section -->
+        <Frame BackgroundColor="Black" 
+               Padding="10" 
+               HasShadow="False" 
+               CornerRadius="0">
+            <Label Text="INFORMACION DE VENTA" 
+                   TextColor="White" 
+                   FontSize="16" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center"/>
+        </Frame>
+
+        <!-- Empty space -->
+        <BoxView HeightRequest="100" 
+                 BackgroundColor="White"/>
+
+        <!-- Garrafones Entregados section -->
+        <Frame BackgroundColor="Black" 
+               Padding="10" 
+               HasShadow="False" 
+               CornerRadius="0">
+            <Label Text="Garrafones Entregados" 
+                   FontSize="16" 
+                   HorizontalOptions="Center"/>
+        </Frame>
+
+        <!-- Entry and button section -->
+        <Grid Margin="20,10,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Entry HeightRequest="40" 
+                   Placeholder="Ingrese los garrafones a surtir"
+                   PlaceholderColor="White"
+                   BackgroundColor="Black"
+                   TextColor="White"
+                   VerticalOptions="Center" 
+                   Grid.Column="0"
+                   HorizontalOptions="FillAndExpand"/>
+
+            <Button BackgroundColor="#2160AB" 
+                    Margin="2"
+                    WidthRequest="40" 
+                    HeightRequest="40" 
+                    Text="✓" 
+                    TextColor="White" 
+                    FontSize="20" 
+                    CornerRadius="0"
+                    Grid.Column="1"
+                    Clicked="Concluir"
+                    />
+        </Grid>
+
+        <!-- Label under button -->
+        <Label Text="Aceptar" 
+               FontSize="12" 
+               HorizontalOptions="End" 
+               Margin="0,-5,20,0"/>
+
+        <!-- Remaining empty space -->
+        <BoxView HeightRequest="300" 
+                 BackgroundColor="White" 
+                 VerticalOptions="FillAndExpand"/>
+
+        <!-- Footer -->
+        <BoxView BackgroundColor="Black" 
+                 HeightRequest="50"/>
+    </StackLayout>
+</ContentPage>

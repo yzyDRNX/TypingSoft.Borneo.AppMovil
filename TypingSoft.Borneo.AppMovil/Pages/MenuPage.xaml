@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.MenuPage"
+             BackgroundColor="White">
+    <StackLayout Spacing="0">
+        <!-- Header section -->
+        <Grid BackgroundColor="Black" Padding="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Unidad." 
+                   TextColor="White" 
+                   Grid.Row="0" 
+                   Grid.Column="0"
+                   Margin="5,5,0,0"/>
+
+            <Label Text="EE-001." 
+                   TextColor="White" 
+                   Grid.Row="0" 
+                   Grid.Column="1"
+                   Margin="5,5,0,0"/>
+
+            <Label Text="Fecha." 
+                   TextColor="White" 
+                   Grid.Row="1" 
+                   Grid.Column="0"
+                   Margin="5,0,0,5"/>
+
+            <Label Text="01- Octubre - 2017" 
+                   TextColor="White" 
+                   Grid.Row="1" 
+                   Grid.Column="1"
+                   Margin="5,0,0,5"/>
+        </Grid>
+
+        <!-- Blue title section -->
+        <Frame BackgroundColor="Black" 
+               Padding="10" 
+               HasShadow="False" 
+               CornerRadius="0">
+            <Label Text="INFORMACION DE VENTA" 
+                   TextColor="White" 
+                   FontSize="16" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center"/>
+        </Frame>
+
+        <!-- Espacio en blanco -->
+        <BoxView HeightRequest="20" 
+                 BackgroundColor="White"/>
+
+        <!-- Utilería section title -->
+        <Frame BackgroundColor="Black" 
+               Padding="15" 
+               HasShadow="False" 
+               CornerRadius="0"
+               Margin="0,0,0,20">
+            <Label Text="Menú Principal" 
+                   FontSize="16" 
+                   HorizontalOptions="Center"/>
+        </Frame>
+
+        <!-- Botones del menú - uno debajo del otro -->
+        <StackLayout Spacing="20" Margin="30,0">
+            <!-- Botón Sincronizar Base de Datos -->
+            <Button Text="Sincronizar Base de Datos"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    HeightRequest="60"
+                    CornerRadius="0"/>
+
+            <!-- Botón Bajar Base de Datos -->
+            <Button Text="Bajar Base de Datos"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    HeightRequest="60"
+                    CornerRadius="0"/>
+
+            <!-- Botón Generar Venta -->
+            <Button Text="Generar Venta"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    HeightRequest="60"
+                    CornerRadius="0"
+                    Clicked="OnGenerarVentaClicked"
+                    />
+            
+        </StackLayout>
+
+        <!-- Espacio en blanco -->
+        <BoxView HeightRequest="20" 
+                 BackgroundColor="White" 
+                 VerticalOptions="FillAndExpand"/>
+
+        <!-- Footer -->
+        <BoxView BackgroundColor="Black" 
+                 HeightRequest="50"/>
+    </StackLayout>
+</ContentPage>
