@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TypingSoft.Borneo.AppMovil.Helpers
+﻿namespace TypingSoft.Borneo.AppMovil.Helpers
 {
-    class Settings
+    public class Settings
     {
+        public const string UrlBaseAPI = "https://localhost:7002/api";
+
     }
 }
