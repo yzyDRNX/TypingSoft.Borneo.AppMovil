@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TypingSoft.Borneo.AppMovil.Models.API
+﻿namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    class ResponseBase
+    public class ResponseBase
     {
+        public ResponseBase()
+        {
+            this.Mensaje = string.Empty;
+        }
+        public bool Exito { get; set; }
+        public string Mensaje { get; set; }
     }
 }
