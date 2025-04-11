@@ -87,4 +87,16 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="BL\" />
+	  <Folder Include="Modals\" />
+	  <Folder Include="CustomViews\" />
+	  <Folder Include="Models\API\" />
+	  <Folder Include="Models\Custom\" />
+	  <Folder Include="MopUps\" />
+	  <Folder Include="CustomControls\" />
+	  <Folder Include="Services\" />
+	  <Folder Include="VModels\" />
+	</ItemGroup>
+
 </Project>
