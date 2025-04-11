@@ -93,7 +93,6 @@
 	<ItemGroup>
 	  <Folder Include="Modals\" />
 	  <Folder Include="CustomViews\" />
-	  <Folder Include="Models\Custom\" />
 	  <Folder Include="MopUps\" />
 	  <Folder Include="CustomControls\" />
 	</ItemGroup>

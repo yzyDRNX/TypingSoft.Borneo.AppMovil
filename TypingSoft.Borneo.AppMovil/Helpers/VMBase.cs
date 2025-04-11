@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace TypingSoft.Borneo.AppMovil.Helpers
 {
-    class VMBase
+    public partial class VMBase : ObservableObject
     {
+        #region Constructor
+        public Helpers.CustomNavigation Navegacion => Helpers.GlobalValues.NavegacionGlobal;
+        public VMBase()
+        {
+            this.MensajeProcesando = this.MensajeError = string.Empty;
+        }
+        #endregion
+
+        #region Propiedades
+        [ObservableProperty]
+        bool procesando;
+
+        [ObservableProperty]
+        string mensajeProcesando;
+
+        [ObservableProperty]
+        string mensajeError;
+        [ObservableProperty]
+        bool existeError;
+        #endregion
     }
 }

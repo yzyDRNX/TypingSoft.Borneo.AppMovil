@@ -21,6 +21,20 @@ namespace TypingSoft.Borneo.AppMovil
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<Helpers.CustomNavigation>();
+
+            #region Bussiness Logic
+            builder.Services.AddSingleton<BL.CatalogosBL>();
+            #endregion
+
+            #region Services
+            builder.Services.AddSingleton<Services.CatalogosService>();
+            #endregion
+
+            #region Vmodels
+            builder.Services.AddSingleton<VModels.CatalogosVM>();
+            #endregion
+
 
             return builder.Build();
         }
