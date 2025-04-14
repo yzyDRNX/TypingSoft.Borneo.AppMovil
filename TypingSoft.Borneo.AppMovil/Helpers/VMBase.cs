@@ -8,7 +8,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         public Helpers.CustomNavigation Navegacion => Helpers.GlobalValues.NavegacionGlobal;
         public VMBase()
         {
-            this.MensajeProcesando = this.MensajeError = string.Empty;
+            //this.MensajeProcesando = this.MensajeError = string.Empty;
         }
         #endregion
 
