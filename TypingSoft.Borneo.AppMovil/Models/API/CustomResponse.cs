@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    class SimpleResponse
+   public class CustomResponse<T>: ResponseBase
     {
+        public T Data { get; set; }
     }
 }

@@ -40,6 +40,13 @@
                         HeightRequest="50" 
                         CornerRadius="5"
                         Clicked="OnScanQRClicked"/>
+
+                <VerticalStackLayout>
+                    <Entry Text="{Binding Ruta}" BackgroundColor="Black" TextColor="White" Placeholder="Introducir RFC" />
+                </VerticalStackLayout>
+                <Button Text="Iniciar sesión" Command="{Binding AutenticarRutaCommand}" Grid.Row="2" Margin="20,0">
+              
+                </Button>
             </StackLayout>
 
             <!-- La cámara se añadirá dinámicamente cuando se necesite -->

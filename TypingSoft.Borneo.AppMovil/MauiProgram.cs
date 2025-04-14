@@ -25,14 +25,17 @@ namespace TypingSoft.Borneo.AppMovil
 
             #region Bussiness Logic
             builder.Services.AddSingleton<BL.CatalogosBL>();
+            builder.Services.AddSingleton<BL.Security>();
             #endregion
 
             #region Services
             builder.Services.AddSingleton<Services.CatalogosService>();
+            builder.Services.AddSingleton<Services.SeguridadService>();
             #endregion
 
             #region Vmodels
             builder.Services.AddSingleton<VModels.CatalogosVM>();
+            builder.Services.AddSingleton<VModels.LoginVM>();
             #endregion
 
 
