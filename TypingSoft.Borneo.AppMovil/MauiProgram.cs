@@ -36,6 +36,10 @@ namespace TypingSoft.Borneo.AppMovil
             #endregion
 
 
+            var app = builder.Build();
+            // Asignar el proveedor de servicios a la propiedad estática en App
+            App.ServiceProvider = app.Services;
+
             return builder.Build();
         }
     }

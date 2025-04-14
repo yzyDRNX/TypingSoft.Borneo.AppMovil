@@ -74,12 +74,13 @@
             </Grid.ColumnDefinitions>
 
             <Picker x:Name="empleadosPicker" 
-                    BackgroundColor="Black"
-                    TextColor="White"
-                    SelectedIndex="0"
-                    HeightRequest="40" 
-                    VerticalOptions="Center" 
-                    Grid.Column="0"/>
+                ItemsSource="{Binding ListadoEmpleados}"
+                ItemDisplayBinding="{Binding Empleado}"
+                BackgroundColor="Black"
+                TextColor="White"
+                HeightRequest="40" 
+                VerticalOptions="Center" 
+                Grid.Column="0"/>
 
             <Button Text="Añadir" 
                     BackgroundColor="#2160AB" 
@@ -88,7 +89,7 @@
                     Padding="15,0" 
                     CornerRadius="0"
                     Grid.Column="1"
-                    Clicked="OnAddEmployeeClicked"/>
+                   />
         </Grid>
 
         <!-- Employees List -->
@@ -112,7 +113,7 @@
                 Margin="20,20,20,0" 
                 HeightRequest="50" 
                 CornerRadius="0"
-                Clicked="OnStartRouteClicked"/>
+                />
 
         <!-- Remaining empty space -->
         <BoxView HeightRequest="20" 

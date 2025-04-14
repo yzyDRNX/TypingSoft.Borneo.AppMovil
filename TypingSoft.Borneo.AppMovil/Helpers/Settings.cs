@@ -2,7 +2,7 @@
 {
     public class Settings
     {
-        public const string UrlBaseAPI = "https://localhost:7002/api";
+        public const string UrlBaseAPI = "https://192.168.1.130:45455/";
 
     }
 }
