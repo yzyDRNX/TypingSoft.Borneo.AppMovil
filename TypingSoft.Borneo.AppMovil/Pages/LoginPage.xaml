@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.LoginPage"
+              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              BackgroundColor="White">
     <StackLayout Spacing="0">
         <!-- Header -->
@@ -33,19 +34,29 @@
                        HorizontalOptions="Center" 
                        Margin="0,5,0,10"/>
                 <!-- Login button to scan QR -->
-                <Button Text="Escanear QR para ingresar" 
-                        BackgroundColor="Black" 
-                        TextColor="White" 
-                        WidthRequest="240" 
-                        HeightRequest="50" 
-                        CornerRadius="5"
-                        Clicked="OnScanQRClicked"/>
+                <Button Text="Iniciar sesión" 
+        Clicked="OnLoginButtonClicked" 
+        Grid.Row="2" 
+        Margin="20,0" />
+
+                <zxing:CameraBarcodeReaderView
+    x:Name="cameraBarcodeReaderView"
+    IsVisible="True"
+    BarcodesDetected="BarcodesDetected"
+    HorizontalOptions="FillAndExpand"
+    VerticalOptions="FillAndExpand"
+    BackgroundColor="Black"
+    Margin="10"
+    HeightRequest="300"
+    WidthRequest="300" />
+
+
 
                 <VerticalStackLayout>
                     <Entry Text="{Binding Ruta}" BackgroundColor="Black" TextColor="White" Placeholder="Introducir RFC" />
                 </VerticalStackLayout>
                 <Button Text="Iniciar sesión" Command="{Binding AutenticarRutaCommand}" Grid.Row="2" Margin="20,0">
-              
+
                 </Button>
             </StackLayout>
 
