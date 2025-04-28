@@ -1,3 +1,4 @@
+using ZXing.Net.Maui;
 namespace TypingSoft.Borneo.AppMovil.Pages;
 
 public partial class LoginPage : ContentPage
@@ -17,64 +18,56 @@ public partial class LoginPage : ContentPage
         //this.ViewModel.Ruta = string.Empty;
    
     }
-
-    private async void OnScanQRClicked(object sender, EventArgs e)
+protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+{
+    // Procesar solo el primer código detectado
+    var firstBarcode = e.Results.FirstOrDefault();
+    if (firstBarcode != null)
     {
-        // Verificar permiso de cámara
-        var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-        if (status != PermissionStatus.Granted)
+        Console.WriteLine($"Barcodes: {firstBarcode.Format} -> {firstBarcode.Value}");
+
+        // Mostrar un mensaje al usuario
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            status = await Permissions.RequestAsync<Permissions.Camera>();
-            if (status != PermissionStatus.Granted)
-            {
-                await DisplayAlert("Permiso denegado", "No se puede acceder a la cámara.", "OK");
-                return;
-            }
+            await DisplayAlert("Código QR leído", $"Valor: {firstBarcode.Value}","Es su Ruta?", "OK");
+        });
+
+        // Asignar el valor al ViewModel
+        ViewModel.Ruta = firstBarcode.Value;
+
+        // Detener la cámara después de leer el primer código
+        StopCamera();
+    }
+}
+
+
+
+
+    private async void OnLoginButtonClicked(object sender, EventArgs e)
+    {
+        // Solicitar permisos de cámara
+        var status = await Permissions.RequestAsync<Permissions.Camera>();
+        if (status == PermissionStatus.Granted)
+        {
+            // Activa la cámara al hacer visible el control
+            cameraBarcodeReaderView.IsVisible = true;
         }
-
-        try
+        else
         {
-            // Usar MediaPicker para capturar una foto
-            var photo = await MediaPicker.CapturePhotoAsync();
-
-            if (photo != null)
-            {
-                // Mostrar indicador de procesamiento
-                await DisplayAlert("Procesando", "Analizando código QR...", "OK");
-
-                // Aquí normalmente procesarías la imagen para detectar el código QR
-                // Como esto requeriría una biblioteca adicional, simularemos el resultado
-
-                // Simulación de lectura QR exitosa
-                string qrContent = "usuario:123456"; // En un caso real, esto vendría del procesamiento de la imagen
-
-                // Procesar el resultado
-                bool isValid = ValidateQRContent(qrContent);
-
-                if (isValid)
-                {
-                    // Navegar a la página principal después de login exitoso
-                    await App.NavigationService.Navegar(nameof(EmpleadosPage));
-                }
-                else
-                {
-                    await DisplayAlert("Error", "Código QR inválido o no reconocido.", "OK");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Error", $"Error: {ex.Message}", "OK");
+            await DisplayAlert("Permiso denegado", "Se requiere acceso a la cámara para escanear el código QR.", "OK");
         }
     }
-
-    private bool ValidateQRContent(string content)
+    private void StopCamera()
     {
-        // Implementa tu lógica de validación aquí
-        // Por ejemplo, verificar que tiene el formato correcto
-        // o que contiene información válida para autenticación
+        // Ocultar el control para detener la cámara
+        cameraBarcodeReaderView.IsVisible = false;
 
-        // Ejemplo simple de validación
-        return !string.IsNullOrEmpty(content) && content.Contains(":");
+        // Desactivar el evento para evitar lecturas adicionales
+        cameraBarcodeReaderView.BarcodesDetected -= BarcodesDetected;
+
+        // Si el control tiene un método para liberar recursos, llámalo aquí
+        // Esto depende de la implementación de ZXing.Net.Maui
     }
+
+
 }
