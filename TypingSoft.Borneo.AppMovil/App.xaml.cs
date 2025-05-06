@@ -14,13 +14,16 @@ namespace TypingSoft.Borneo.AppMovil
 
             // Inicializar el servicio de navegación
             NavigationService = new CustomNavigation();
+
+            // Asignar al acceso global
+            GlobalValues.NavegacionGlobal = NavigationService;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            // Establecer la página inicial dentro de un NavigationPage
             var mainPage = new NavigationPage(new LoginPage());
             return new Window(mainPage);
         }
     }
+
 }

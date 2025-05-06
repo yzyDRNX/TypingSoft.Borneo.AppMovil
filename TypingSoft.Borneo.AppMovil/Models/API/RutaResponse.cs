@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TypingSoft.Borneo.AppMovil.Models.API
+﻿namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    public class RutaResponse: ResponseBase
+    public class RutaResponse : ResponseBase
     {
         public RutaResponse()
         {
-            this.Data = new List<Rutas>();
+            this.Data = new Rutas();
         }
-        public List<Rutas> Data { get; set; }
+
+        public Rutas Data { get; set; }
 
         public class Rutas
         {

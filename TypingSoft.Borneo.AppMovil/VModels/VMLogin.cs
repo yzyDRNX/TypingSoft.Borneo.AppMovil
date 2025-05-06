@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 
 namespace TypingSoft.Borneo.AppMovil.VModels
@@ -7,10 +10,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
     public partial class LoginVM : Helpers.VMBase
     {
         #region Constructor
-        BL.Security Seguridad;
+        private readonly BL.Security _seguridad;
         public LoginVM(BL.Security seguridad)
         {
-            Seguridad = seguridad;
+            _seguridad = seguridad;
         }
         #endregion
 
@@ -18,7 +21,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         string ruta;
 
-     
+
         #endregion
 
 
@@ -28,25 +31,24 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             this.MensajeProcesando = "Verificando información";
             this.Procesando = true;
-            var autenticado = await this.Seguridad.AutenticarRuta(this.Ruta);
-            if (autenticado.Autenticado)
+
+            try
             {
-                var infoRuta = await this.Seguridad.ObtenerInformacionRuta();
-                if (infoRuta.Exitoso)
-                    await this.Navegacion.Navegar(nameof(Pages.EmpleadosPage));
-                else
-                    //await this.Navegacion.MostrarMopup(nameof(Mopups.IconMessage), new object[] { infoUsuario.Mensaje, "Ok", Helpers.TipoMopup.Error });
-                    Console.WriteLine("Error");
-
+                var (autenticado, mensaje, rutaObj) = await this._seguridad.AutenticarRuta(this.Ruta);
+                if (!autenticado || rutaObj == null)
+                {
+                    MensajeProcesando = mensaje;
+                    return;
+                }
+                await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
             }
-            else
-                //await this.Navegacion.MostrarMopup(nameof(Mopups.IconMessage), new object[] { autenticado.Mensaje, "Aceptar", Helpers.TipoMopup.Error });
-            this.Procesando = false;
+            catch (Exception ex)
+            {
+                Debug.WriteLine("=== Exception en IniciarSesion ===");
+                Debug.WriteLine(ex.ToString());
+                MensajeProcesando = "Error al llamar al servicio: " + ex.Message;
+            }
         }
-
-
-
-
         #endregion
     }
 }

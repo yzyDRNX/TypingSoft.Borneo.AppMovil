@@ -53,7 +53,7 @@
 
 
                 <VerticalStackLayout>
-                    <Entry Text="{Binding Ruta}" BackgroundColor="Black" TextColor="White" Placeholder="Introducir RFC" />
+                    <Entry Text="{Binding Ruta}" BackgroundColor="Black" TextColor="White" Placeholder="Introducir Ruta" />
                 </VerticalStackLayout>
                 <Button Text="Iniciar sesión" Command="{Binding AutenticarRutaCommand}" Grid.Row="2" Margin="20,0">
 

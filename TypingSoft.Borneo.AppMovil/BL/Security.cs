@@ -1,75 +1,77 @@
-﻿using TypingSoft.Borneo.AppMovil.Models.API;
+﻿using System.Net;
+using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.BL
 {
     public class Security
     {
-        #region Constructor
-        Services.SeguridadService SeguridadService;
+        private readonly Services.SeguridadService _seguridadService;
+
         public Security(Services.SeguridadService seguridadService)
+            => _seguridadService = seguridadService;
+
+        public async Task<(bool Autenticado, string Mensaje, RutaResponse.Rutas? Ruta)>
+            AutenticarRuta(string ruta)
         {
-            this.SeguridadService = seguridadService;
-        }
-        #endregion
-
-        #region Métodos
-
-
-        public async Task<(bool Autenticado, string Mensaje)> AutenticarRuta(string Ruta)
-        {
-            var autenticado = false;
-            var mensaje = "Ocurrió un error en la petición";
             try
             {
-                var autenticacion = await this.SeguridadService.IniciarSesion(Ruta);
-                if (autenticacion.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    autenticado = autenticacion.Respuesta.Exito;
-                    Helpers.Settings.UltimaRuta = Ruta;
+                var (status, respuesta) = await _seguridadService.IniciarSesion(ruta);
 
-                    mensaje = string.Empty;
-                    if (!autenticado)
+                if (status == HttpStatusCode.OK)
+                {
+                    if (respuesta.Exito)
                     {
-                        mensaje = autenticacion.Respuesta.Mensaje;
+                        Helpers.Settings.UltimaRuta = respuesta.Data.Descripcion;
+                        return (true, respuesta.Mensaje, respuesta.Data);
                     }
+                    else
+                        return (false, respuesta.Mensaje, null);
+                }
+                else
+                {
+                    return (false, $"HTTP {status}", null);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                mensaje = "Ocurrió un error en la petición";
+                return (false, "Error al conectar: " + ex.Message, null);
             }
-            return (autenticado, mensaje);
         }
 
 
 
         public async Task<(bool Exitoso, string Mensaje)> ObtenerInformacionRuta()
         {
-            var validado = false;
-            var mensaje = "Ocurrió un error en la petición";
+            if (string.IsNullOrWhiteSpace(Helpers.Settings.UltimaRuta))
+                return (false, "No hay ruta definida. Asegúrate de autenticar primero.");
+
             try
             {
-                var informacion = await this.SeguridadService.InformacionRuta(Helpers.Settings.UltimaRuta);
-                if (informacion.StatusCode == System.Net.HttpStatusCode.OK)
+                var informacion = await this._seguridadService.InformacionRuta(Helpers.Settings.UltimaRuta);
+
+                if (informacion.StatusCode == HttpStatusCode.OK)
                 {
-                    validado = informacion.Respuesta.Exito;
-                    mensaje = string.Empty;
-                    Helpers.Settings.UltimaRuta = string.Empty;
-                    if (!validado)
-                        mensaje = informacion.Respuesta.Mensaje;
+                    if (informacion.Respuesta.Exito)
+                    {
+                        Helpers.Settings.UltimaRuta = null;
+                        return (true, string.Empty);
+                    }
                     else
                     {
-
+                        return (false, informacion.Respuesta.Mensaje);
                     }
                 }
+                else
+                {
+                    return (false, $"Error HTTP {(int)informacion.StatusCode}");
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                mensaje = "Ocurrió un error en la petición";
+                return (false, "Ocurrió un error en la petición: " + ex.Message);
             }
-            return (validado, mensaje);
         }
 
-        #endregion
+
     }
 }
