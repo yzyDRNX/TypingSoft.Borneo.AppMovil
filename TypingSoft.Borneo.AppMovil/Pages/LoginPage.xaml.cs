@@ -30,6 +30,7 @@ protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
         MainThread.BeginInvokeOnMainThread(async () =>
         {
             await DisplayAlert("Código QR leído", $"Valor: {firstBarcode.Value}","Es su Ruta?", "OK");
+            await ViewModel.AutenticarRuta();
         });
 
         // Asignar el valor al ViewModel

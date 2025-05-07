@@ -27,7 +27,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         #region Comandos
         [RelayCommand]
-        async Task AutenticarRuta()
+        public async Task AutenticarRuta()
         {
             this.MensajeProcesando = "Verificando información";
             this.Procesando = true;
