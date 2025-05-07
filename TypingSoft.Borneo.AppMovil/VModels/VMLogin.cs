@@ -38,9 +38,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 if (!autenticado || rutaObj == null)
                 {
                     MensajeProcesando = mensaje;
+                    await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
                     return;
                 }
-                await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
+                
             }
             catch (Exception ex)
             {
@@ -49,6 +50,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 MensajeProcesando = "Error al llamar al servicio: " + ex.Message;
             }
         }
-        #endregion
+        #endregion 
+
+
     }
 }
