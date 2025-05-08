@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -16,9 +17,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         #region Propiedades
         [ObservableProperty]
-        List<Models.Custom.EmpleadosLista> listadoEmpleados;
+        ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
 
-       
+
+
         #endregion
 
         #region Métodos
@@ -26,12 +28,16 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             this.MensajeProcesando = "Cargando Empleados";
             this.Procesando = true;
-            var lista = await this.Catalogos.ObtenerEmpleados();
-            this.ListadoEmpleados = lista.Empleados;
 
-        
+            var lista = await this.Catalogos.ObtenerEmpleados(); // Este llama a la API SQL Server
+            this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista.Empleados);
+
+
+
             this.Procesando = false;
         }
+
+
         #endregion
 
         #region Comandos

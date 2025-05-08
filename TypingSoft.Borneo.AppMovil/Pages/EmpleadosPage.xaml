@@ -74,13 +74,14 @@
             </Grid.ColumnDefinitions>
 
             <Picker x:Name="empleadosPicker" 
-                ItemsSource="{Binding ListadoEmpleados}"
-                ItemDisplayBinding="{Binding Empleado}"
-                BackgroundColor="Black"
-                TextColor="White"
-                HeightRequest="40" 
-                VerticalOptions="Center" 
-                Grid.Column="0"/>
+        ItemsSource="{Binding ListadoEmpleados}"
+        ItemDisplayBinding="{Binding Empleado}" 
+        BackgroundColor="Black"
+        TextColor="White"
+        HeightRequest="40"
+        VerticalOptions="Center"
+        Grid.Column="0"/>
+
 
             <Button Text="Añadir" 
                     BackgroundColor="#2160AB" 

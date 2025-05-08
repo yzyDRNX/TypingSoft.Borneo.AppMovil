@@ -1,17 +1,16 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
-using System.Collections.Generic;
+using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.Pages;
-
 
 public partial class EmpleadosPage : ContentPage
 {
     VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
 
     public EmpleadosPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         // Obtener el ViewModel del contenedor de servicios
         if (App.ServiceProvider != null)
@@ -32,10 +31,8 @@ public partial class EmpleadosPage : ContentPage
             // Si el ServiceProvider es null, crear el ViewModel manualmente
             CrearViewModelManualmente();
         }
-
-
-
     }
+
     private void CrearViewModelManualmente()
     {
         var catalogosService = new Services.CatalogosService();
@@ -49,6 +46,4 @@ public partial class EmpleadosPage : ContentPage
         // Cargar los empleados cuando la página aparece
         ViewModel?.ObtenerEmpleados();
     }
-
-
 }
