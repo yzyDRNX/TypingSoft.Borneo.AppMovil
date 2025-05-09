@@ -32,6 +32,8 @@ public partial class EmpleadosPage : ContentPage
             CrearViewModelManualmente();
         }
     }
+    private readonly HashSet<Guid> empleadosSeleccionados = new HashSet<Guid>();
+
     private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
     {
         // Obtener el empleado seleccionado del Picker
@@ -39,6 +41,17 @@ public partial class EmpleadosPage : ContentPage
 
         if (empleadoSeleccionado != null)
         {
+            // Verificar si el empleado ya está en la lista
+            if (empleadosSeleccionados.Contains(empleadoSeleccionado.Id))
+            {
+                // Mostrar un mensaje de alerta si el empleado ya está en la lista
+                DisplayAlert("Advertencia", "El empleado ya está en la lista.", "OK");
+                return;
+            }
+
+            // Añadir el empleado al HashSet
+            empleadosSeleccionados.Add(empleadoSeleccionado.Id);
+
             // Crear un nuevo Label para mostrar el nombre del empleado seleccionado
             var empleadoLabel = new Label
             {
@@ -57,6 +70,7 @@ public partial class EmpleadosPage : ContentPage
             DisplayAlert("Advertencia", "Por favor, selecciona un empleado antes de añadirlo.", "OK");
         }
     }
+
 
     private void CrearViewModelManualmente()
     {
