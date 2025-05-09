@@ -84,13 +84,14 @@
 
 
             <Button Text="Añadir" 
-                    BackgroundColor="#2160AB" 
-                    TextColor="White" 
-                    HeightRequest="40" 
-                    Padding="15,0" 
-                    CornerRadius="0"
-                    Grid.Column="1"
-                   />
+        BackgroundColor="#2160AB" 
+        TextColor="White" 
+        HeightRequest="40" 
+        Padding="15,0" 
+        CornerRadius="0"
+        Grid.Column="1"
+        Clicked="OnAñadirEmpleadoClicked" />
+
         </Grid>
 
         <!-- Employees List -->

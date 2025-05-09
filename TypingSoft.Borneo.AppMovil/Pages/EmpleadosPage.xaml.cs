@@ -28,8 +28,33 @@ public partial class EmpleadosPage : ContentPage
         }
         else
         {
-            // Si el ServiceProvider es null, crear el ViewModel manualmente
+        
             CrearViewModelManualmente();
+        }
+    }
+    private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
+    {
+        // Obtener el empleado seleccionado del Picker
+        var empleadoSeleccionado = empleadosPicker.SelectedItem as Models.Custom.EmpleadosLista;
+
+        if (empleadoSeleccionado != null)
+        {
+            // Crear un nuevo Label para mostrar el nombre del empleado seleccionado
+            var empleadoLabel = new Label
+            {
+                Text = empleadoSeleccionado.Empleado, // Accede directamente a la propiedad 'Empleado'
+                FontSize = 14,
+                TextColor = Colors.White,
+                Margin = new Thickness(0, 5, 0, 0)
+            };
+
+            // Añadir el Label al StackLayout
+            empleadosSeleccionadosStack.Children.Add(empleadoLabel);
+        }
+        else
+        {
+            // Mostrar un mensaje si no se seleccionó ningún empleado
+            DisplayAlert("Advertencia", "Por favor, selecciona un empleado antes de añadirlo.", "OK");
         }
     }
 
