@@ -1,39 +1,29 @@
 ﻿using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TypingSoft.Borneo.AppMovil.Models.API;
-
+using System.IO;
+using TypingSoft.Borneo.AppMovil.Local;
 
 namespace TypingSoft.Borneo.AppMovil.Services
 {
     public class LocalDatabaseService
     {
-        private SQLiteAsyncConnection _database;
+        private readonly SQLiteAsyncConnection _database;
 
         public LocalDatabaseService()
         {
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "local.db3");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "app_local.db");
             _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<Empleados>(); // Haz lo mismo con otras entidades como Clientes, etc.
+            _database.CreateTableAsync<EmpleadoLocal>().Wait();
         }
 
-        public Task<List<Empleados>> ObtenerEmpleadosAsync()
+        public async Task GuardarEmpleadosAsync(List<EmpleadoLocal> empleados)
         {
-            return _database.Table<Empleados>().ToListAsync();
+            await _database.DeleteAllAsync<EmpleadoLocal>();
+            await _database.InsertAllAsync(empleados);
         }
 
-        public Task InsertarEmpleadosAsync(List<Empleados> empleados)
+        public async Task<List<EmpleadoLocal>> ObtenerEmpleadosAsync()
         {
-            return _database.InsertAllAsync(empleados);
-        }
-
-        public Task BorrarEmpleadosAsync()
-        {
-            return _database.DeleteAllAsync<Empleados>();
+            return await _database.Table<EmpleadoLocal>().ToListAsync();
         }
     }
-
 }

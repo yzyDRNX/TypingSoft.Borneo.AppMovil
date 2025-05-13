@@ -18,6 +18,15 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         #region Propiedades
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
+       
+        Services.LocalDatabaseService localDb;
+
+        public CatalogosVM(BL.CatalogosBL catalogos, Services.LocalDatabaseService localDb)
+        {
+            this.Catalogos = catalogos;
+            this.localDb = localDb;
+            this.ListadoEmpleados = new();
+        }
 
 
 
@@ -26,16 +35,37 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         #region Métodos
         public async void ObtenerEmpleados()
         {
-            this.MensajeProcesando = "Cargando Empleados";
-            this.Procesando = true;
+            try
+            {
+                this.MensajeProcesando = "Cargando Empleados";
+                this.Procesando = true;
 
-            var lista = await this.Catalogos.ObtenerEmpleados(); // Este llama a la API SQL Server
-            this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista.Empleados);
+                // Obtener desde API
+                var respuesta = await this.Catalogos.ObtenerEmpleados();
+                var empleadosApi = respuesta.Empleados;
 
+                // Asignar a la propiedad observable para la UI
+                this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(empleadosApi);
 
+                // Convertir a EmpleadoLocal y guardar en SQLite
+                var empleadosLocales = empleadosApi.Select(e => new Local.EmpleadoLocal
+                {
+                    Id = e.Id,
+                    Nombre = e.Empleado
+                }).ToList();
 
-            this.Procesando = false;
+                await localDb.GuardarEmpleadosAsync(empleadosLocales);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+            }
+            finally
+            {
+                this.Procesando = false;
+            }
         }
+
 
 
         #endregion
