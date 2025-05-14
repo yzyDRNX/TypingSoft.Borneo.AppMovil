@@ -86,6 +86,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 if (exitoso)
                 {
                     ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(listaClientes);
+
+                    // Convierte y guarda en SQLite
+                    var clientesLocales = listaClientes
+                        .Select(c => new Local.ClienteLocal { IdCliente = c.IdCliente, IdClienteAsociado = c.IdClienteAsociado, Cliente = c.Cliente })
+                        .ToList();
+
+                    await _localDb.GuardarClientesAsync(clientesLocales);
                 }
                 else
                 {

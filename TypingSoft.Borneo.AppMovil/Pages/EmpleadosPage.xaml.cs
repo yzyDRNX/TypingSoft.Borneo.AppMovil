@@ -83,13 +83,18 @@ public partial class EmpleadosPage : ContentPage
     {
         var catalogosService = new Services.CatalogosService();
         var catalogosBL = new BL.CatalogosBL(catalogosService);
-        this.BindingContext = new VModels.CatalogosVM(catalogosBL);
+
+        // Creamos también la instancia de la BD local
+        var localDb = new Services.LocalDatabaseService();
+
+        // Le pasamos ambos al VM
+        this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
         // Cargar los empleados cuando la página aparece
-        ViewModel?.ObtenerEmpleados();
+        ViewModel?.ObtenerEmpleadosAsync();
     }
 }

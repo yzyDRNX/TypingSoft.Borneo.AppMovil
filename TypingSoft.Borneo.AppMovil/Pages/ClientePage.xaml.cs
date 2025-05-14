@@ -43,14 +43,20 @@ public partial class ClientePage : ContentPage
     {
         var catalogosService = new Services.CatalogosService();
         var catalogosBL = new BL.CatalogosBL(catalogosService);
-        this.BindingContext = new VModels.CatalogosVM(catalogosBL);
+
+        // Creamos también la instancia de la BD local
+        var localDb = new Services.LocalDatabaseService();
+
+        // Le pasamos ambos al VM
+        this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
     }
+
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         if (ViewModel != null)
-            await ViewModel.ObtenerClientes();
+            await ViewModel.ObtenerClientesAsync();
     }
 
 

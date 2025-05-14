@@ -13,6 +13,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "app_local.db");
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<EmpleadoLocal>().Wait();
+            _database.CreateTableAsync<ClienteLocal>().Wait();
         }
 
         public async Task GuardarEmpleadosAsync(List<EmpleadoLocal> empleados)
@@ -24,6 +25,17 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public async Task<List<EmpleadoLocal>> ObtenerEmpleadosAsync()
         {
             return await _database.Table<EmpleadoLocal>().ToListAsync();
+        }
+
+        public async Task GuardarClientesAsync(List<ClienteLocal> clientes)
+        {
+            await _database.DeleteAllAsync<ClienteLocal>();
+            await _database.InsertAllAsync(clientes);
+        }
+
+        public async Task<List<ClienteLocal>> ObtenerClientesAsync()
+        {
+            return await _database.Table<ClienteLocal>().ToListAsync();
         }
     }
 }
