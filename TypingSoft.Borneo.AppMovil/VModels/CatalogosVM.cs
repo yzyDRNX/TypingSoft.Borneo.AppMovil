@@ -24,53 +24,30 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
 
-
+        public CatalogosVM(BL.CatalogosBL catalogos, Services.LocalDatabaseService localDb)
+        {
+            this.Catalogos = catalogos;
+            this.localDb = localDb;
+            this.ListadoEmpleados = new();
+        }
 
         #endregion
 
         #region Métodos
         public async void ObtenerEmpleados()
         {
-            this.MensajeProcesando = "Cargando Empleados";
-            this.Procesando = true;
-
-            var (exitoso, mensaje, lista) = await this.Catalogos.ObtenerEmpleados();
-
-            if (exitoso)
+            try
             {
-                this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista);
-            }
-            else
-            {
-                var errormsg = "Ocurrió un error en la petición";
-            }
+                this.MensajeProcesando = "Cargando Empleados";
+                this.Procesando = true;
+
+            var lista = await this.Catalogos.ObtenerEmpleados(); // Este llama a la API SQL Server
+            this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista.Empleados);
+
+
 
             this.Procesando = false;
         }
-
-        public async Task ObtenerClientes()
-        {
-            this.MensajeProcesando = "Cargando Clientes";
-            this.Procesando = true;
-
-            
-
-            Guid idRuta = Helpers.Settings.IdRuta;
-            var (exitoso, mensaje, lista) = await this.Catalogos.ObtenerClientes(idRuta);
-
-            if (exitoso)
-            {
-                this.ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(lista);
-            }
-            else
-            {
-                var errormsg = "Ocurrió un error en la petición";
-            }
-
-            this.Procesando = false;
-        }
-
-
 
 
         #endregion
