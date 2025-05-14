@@ -31,11 +31,8 @@ namespace TypingSoft.Borneo.AppMovil.BL
                     {
                         empleadosLista.Add(new Models.Custom.EmpleadosLista
                         {
-                            Id = catalogo.Id,
-                            Empleado = catalogo.Empleado,
-                          
-
-
+                            Id = catalogo.Id,          
+                            Empleado = catalogo.Empleado 
                         });
                     }
                 }
@@ -47,6 +44,40 @@ namespace TypingSoft.Borneo.AppMovil.BL
             }
             return (exitoso, mensaje, empleadosLista);
         }
+
+
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.ClientesLista> Clientes)> ObtenerClientes(Guid idRuta)
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var clientesLista = new List<Models.Custom.ClientesLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerClientes(idRuta);
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        clientesLista.Add(new Models.Custom.ClientesLista
+                        {
+                            IdCliente = catalogo.IdCliente,
+                            IdClienteAsociado = catalogo.IdClienteAsociado, 
+                            Cliente = catalogo.Cliente
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                clientesLista = new List<Models.Custom.ClientesLista>();
+            }
+
+            return (exitoso, mensaje, clientesLista);
+        }
+
 
 
     }

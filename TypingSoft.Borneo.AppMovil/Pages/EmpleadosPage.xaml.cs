@@ -71,6 +71,13 @@ public partial class EmpleadosPage : ContentPage
         }
     }
 
+    private async void OnEmpezarRutaClicked(object sender, EventArgs e)
+    {
+        //Navegacion a ClientePage
+        await Navigation.PushAsync(new ClientePage());
+    }
+
+
 
     private void CrearViewModelManualmente()
     {

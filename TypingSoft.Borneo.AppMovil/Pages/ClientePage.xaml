@@ -67,30 +67,40 @@
         </Frame>
 
         <!-- Entry and buttons section -->
-        <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <CollectionView ItemsSource="{Binding ListadoClientes}"
+                Margin="10"
+                VerticalOptions="FillAndExpand">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5" Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-            <Entry Placeholder="Arnecom oriente" 
-                   BackgroundColor="Black"
-                   TextColor="White"
-                   HeightRequest="40" 
-                   VerticalOptions="Center" 
-                   Grid.Column="0"/>
+                            <Entry Text="{Binding Cliente}" 
+                       BackgroundColor="Black"
+                       TextColor="White"
+                       HeightRequest="40" 
+                       VerticalOptions="Center"
+                       Grid.Column="0"
+                       IsReadOnly="True" />
 
-            <Button BackgroundColor="#2160AB" 
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    Text="✓" 
-                    TextColor="White" 
-                    FontSize="20" 
-                    CornerRadius="0"
-                    Grid.Column="1"
-                    Clicked="Surtir"
-                    />
+                        <Button Text="Surtir"
+                        BackgroundColor="#2160AB"
+                        TextColor="White"
+                        HeightRequest="40"
+                        WidthRequest="80"
+                        FontSize="14"
+                        CornerRadius="5"
+                        VerticalOptions="Center"
+                        Grid.Column="1"
+                        Command="{Binding Source={RelativeSource}, Path=BindingContext.SurtirCommand}"
+                        CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
             <!--<Button BackgroundColor="Black" 
                     Margin="2"
@@ -101,7 +111,7 @@
                     FontSize="20" 
                     CornerRadius="0"
                     Grid.Column="2"/>-->
-        </Grid>
+
 
         <!-- Labels under buttons -->
         <Grid Margin="10,-5,10,10">

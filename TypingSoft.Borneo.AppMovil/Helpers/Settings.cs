@@ -2,10 +2,11 @@
 {
     public class Settings
     {
-        public const string UrlBaseAPI = "http://192.168.1.129:5099/api/";
+        public const string UrlBaseAPI = "http://192.168.100.57:5099/api/";
 
 
-        public static string? UltimaRuta { get; set; }
+        public static string? UltimaDescripcionRuta { get; set; }
+        public static Guid IdRuta { get; set; }
 
     }
 }

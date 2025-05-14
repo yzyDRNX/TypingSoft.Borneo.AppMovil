@@ -9,7 +9,5 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public SeguridadService() : base("Seguridad/") { }
 
         public async Task<(HttpStatusCode StatusCode, RutaResponse Respuesta)>IniciarSesion(string ruta)=> await CallPostAsync<RutaRequest, RutaResponse>("IniciarSesion",new RutaRequest { Ruta = ruta });
-
-        public async Task<(HttpStatusCode StatusCode, RutaResponse Respuesta)>InformacionRuta(string descripcion)=> await CallGetAsync<RutaResponse>($"IniciarSesion/{descripcion}");
     }
 }

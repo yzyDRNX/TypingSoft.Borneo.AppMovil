@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using TypingSoft.Borneo.AppMovil;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -12,12 +13,16 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             this.Catalogos = catalogos;
             this.ListadoEmpleados = new();
+            this.ListadoClientes = new();
         }
         #endregion
 
         #region Propiedades
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
+
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
 
 
 
@@ -29,13 +34,43 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             this.MensajeProcesando = "Cargando Empleados";
             this.Procesando = true;
 
-            var lista = await this.Catalogos.ObtenerEmpleados(); // Este llama a la API SQL Server
-            this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista.Empleados);
+            var (exitoso, mensaje, lista) = await this.Catalogos.ObtenerEmpleados();
 
-
+            if (exitoso)
+            {
+                this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista);
+            }
+            else
+            {
+                var errormsg = "Ocurrió un error en la petición";
+            }
 
             this.Procesando = false;
         }
+
+        public async Task ObtenerClientes()
+        {
+            this.MensajeProcesando = "Cargando Clientes";
+            this.Procesando = true;
+
+            
+
+            Guid idRuta = Helpers.Settings.IdRuta;
+            var (exitoso, mensaje, lista) = await this.Catalogos.ObtenerClientes(idRuta);
+
+            if (exitoso)
+            {
+                this.ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(lista);
+            }
+            else
+            {
+                var errormsg = "Ocurrió un error en la petición";
+            }
+
+            this.Procesando = false;
+        }
+
+
 
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.Services
 {
@@ -13,6 +14,9 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         #region Metodos
         public async Task<(HttpStatusCode StatusCode, Models.API.EmpleadosResponse Respuesta)> ObtenerEmpleados() => await CallGetAsync<Models.API.EmpleadosResponse>("ObtenerEmpleados");
+
+        public async Task<(HttpStatusCode StatusCode, Models.API.ClientesResponse Respuesta)> ObtenerClientes(Guid idRuta) => await CallGetAsync<Models.API.ClientesResponse>($"ObtenerClientes/{idRuta}");
+
 
         #endregion
     }

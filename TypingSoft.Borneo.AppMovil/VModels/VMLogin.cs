@@ -34,9 +34,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             try
             {
-                var (autenticado, mensaje, rutaObj) = await this._seguridad.AutenticarRuta(this.Ruta);
+                (bool autenticado, string mensaje, Models.API.RutaResponse.Rutas? rutaObj) = await this._seguridad.AutenticarRuta(this.Ruta);
                 if (autenticado == true && rutaObj != null)
                 {
+                    Helpers.Settings.IdRuta = rutaObj.Id;
+                    Helpers.Settings.UltimaDescripcionRuta = rutaObj.Descripcion;
+
                     MensajeProcesando = mensaje;
                     await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
                     return;
