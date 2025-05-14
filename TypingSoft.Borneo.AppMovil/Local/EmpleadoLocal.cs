@@ -6,6 +6,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
     public class EmpleadoLocal
     {
         [PrimaryKey]
+        [AutoIncrement]
         [Column("Id")]
         public Guid Id { get; set; }
         [Column("Nombre")]

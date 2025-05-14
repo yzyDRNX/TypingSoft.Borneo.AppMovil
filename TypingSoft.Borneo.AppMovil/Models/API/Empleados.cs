@@ -6,6 +6,7 @@ namespace TypingSoft.Borneo.AppMovil.Models.API
     public class Empleados
     {
         [PrimaryKey]
+        [AutoIncrement]
         [Column("Id")]
         public Guid Id { get; set; }
         [Column("Nombre")]

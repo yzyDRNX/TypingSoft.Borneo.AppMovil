@@ -1,59 +1,114 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.ObjectModel;
-using TypingSoft.Borneo.AppMovil;
+using System.Linq;
+using System.Threading.Tasks;
+using TypingSoft.Borneo.AppMovil.Services;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
     public partial class CatalogosVM : Helpers.VMBase
     {
-        #region Constructor
-        BL.CatalogosBL Catalogos;
-        public CatalogosVM(BL.CatalogosBL catalogos)
+        #region Campos y constructor
+        private readonly BL.CatalogosBL _catalogos;
+        private readonly LocalDatabaseService _localDb;
+
+        public CatalogosVM(BL.CatalogosBL catalogos, LocalDatabaseService localDb)
         {
-            this.Catalogos = catalogos;
-            this.ListadoEmpleados = new();
-            this.ListadoClientes = new();
+            _catalogos = catalogos;
+            _localDb = localDb;
+
+            ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>();
+            ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>();
         }
         #endregion
 
-        #region Propiedades
+        #region Propiedades observables
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
-
-        public CatalogosVM(BL.CatalogosBL catalogos, Services.LocalDatabaseService localDb)
-        {
-            this.Catalogos = catalogos;
-            this.localDb = localDb;
-            this.ListadoEmpleados = new();
-        }
-
         #endregion
 
         #region Métodos
-        public async void ObtenerEmpleados()
+
+
+        public async Task ObtenerEmpleadosAsync()
         {
             try
             {
-                this.MensajeProcesando = "Cargando Empleados";
-                this.Procesando = true;
+                MensajeProcesando = "Cargando Empleados";
+                Procesando = true;
 
-            var lista = await this.Catalogos.ObtenerEmpleados(); // Este llama a la API SQL Server
-            this.ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(lista.Empleados);
+                // Llamada a la API
+                var (exitoso, mensaje, listaEmpleados) = await _catalogos.ObtenerEmpleados();
 
+                if (exitoso)
+                {
+                    // Actualiza la UI
+                    ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(listaEmpleados);
 
+                    // Convierte y guarda en SQLite
+                    var empleadosLocales = listaEmpleados
+                        .Select(e => new Local.EmpleadoLocal { Id = e.Id, Nombre = e.Empleado })
+                        .ToList();
 
-            this.Procesando = false;
+                    await _localDb.GuardarEmpleadosAsync(empleadosLocales);
+                }
+                else
+                {
+                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener empleados.");
+                }
+            }
+            catch (Exception ex)
+            {
+                await MostrarAlertaAsync("Excepción", ex.Message);
+            }
+            finally
+            {
+                Procesando = false;
+            }
         }
 
 
+        public async Task ObtenerClientesAsync()
+        {
+            try
+            {
+                MensajeProcesando = "Cargando Clientes";
+                Procesando = true;
+
+                Guid idRuta = Helpers.Settings.IdRuta;
+                var (exitoso, mensaje, listaClientes) = await _catalogos.ObtenerClientes(idRuta);
+
+                if (exitoso)
+                {
+                    ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(listaClientes);
+                }
+                else
+                {
+                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener clientes.");
+                }
+            }
+            catch (Exception ex)
+            {
+                await MostrarAlertaAsync("Excepción", ex.Message);
+            }
+            finally
+            {
+                Procesando = false;
+            }
+        }
+
         #endregion
 
-        #region Comandos
-
+        #region Alerta 
+        private Task MostrarAlertaAsync(string titulo, string mensaje)
+        {
+            return Task.CompletedTask;
+        }
         #endregion
     }
 }
