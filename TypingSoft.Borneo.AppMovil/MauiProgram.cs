@@ -31,6 +31,8 @@ namespace TypingSoft.Borneo.AppMovil
             builder.Services.AddSingleton<Services.CatalogosService>();
             builder.Services.AddSingleton<Services.SeguridadService>();
             builder.Services.AddSingleton<Services.LocalDBService>();
+            builder.Services.AddSingleton<Services.LocalDatabaseService>();
+
             #endregion
 
             #region Vmodels

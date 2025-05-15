@@ -39,9 +39,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 {
                     Helpers.Settings.IdRuta = rutaObj.Id;
                     Helpers.Settings.UltimaDescripcionRuta = rutaObj.Descripcion;
-
-                    MensajeProcesando = mensaje;
                     await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
+                    MensajeProcesando = mensaje;
                     return;
                 }
                 
