@@ -37,5 +37,16 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<ClienteLocal>().ToListAsync();
         }
+
+        public async Task GuardarProductosAsync(List<ProductoLocal> productos)
+        {
+            await _database.DeleteAllAsync<ProductoLocal>();
+            await _database.InsertAllAsync(productos);
+        }
+
+        public async Task<List<ProductoLocal>> ObtenerProductosAsync()
+        {
+            return await _database.Table<ProductoLocal>().ToListAsync();
+        }
     }
 }

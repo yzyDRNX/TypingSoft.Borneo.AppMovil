@@ -78,7 +78,36 @@ namespace TypingSoft.Borneo.AppMovil.BL
             return (exitoso, mensaje, clientesLista);
         }
 
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.ProductosLista> Productos)> ObtenerProductos(Guid idRuta)
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var productosLista = new List<Models.Custom.ProductosLista>();
 
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerProductos(idRuta);
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        productosLista.Add(new Models.Custom.ProductosLista
+                        {
+                            Id = catalogo.Id,
+                            Producto = catalogo.Producto
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                productosLista = new List<Models.Custom.ProductosLista>();
+            }
+
+            return (exitoso, mensaje, productosLista);
+        }
 
     }
 }

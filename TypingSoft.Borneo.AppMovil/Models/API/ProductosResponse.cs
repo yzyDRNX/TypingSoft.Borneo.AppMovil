@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    class ProductosResponse : ResponseBase
+    public class ProductosResponse : ResponseBase
     {
         public ProductosResponse()
         {

@@ -21,6 +21,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>();
             ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>();
+            ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
         }
         #endregion
 
@@ -30,6 +31,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
+
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.ProductosLista> listadoProductos;
         #endregion
 
         #region Métodos
@@ -97,6 +101,42 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 else
                 {
                     await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener clientes.");
+                }
+            }
+            catch (Exception ex)
+            {
+                await MostrarAlertaAsync("Excepción", ex.Message);
+            }
+            finally
+            {
+                Procesando = false;
+            }
+        }
+
+        public async Task ObtenerProductosAsync()
+        {
+            try
+            {
+                MensajeProcesando = "Cargando Productos";
+                Procesando = true;
+
+                Guid idRuta = Helpers.Settings.IdRuta;
+                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos(idRuta);
+
+                if (exitoso)
+                {
+                    ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>(listaProductos);
+
+                    // Convierte y guarda en SQLite
+                    var productosLocales = listaProductos
+                        .Select(p => new Local.ProductoLocal { Id = p.Id, Producto = p.Producto })
+                        .ToList();
+
+                    await _localDb.GuardarProductosAsync(productosLocales);
+                }
+                else
+                {
+                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener productos.");
                 }
             }
             catch (Exception ex)
