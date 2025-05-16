@@ -22,6 +22,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>();
             ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>();
             ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
+
         }
         #endregion
 
@@ -31,6 +32,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.ClientesLista> clientesASurtir = new();
+
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ProductosLista> listadoProductos;
@@ -148,6 +152,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Procesando = false;
             }
         }
+        [RelayCommand]
+        void Surtir(Models.Custom.ClientesLista cliente)
+        {
+            if (cliente != null && !clientesASurtir.Contains(cliente))
+                clientesASurtir.Add(cliente);
+        }
+
 
         #endregion
 
