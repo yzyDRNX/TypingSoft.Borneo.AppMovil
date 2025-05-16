@@ -99,10 +99,11 @@
                         CommandParameter="{Binding .}" />
                         </Grid>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
+
+            </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!--<Button BackgroundColor="Black" 
+        <!--<Button BackgroundColor="Black" 
                     Margin="2"
                     WidthRequest="40" 
                     HeightRequest="40" 
