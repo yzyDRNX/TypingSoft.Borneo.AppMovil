@@ -78,7 +78,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
             return (exitoso, mensaje, clientesLista);
         }
 
-        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.ProductosLista> Productos)> ObtenerProductos(Guid idRuta)
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.ProductosLista> Productos)> ObtenerProductos()
         {
             var exitoso = false;
             var mensaje = "Ocurrió un error en la petición";
@@ -86,7 +86,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
 
             try
             {
-                var peticion = await this.CatalogosService.ObtenerProductos(idRuta);
+                var peticion = await this.CatalogosService.ObtenerProductos();
                 exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
                 if (exitoso)
                 {

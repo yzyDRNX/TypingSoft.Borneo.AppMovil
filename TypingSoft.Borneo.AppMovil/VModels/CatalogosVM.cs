@@ -120,8 +120,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 MensajeProcesando = "Cargando Productos";
                 Procesando = true;
 
-                Guid idRuta = Helpers.Settings.IdRuta;
-                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos(idRuta);
+                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos();
 
                 if (exitoso)
                 {
