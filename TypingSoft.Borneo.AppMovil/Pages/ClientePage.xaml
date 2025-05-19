@@ -53,7 +53,7 @@
         </Frame>
 
         <!-- Empty space -->
-        <BoxView HeightRequest="100" 
+        <BoxView HeightRequest="50" 
                  BackgroundColor="White"/>
 
         <!-- Cliente a visitar section -->
@@ -65,107 +65,57 @@
                    FontSize="16" 
                    HorizontalOptions="Center"/>
         </Frame>
-
-        <!-- Entry and buttons section -->
-            <CollectionView ItemsSource="{Binding ListadoClientes}"
-                Margin="10"
-                VerticalOptions="FillAndExpand">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="5" Margin="0,5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Entry Text="{Binding Cliente}" 
-                       BackgroundColor="Black"
-                       TextColor="White"
-                       HeightRequest="40" 
-                       VerticalOptions="Center"
-                       Grid.Column="0"
-                       IsReadOnly="True" />
-
-                        <Button Text="Surtir"
-                        BackgroundColor="#2160AB"
-                        TextColor="White"
-                        HeightRequest="40"
-                        WidthRequest="80"
-                        FontSize="14"
-                        CornerRadius="5"
-                        VerticalOptions="Center"
-                        Grid.Column="1"
-                        Command="{Binding Source={RelativeSource}, Path=BindingContext.SurtirCommand}"
-                        CommandParameter="{Binding .}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!--<Button BackgroundColor="Black" 
-                    Margin="2"
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    Text="≡" 
-                    TextColor="White" 
-                    FontSize="20" 
-                    CornerRadius="0"
-                    Grid.Column="2"/>-->
-
-
-        <!-- Labels under buttons -->
-        <Grid Margin="10,-5,10,10">
+        <Grid Padding="5" Margin="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Label Text="Preventa" 
-                   FontSize="12" 
-                   HorizontalOptions="Center" 
-                   Grid.Column="1"/>
+            <Picker x:Name="clientesPicker" 
+                ItemsSource="{Binding ListadoClientes}"
+                ItemDisplayBinding="{Binding Cliente}" 
+                BackgroundColor="Black"
+                TextColor="White"
+                HeightRequest="40"
+                VerticalOptions="Center"
+                Grid.Column="0"
+            />
 
-            <Label Text="Venta" 
-                   FontSize="12" 
-                   HorizontalOptions="Center" 
-                   Grid.Column="2"/>
+
+            <Button Text="Añadir" 
+                BackgroundColor="#2160AB" 
+                TextColor="White" 
+                HeightRequest="40" 
+                Padding="15,0" 
+                CornerRadius="0"
+                Grid.Column="1"
+                Clicked="OnAñadirClienteClicked" 
+            />
         </Grid>
 
-        <!-- Another empty space -->
-        <BoxView HeightRequest="200" 
-                 BackgroundColor="White" 
-                 VerticalOptions="FillAndExpand"/>
+        <!-- Clients List -->
+        <Frame BorderColor="#DDDDDD" 
+            Margin="20,0,20,10" 
+            Padding="10" 
+            CornerRadius="0"
+        >
+            <StackLayout x:Name="clientesSeleccionadosStack" 
+                 Spacing="5">
+                <Label Text="Clientes seleccionados:" 
+                FontAttributes="Bold" 
+                Margin="0,0,0,5"/>
+                <!-- Los clientes seleccionados se añadirán aquí dinámicamente -->
+            </StackLayout>
+        </Frame>
 
-        <!-- Footer with icon placeholders -->
-        <Grid BackgroundColor="Black" 
-              HeightRequest="50">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Label Text="|||" 
-                   TextColor="White" 
-                   FontSize="24" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center" 
-                   Grid.Column="0"/>
-
-            <Label Text="○" 
-                   TextColor="White" 
-                   FontSize="24" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center" 
-                   Grid.Column="1"/>
-
-            <Label Text="≡" 
-                   TextColor="White" 
-                   FontSize="24" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center" 
-                   Grid.Column="2"/>
-        </Grid>
+        <!-- Start Route Button -->
+        <Button Text="Empezar Vuelta 1" 
+            BackgroundColor="Black"       
+            TextColor="White" 
+            Margin="20,20,20,0" 
+            HeightRequest="50" 
+            CornerRadius="0"
+            Clicked="SurtirClicked"
+        />
     </StackLayout>
 </ContentPage>
