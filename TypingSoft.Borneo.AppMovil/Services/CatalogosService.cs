@@ -17,7 +17,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task<(HttpStatusCode StatusCode, Models.API.ClientesResponse Respuesta)> ObtenerClientes(Guid idRuta) => await CallGetAsync<Models.API.ClientesResponse>($"ObtenerClientes/{idRuta}");
 
-        public async Task<(HttpStatusCode StatusCode, Models.API.ProductosResponse Respuesta)> ObtenerProductos(Guid idRuta) => await CallGetAsync<Models.API.ProductosResponse>($"ObtenerProductos/{idRuta}");
+        public async Task<(HttpStatusCode StatusCode, Models.API.ProductosResponse Respuesta)> ObtenerProductos() => await CallGetAsync<Models.API.ProductosResponse>("ObtenerProductos");
         #endregion
     }
 }

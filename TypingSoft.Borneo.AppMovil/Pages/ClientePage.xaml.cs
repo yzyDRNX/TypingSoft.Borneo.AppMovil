@@ -34,43 +34,6 @@ public partial class ClientePage : ContentPage
     }
     private readonly HashSet<Guid> clientesSeleccionados = new HashSet<Guid>();
 
-    private void OnAñadirClienteClicked(object sender, EventArgs c)
-    {
-        // Obtener el cliente seleccionado del Picker
-        var clienteSeleccionado = clientesPicker.SelectedItem as Models.Custom.ClientesLista;
-
-        if (clienteSeleccionado != null)
-        {
-            // Verificar si el cliente ya está en la lista
-            if (clientesSeleccionados.Contains(clienteSeleccionado.IdClienteAsociado))
-            {
-                // Mostrar un mensaje de alerta si el cliente ya está en la lista
-                DisplayAlert("Advertencia", "El cliente ya está en la lista.", "OK");
-                return;
-            }
-
-            // Añadir el cliente al HashSet
-            clientesSeleccionados.Add(clienteSeleccionado.IdClienteAsociado);
-
-            // Crear un nuevo Label para mostrar el nombre del cliente seleccionado
-            var clienteLabel = new Label
-            {
-                Text = clienteSeleccionado.Cliente, // Accede directamente a la propiedad 'Cliente'
-                FontSize = 14,
-                TextColor = Colors.White,
-                Margin = new Thickness(0, 5, 0, 0)
-            };
-
-            // Añadir el Label al StackLayout
-            clientesSeleccionadosStack.Children.Add(clienteLabel);
-        }
-        else
-        {
-            // Mostrar un mensaje si no se seleccionó ningún empleado
-            DisplayAlert("Advertencia", "Por favor, selecciona un empleado antes de añadirlo.", "OK");
-        }
-    }
-
     private async void SurtirClicked(object sender, EventArgs e)
     {
         // Navegacion a RepartoPage
@@ -89,6 +52,33 @@ public partial class ClientePage : ContentPage
         this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
     }
 
+    private async void OnAñadirClienteClicked(object sender, EventArgs e)
+    {
+        var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
+        var clienteSeleccionado = clientesPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Models.Custom.ClientesLista;
+
+        if (clienteSeleccionado == null)
+        {
+            await DisplayAlert("Aviso", "Por favor selecciona un cliente.", "OK");
+            return;
+        }
+
+        if (vm != null && vm.ClientesASurtir.Contains(clienteSeleccionado))
+        {
+            await DisplayAlert("Aviso", "Este cliente ya fue añadido.", "OK");
+            return;
+        }
+
+        if (vm != null)
+        {
+            vm.ClientesASurtir.Add(clienteSeleccionado);
+        }
+    }
+
+    private async void OnRepartoClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new RepartoPage());
+    }
 
     protected override async void OnAppearing()
     {

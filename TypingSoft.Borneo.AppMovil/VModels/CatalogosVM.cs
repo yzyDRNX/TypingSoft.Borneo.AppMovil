@@ -22,6 +22,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>();
             ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>();
             ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
+
         }
         #endregion
 
@@ -31,6 +32,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ClientesLista> listadoClientes;
+
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.ClientesLista> clientesASurtir = new();
+
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.ProductosLista> listadoProductos;
@@ -120,8 +125,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 MensajeProcesando = "Cargando Productos";
                 Procesando = true;
 
-                Guid idRuta = Helpers.Settings.IdRuta;
-                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos(idRuta);
+                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos();
 
                 if (exitoso)
                 {
@@ -148,6 +152,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Procesando = false;
             }
         }
+        [RelayCommand]
+        async Task Surtir(Models.Custom.ClientesLista cliente)
+        {
+            if (cliente != null && !ClientesASurtir.Contains(cliente))
+                ClientesASurtir.Add(cliente);
+
+            // Mostrar la lista actual de clientes a surtir
+            var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
+            await Application.Current.MainPage.DisplayAlert("Clientes a Surtir", nombres, "OK");
+        }
+
 
         #endregion
 
