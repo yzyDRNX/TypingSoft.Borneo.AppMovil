@@ -67,51 +67,44 @@
         </Frame>
 
         <!-- Entry and buttons section -->
-            <CollectionView ItemsSource="{Binding ListadoClientes}"
-                Margin="10"
-                VerticalOptions="FillAndExpand">
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Picker x:Name="clientesPicker"
+        ItemsSource="{Binding ListadoClientes}"
+        ItemDisplayBinding="{Binding Cliente}"
+        BackgroundColor="Black"
+        TextColor="White"
+        HeightRequest="40"
+        VerticalOptions="Center"
+        Grid.Column="0"/>
+
+
+            <Button Text="Añadir"
+            BackgroundColor="#2160AB"
+            TextColor="White"
+            HeightRequest="40"
+            Padding="15,0"
+            CornerRadius="0"
+            Grid.Column="1"
+            Clicked="OnAñadirClienteClicked"/>
+        </Grid>
+
+
+        <Frame BackgroundColor="#E3EFFF" Padding="10" HasShadow="False" CornerRadius="0" Margin="0,10,0,0">
+            <Label Text="Clientes a Surtir:" FontAttributes="Bold" FontSize="14"/>
+            <CollectionView ItemsSource="{Binding ClientesASurtir}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="5" Margin="0,5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Entry Text="{Binding Cliente}" 
-                       BackgroundColor="Black"
-                       TextColor="White"
-                       HeightRequest="40" 
-                       VerticalOptions="Center"
-                       Grid.Column="0"
-                       IsReadOnly="True" />
-
-                        <Button Text="Surtir"
-                        BackgroundColor="#2160AB"
-                        TextColor="White"
-                        HeightRequest="40"
-                        WidthRequest="80"
-                        FontSize="14"
-                        CornerRadius="5"
-                        VerticalOptions="Center"
-                        Grid.Column="1"
-                        Command="{Binding Source={RelativeSource}, Path=BindingContext.SurtirCommand}"
-                        CommandParameter="{Binding .}" />
-                        </Grid>
+                        <Label Text="{Binding Cliente}" FontSize="13" TextColor="Black"/>
                     </DataTemplate>
-
-            </CollectionView.ItemTemplate>
+                </CollectionView.ItemTemplate>
             </CollectionView>
+        </Frame>
 
-        <!--<Button BackgroundColor="Black" 
-                    Margin="2"
-                    WidthRequest="40" 
-                    HeightRequest="40" 
-                    Text="≡" 
-                    TextColor="White" 
-                    FontSize="20" 
-                    CornerRadius="0"
-                    Grid.Column="2"/>-->
 
 
         <!-- Labels under buttons -->

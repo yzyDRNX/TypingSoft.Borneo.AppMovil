@@ -51,6 +51,29 @@ public partial class ClientePage : ContentPage
         this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
     }
 
+    private async void OnAñadirClienteClicked(object sender, EventArgs e)
+    {
+        var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
+        var clienteSeleccionado = clientesPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Models.Custom.ClientesLista;
+
+        if (clienteSeleccionado == null)
+        {
+            await DisplayAlert("Aviso", "Por favor selecciona un cliente.", "OK");
+            return;
+        }
+
+        if (vm != null && vm.ClientesASurtir.Contains(clienteSeleccionado))
+        {
+            await DisplayAlert("Aviso", "Este cliente ya fue añadido.", "OK");
+            return;
+        }
+
+        if (vm != null)
+        {
+            vm.ClientesASurtir.Add(clienteSeleccionado);
+        }
+    }
+
 
     protected override async void OnAppearing()
     {

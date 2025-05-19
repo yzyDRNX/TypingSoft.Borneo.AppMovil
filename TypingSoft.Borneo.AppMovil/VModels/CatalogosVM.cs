@@ -152,10 +152,14 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
         [RelayCommand]
-        void Surtir(Models.Custom.ClientesLista cliente)
+        async Task Surtir(Models.Custom.ClientesLista cliente)
         {
-            if (cliente != null && !clientesASurtir.Contains(cliente))
-                clientesASurtir.Add(cliente);
+            if (cliente != null && !ClientesASurtir.Contains(cliente))
+                ClientesASurtir.Add(cliente);
+
+            // Mostrar la lista actual de clientes a surtir
+            var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
+            await Application.Current.MainPage.DisplayAlert("Clientes a Surtir", nombres, "OK");
         }
 
 
