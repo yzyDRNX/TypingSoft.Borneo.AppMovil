@@ -104,7 +104,14 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Frame>
-
+        <Button Text="Reparto"
+        BackgroundColor="#2D9CDB"
+        TextColor="White"
+        HeightRequest="40"
+        Padding="15,0"
+        CornerRadius="0"
+        Grid.Column="2"
+        Clicked="OnRepartoClicked"/>
 
 
         <!-- Labels under buttons -->

@@ -74,6 +74,10 @@ public partial class ClientePage : ContentPage
         }
     }
 
+    private async void OnRepartoClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new RepartoPage());
+    }
 
     protected override async void OnAppearing()
     {
