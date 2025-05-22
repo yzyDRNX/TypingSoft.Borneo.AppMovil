@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    class PreciosResponse: ResponseBase
+    public class PreciosResponse: ResponseBase
     {
         public PreciosResponse()
         {
@@ -17,7 +17,7 @@ namespace TypingSoft.Borneo.AppMovil.Models.API
         public class Precios
         {
             public Guid IdProducto { get; set; }
-            public string? Empleado { get; set; }
+            public string? Producto { get; set; }
             public decimal Precio { get; set; }
         }
     }
