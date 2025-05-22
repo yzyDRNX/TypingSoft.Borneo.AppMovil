@@ -53,91 +53,73 @@
         </Frame>
 
         <!-- Empty space -->
-        <BoxView HeightRequest="100" 
+        <BoxView HeightRequest="20" 
                  BackgroundColor="White"/>
 
         <!-- Garrafones Entregados section -->
-        <Frame BackgroundColor="Black"
-       Padding="10"
-       HasShadow="False"
-       CornerRadius="0"
-       Margin="0,10,0,0">
-            <VerticalStackLayout Spacing="5">
-                <Label Text="Garrafones Entregados"
-               FontAttributes="Bold"
-               FontSize="14"
-               TextColor="White" />
-
-                <Grid Margin="0"
-              ColumnSpacing="10"
-              RowSpacing="0">
-                    <!-- Definimos sólo 1 fila (Auto) y 2 columnas -->
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <!-- para el Picker -->
-                        <ColumnDefinition Width="Auto" />
-                        <!-- para un botón futuro -->
-                    </Grid.ColumnDefinitions>
-
-                    <Picker x:Name="productosPicker"
-                    Grid.Row="0" Grid.Column="0"
-                    ItemsSource="{Binding ListadoProductos}"
-                    ItemDisplayBinding="{Binding Producto}"
-                    BackgroundColor="Black"
-                    TextColor="White"
-                    HeightRequest="40"
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="Center"/>
-
-                </Grid>
-            </VerticalStackLayout>
+        <Frame BackgroundColor="Black" 
+            Padding="10" 
+            HasShadow="False" 
+            CornerRadius="0">
+            <Label Text="Productos para Entrega" 
+                FontSize="16" 
+                HorizontalOptions="Center"/>
         </Frame>
 
-
-        <!-- Entry and button section -->
-        <Grid Margin="20,10,20,10">
+        <Grid Margin="20,10" ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Entry HeightRequest="40" 
-                   Placeholder="Ingrese los garrafones a surtir"
-                   PlaceholderColor="White"
-                   BackgroundColor="Black"
-                   TextColor="White"
-                   VerticalOptions="Center"
-                   Grid.Row="0" Grid.Column="0"
-                   HorizontalOptions="FillAndExpand"/>
+            <Picker x:Name="productosPicker" 
+                ItemsSource="{Binding ListadoProductos}"
+                ItemDisplayBinding="{Binding Producto}" 
+                BackgroundColor="Black"
+                TextColor="White"
+                HeightRequest="40"
+                VerticalOptions="Center"
+                Grid.Column="0"/>
 
-            <Button BackgroundColor="#2160AB" 
-                    Margin="2"
-                    HeightRequest="40" 
-                    Text="✓" 
-                    TextColor="White" 
-                    FontSize="20" 
-                    CornerRadius="0"
-                    Grid.Row="0" Grid.Column="1"
-                    Clicked="Concluir"
-                    />
+
+            <Button Text="Añadir" 
+                BackgroundColor="#2160AB" 
+                TextColor="White" 
+                HeightRequest="40" 
+                Padding="15,0" 
+                CornerRadius="0"
+                Grid.Column="1"
+                Clicked="OnAñadirProductoClicked" />
+
         </Grid>
 
-        <!-- Label under button -->
-        <Label Text="Aceptar" 
-               FontSize="12" 
-               HorizontalOptions="End" 
-               Margin="0,-5,20,0"/>
+        <!-- Product List section -->
+        <Frame BorderColor="#DDDDDD" 
+               Margin="20,0,20,10" 
+               Padding="10" 
+               CornerRadius="0">
+            <StackLayout x:Name="productosSeleccionadosStack" 
+                         Spacing="5">
+                <Label Text="Productos seleccionados:" 
+                       FontAttributes="Bold" 
+                       Margin="0,0,0,5"/>
+                <!-- Los productos seleccionados se añadirán aquí dinámicamente -->
+            </StackLayout>
+        </Frame>
+
+        <!-- Start Route Button -->
+        <Button Text="Concluir" 
+                BackgroundColor="Black"       
+                TextColor="White" 
+                Margin="20,20,20,0" 
+                HeightRequest="50" 
+                CornerRadius="0"
+                Clicked="OnConcluirClicked"
+                />
 
         <!-- Remaining empty space -->
-        <BoxView HeightRequest="300" 
+        <BoxView HeightRequest="20" 
                  BackgroundColor="White" 
                  VerticalOptions="FillAndExpand"/>
-
-        <!-- Footer -->
-        <BoxView BackgroundColor="Black" 
-                 HeightRequest="50"/>
     </StackLayout>
 </ContentPage>
