@@ -110,36 +110,12 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-<<<<<<< HEAD
-        <Frame BackgroundColor="#E3EFFF" Padding="10" HasShadow="False" CornerRadius="0" Margin="0,10,0,0">
-            <StackLayout>
-                <Label Text="Clientes a Surtir:" FontAttributes="Bold" FontSize="14"/>
-                <CollectionView ItemsSource="{Binding ClientesASurtir}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Label Text="{Binding Cliente}" FontSize="13" TextColor="Black"/>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </StackLayout>
-        </Frame>
-
-        <Button Text="Reparto"
-        BackgroundColor="#2D9CDB"
-        TextColor="White"
-        HeightRequest="40"
-        Padding="15,0"
-        CornerRadius="0"
-        Grid.Column="2"
-        Clicked="OnRepartoClicked"/>
-=======
             <!-- Lista de clientes -->
             <Frame BackgroundColor="#E3EFFF"
                 Padding="10"
                 HasShadow="False"
                 CornerRadius="0"
                 Margin="0,10,0,0">
->>>>>>> 40945d1ec2e65cdb765e4a7d8c543ed592e0300a
 
                 <VerticalStackLayout
                     Spacing="5">
