@@ -109,5 +109,98 @@ namespace TypingSoft.Borneo.AppMovil.BL
             return (exitoso, mensaje, productosLista);
         }
 
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.FormasLista> Formas)> ObtenerFormas()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var formasLista = new List<Models.Custom.FormasLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerFormas();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        formasLista.Add(new Models.Custom.FormasLista
+                        {
+                            IdForma = catalogo.IdForma,
+                            Forma = catalogo.Forma
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                formasLista = new List<Models.Custom.FormasLista>();
+            }
+
+            return (exitoso, mensaje, formasLista);
+        }
+
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.CondicionesLista> Condiciones)> ObtenerCondiciones()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var condicionesLista = new List<Models.Custom.CondicionesLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerCondiciones();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        condicionesLista.Add(new Models.Custom.CondicionesLista
+                        {
+                            IdCondicion = catalogo.IdCondicion,
+                            Condicion = catalogo.Condicion
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                condicionesLista = new List<Models.Custom.CondicionesLista>();
+            }
+
+            return (exitoso, mensaje, condicionesLista);
+        }
+
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.PreciosLista> Precios)> ObtenerPrecios(Guid IdClienteAsociado)
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var preciosLista = new List<Models.Custom.PreciosLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerPrecios(IdClienteAsociado);
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        preciosLista.Add(new Models.Custom.PreciosLista
+                        {
+                            IdProducto = catalogo.IdProducto,
+                            Producto = catalogo.Producto,
+                            Precio = catalogo.Precio
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                preciosLista = new List<Models.Custom.PreciosLista>();
+            }
+
+            return (exitoso, mensaje, preciosLista);
+        }
     }
 }

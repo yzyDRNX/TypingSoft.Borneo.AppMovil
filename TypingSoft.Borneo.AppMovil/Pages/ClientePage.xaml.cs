@@ -32,11 +32,12 @@ public partial class ClientePage : ContentPage
             CrearViewModelManualmente();
         }
     }
+    private readonly HashSet<Guid> clientesSeleccionados = new HashSet<Guid>();
 
-	private async void Surtir(object sender, EventArgs e)
+    private async void SurtirClicked(object sender, EventArgs e)
     {
-        // Usar CustomNavigation para navegar a ClientePage
-        await App.NavigationService.Navegar(nameof(RepartoPage));
+        // Navegacion a RepartoPage
+        await Navigation.PushAsync(new RepartoPage());
     }
 
     private void CrearViewModelManualmente()

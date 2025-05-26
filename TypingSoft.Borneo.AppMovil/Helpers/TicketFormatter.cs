@@ -15,7 +15,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             {
                 foreach (var item in venta.Data)
                 {
-                    sb.AppendLine($"Producto: {item.Nombre}  Cantidad: {item.Cantidad}  Total: {item.Total}");
+                    //sb.AppendLine($"Producto: {item.Nombre}  Cantidad: {item.Cantidad}  Total: {item.Total}");
                 }
             }
             sb.AppendLine("----------------------");
