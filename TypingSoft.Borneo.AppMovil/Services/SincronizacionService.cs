@@ -20,7 +20,7 @@ public class SincronizacionService
     {
         try
         {
-            var url = $"https://tuservidor.com/api/Catalogos/ObtenerClientes?IdRuta={idRuta}";
+            var url = $"https://localhost/api/Catalogos/ObtenerClientes?IdRuta={idRuta}";
             var response = await _http.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
