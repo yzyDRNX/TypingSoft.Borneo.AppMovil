@@ -6,4 +6,10 @@ public partial class UtileriasPage : ContentPage
 	{
 		InitializeComponent();
 	}
+    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
+    private async void Impresion(object sender, EventArgs e)
+    {
+        // Usar CustomNavigation para navegar a ClientePage
+        await App.NavigationService.Navegar(nameof(ImpresionPage));
+    }
 }

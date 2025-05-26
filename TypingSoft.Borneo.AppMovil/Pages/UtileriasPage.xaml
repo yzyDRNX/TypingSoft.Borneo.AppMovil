@@ -79,19 +79,19 @@
             </Grid.RowDefinitions>
 
             <!-- Imprimir button -->
-            <Frame BackgroundColor="Black" 
-                   Grid.Column="0" 
-                   Padding="0" 
-                   HeightRequest="60" 
-                   WidthRequest="60" 
-                   HorizontalOptions="Center"
-                   CornerRadius="0">
-                <Label Text="🖨️" 
-                       TextColor="White" 
-                       FontSize="30" 
-                       HorizontalOptions="Center" 
-                       VerticalOptions="Center"/>
-            </Frame>
+            <Button
+    Grid.Column="0"
+    HeightRequest="60"
+    WidthRequest="60"
+    BackgroundColor="Black"
+    CornerRadius="0"
+    Padding="0"
+    HorizontalOptions="Center"
+    Text="🖨️"
+    TextColor="White"
+    FontSize="30"
+    Clicked="Impresion" />
+
             <Label Text="Imprimir comprobante" 
                    Grid.Column="0" 
                    Grid.Row="1" 

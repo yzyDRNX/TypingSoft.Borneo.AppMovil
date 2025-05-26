@@ -29,6 +29,9 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
                 case nameof(Pages.MenuPage):
                     App.Current.MainPage = new NavigationPage(new Pages.MenuPage());
                     break;
+                case nameof(Pages.ImpresionPage):
+                    App.Current.MainPage = new NavigationPage(new Pages.ImpresionPage());
+                    break;
 
                 default:
                     break;

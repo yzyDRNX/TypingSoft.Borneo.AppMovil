@@ -7,7 +7,7 @@ using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.Models.Custom
 {
-    class VentaGeneralRequestDTO: ResponseBase
+    public class VentaGeneralRequestDTO: ResponseBase
     {
         public VentaGeneralRequestDTO()
         {
