@@ -14,6 +14,10 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<EmpleadoLocal>().Wait();
             _database.CreateTableAsync<ClienteLocal>().Wait();
+            _database.CreateTableAsync<ProductoLocal>().Wait();
+            _database.CreateTableAsync<FormaLocal>().Wait();
+            _database.CreateTableAsync<CondicionLocal>().Wait();
+            _database.CreateTableAsync<PrecioLocal>().Wait();
         }
 
         public async Task GuardarEmpleadosAsync(List<EmpleadoLocal> empleados)
