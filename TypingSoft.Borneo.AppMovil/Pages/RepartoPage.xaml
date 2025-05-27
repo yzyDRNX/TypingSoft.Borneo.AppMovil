@@ -94,17 +94,20 @@
         </Grid>
 
         <!-- Product List section -->
-        <Frame BorderColor="#DDDDDD" 
-               Margin="20,0,20,10" 
-               Padding="10" 
-               CornerRadius="0">
-            <StackLayout x:Name="productosSeleccionadosStack" 
-                         Spacing="5">
-                <Label Text="Productos seleccionados:" 
-                       FontAttributes="Bold" 
-                       Margin="0,0,0,5"/>
-                <!-- Los productos seleccionados se añadirán aquí dinámicamente -->
-            </StackLayout>
+        <Frame BackgroundColor="#E3EFFF"
+Padding="10"
+HasShadow="False"
+CornerRadius="0"
+Margin="0,10,0,0">
+            <VerticalStackLayout Spacing="5">
+                <Label 
+     Text="Productos Seleccionados:"
+     TextColor="Black"
+     FontAttributes="Bold"
+     FontSize="14" 
+ />
+                <StackLayout x:Name="productosSeleccionadosStack" Spacing="2"/>
+            </VerticalStackLayout>
         </Frame>
 
         <!-- Start Route Button -->

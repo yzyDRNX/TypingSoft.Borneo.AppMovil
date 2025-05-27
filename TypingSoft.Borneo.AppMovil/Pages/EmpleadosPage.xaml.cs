@@ -57,7 +57,7 @@ public partial class EmpleadosPage : ContentPage
             {
                 Text = empleadoSeleccionado.Empleado, // Accede directamente a la propiedad 'Empleado'
                 FontSize = 14,
-                TextColor = Colors.White,
+                TextColor = Colors.Black,
                 Margin = new Thickness(0, 5, 0, 0)
             };
 

@@ -53,7 +53,7 @@ public partial class RepartoPage : ContentPage
             {
                 Text = productoSeleccionado.Producto, // Accede directamente a la propiedad 'Producto'
                 FontSize = 14,
-                TextColor = Colors.White,
+                TextColor = Colors.Black,
                 Margin = new Thickness(0, 5, 0, 0)
             };
 
