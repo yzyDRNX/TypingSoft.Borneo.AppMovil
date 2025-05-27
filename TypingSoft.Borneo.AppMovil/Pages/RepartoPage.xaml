@@ -66,9 +66,10 @@
                 HorizontalOptions="Center"/>
         </Frame>
 
-        <Grid Margin="20,10" ColumnSpacing="10">
+        <Grid Margin="20,10" ColumnSpacing="10" RowSpacing="10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
@@ -79,7 +80,18 @@
                 TextColor="White"
                 HeightRequest="40"
                 VerticalOptions="Center"
-                Grid.Column="0"/>
+                Grid.Column="0"
+            />
+
+            <Entry x:Name="cantidadEntry"
+                Placeholder="Cantidad"
+                Keyboard="Numeric"
+                BackgroundColor="Black"
+                TextColor="white"
+                HeightRequest="40"
+                VerticalOptions="Center"
+                Grid.Column="1"
+            />
 
 
             <Button Text="Añadir" 
@@ -88,8 +100,9 @@
                 HeightRequest="40" 
                 Padding="15,0" 
                 CornerRadius="0"
-                Grid.Column="1"
-                Clicked="OnAñadirProductoClicked" />
+                Grid.Column="2"
+                Clicked="OnAñadirProductoClicked" 
+            />
 
         </Grid>
 

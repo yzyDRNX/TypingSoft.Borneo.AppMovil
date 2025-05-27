@@ -73,7 +73,14 @@ public partial class EmpleadosPage : ContentPage
 
     private async void OnEmpezarRutaClicked(object sender, EventArgs e)
     {
-        //Navegacion a ClientePage
+        // Verifica si hay empleados seleccionados
+        if (empleadosSeleccionados.Count == 0)
+        {
+            await DisplayAlert("Advertencia", "Debes seleccionar al menos un empleado antes de continuar.", "OK");
+            return;
+        }
+
+        // Si hay al menos un empleado, procede a la siguiente página
         await Navigation.PushAsync(new ClientePage());
     }
 

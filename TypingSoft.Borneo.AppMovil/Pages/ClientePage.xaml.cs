@@ -63,20 +63,36 @@ public partial class ClientePage : ContentPage
             return;
         }
 
-        if (vm != null && vm.ClientesASurtir.Contains(clienteSeleccionado))
+        // Si ya hay un cliente en la lista, no se permite añadir otro
+        if (vm.ClientesASurtir.Count > 0)
+        {
+            await DisplayAlert("Aviso", "Solo puedes añadir un cliente a la vez.", "OK");
+            return;
+        }
+
+        // Si el cliente ya está añadido, no se agrega de nuevo
+        if (vm.ClientesASurtir.Contains(clienteSeleccionado))
         {
             await DisplayAlert("Aviso", "Este cliente ya fue añadido.", "OK");
             return;
         }
 
-        if (vm != null)
-        {
-            vm.ClientesASurtir.Add(clienteSeleccionado);
-        }
+        // Añadir el cliente
+        vm.ClientesASurtir.Add(clienteSeleccionado);
+
     }
 
     private async void OnRepartoClicked(object sender, EventArgs e)
     {
+        // Verifica si hay clientes seleccionados
+        var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
+        if (vm.ClientesASurtir.Count == 0)
+        {
+            await DisplayAlert("Advertencia", "Debes seleccionar al menos un cliente antes de continuar.", "OK");
+            return;
+        }
+
+        // Si hay al menos un cliente, procede a la siguiente página
         await Navigation.PushAsync(new RepartoPage());
     }
 

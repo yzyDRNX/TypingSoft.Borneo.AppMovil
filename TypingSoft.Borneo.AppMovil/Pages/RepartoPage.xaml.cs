@@ -32,40 +32,42 @@ public partial class RepartoPage : ContentPage
 
     private void OnAñadirProductoClicked(object sender, EventArgs e)
     {
-        // Obtener el producto seleccionado del Picker
         var productoSeleccionado = productosPicker.SelectedItem as Models.Custom.ProductosLista;
 
-        if (productoSeleccionado != null)
+        if (productoSeleccionado == null)
         {
-            // Verificar si el producto ya está en la lista
-            if (productosSeleccionados.Contains(productoSeleccionado.Id))
-            {
-                // Mostrar un mensaje de alerta si el producto ya está en la lista
-                DisplayAlert("Advertencia", "El producto ya está en la lista.", "OK");
-                return;
-            }
-
-            // Añadir el producto al HashSet
-            productosSeleccionados.Add(productoSeleccionado.Id);
-
-            // Crear un nuevo Label para mostrar el nombre del producto seleccionado
-            var productoLabel = new Label
-            {
-                Text = productoSeleccionado.Producto, // Accede directamente a la propiedad 'Producto'
-                FontSize = 14,
-                TextColor = Colors.Black,
-                Margin = new Thickness(0, 5, 0, 0)
-            };
-
-            // Añadir el Label al StackLayout
-            productosSeleccionadosStack.Children.Add(productoLabel);
+            DisplayAlert("Advertencia", "Por favor, selecciona un producto.", "OK");
+            return;
         }
-        else
+
+        if (productosSeleccionados.Contains(productoSeleccionado.Id))
         {
-            // Mostrar un mensaje si no se seleccionó ningún producto
-            DisplayAlert("Advertencia", "Por favor, selecciona un producto antes de añadirlo.", "OK");
+            DisplayAlert("Advertencia", "El producto ya está en la lista.", "OK");
+            return;
         }
+
+        if (string.IsNullOrWhiteSpace(cantidadEntry.Text) || !int.TryParse(cantidadEntry.Text, out int cantidad) || cantidad <= 0)
+        {
+            DisplayAlert("Advertencia", "Ingresa una cantidad válida.", "OK");
+            return;
+        }
+
+        productosSeleccionados.Add(productoSeleccionado.Id);
+
+        var productoLabel = new Label
+        {
+            Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad}",
+            FontSize = 14,
+            TextColor = Colors.Black,
+            Margin = new Thickness(0, 5, 0, 0)
+        };
+
+        productosSeleccionadosStack.Children.Add(productoLabel);
+
+        // Limpia el Entry después de añadir
+        cantidadEntry.Text = string.Empty;
     }
+
 
     private async void OnConcluirClicked(object sender, EventArgs e)
     {
