@@ -15,9 +15,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         private VentaGeneralRequestDTO venta;
 
-        public ImpresionPageViewModel(VentaGeneralRequestDTO venta)
+        public ImpresionPageViewModel(VentaGeneralRequestDTO venta, string fechaString)
         {
             this.venta = venta;
+
+            // Asigna la fecha a cada venta general en el DTO
+            if (DateTime.TryParseExact(fechaString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out var fecha))
+            {
+                foreach (var item in venta.Data)
+                {
+                    item.Fecha = fecha;
+                }
+            }
         }
 
         // Propiedad para mostrar el ticket en la vista previa
@@ -25,11 +34,20 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         // Comando para imprimir
         [RelayCommand]
-        private async Task ImprimirAsync()
+        private async Task ImprimirAsync(string fechaString)
         {
+            if (DateTime.TryParseExact(fechaString, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out var fecha))
+            {
+                foreach (var item in venta.Data)
+                {
+                    item.Fecha = fecha;
+                }
+            }
+
             string ticket = TicketFormatter.FormatearTicket(venta);
-            // Aquí llamas a tu servicio de impresión
             // await MiniPrinterService.ImprimirAsync(ticket);
         }
+
     }
+
 }

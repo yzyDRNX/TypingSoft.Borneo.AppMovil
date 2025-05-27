@@ -2,8 +2,11 @@
 {
     public class Settings
     {
-
-        public const string UrlBaseAPI = "http://192.168.1.66:5099/api/";
+#if ANDROID
+        public const string UrlBaseAPI = "https://192.168.1.242:45461/api/";
+#else
+        public const string UrlBaseAPI = "https://192.168.1.242:45461/api/";
+#endif
 
         public static string? UltimaDescripcionRuta { get; set; }
         public static Guid IdRuta { get; set; }

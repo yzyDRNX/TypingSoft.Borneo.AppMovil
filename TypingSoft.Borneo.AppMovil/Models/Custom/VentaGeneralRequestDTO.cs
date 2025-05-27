@@ -17,11 +17,26 @@ namespace TypingSoft.Borneo.AppMovil.Models.Custom
 
         public class VentaGeneral
         {
-        //    private Guid idRuta;
-        //public Guid IdRuta { get => idRuta; set => Set(ref idRuta, value); }
+            private Guid idRuta;
+            public Guid IdRuta
+            {
+                get => idRuta;
+                set => idRuta = value;
+            }
 
-        //private int vuelta;
-        //public int Vuelta { get => vuelta; set => Set(ref vuelta, value); }
+            private int vuelta;
+            public int Vuelta
+            {
+                get => vuelta;
+                set => vuelta = value;
+            }
+            private DateTime fecha;
+            public DateTime Fecha
+            {
+                get => fecha;
+                set => fecha = value;
+            }   
         }
+
     }
 }
