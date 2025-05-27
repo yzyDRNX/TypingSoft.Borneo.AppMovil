@@ -23,6 +23,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>();
             ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
             ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>();
+            ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
+            ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
 
         }
         #endregion
