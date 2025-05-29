@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TypingSoft.Borneo.AppMovil.Services;
 using ZXing.Net.Maui.Controls;
 
 namespace TypingSoft.Borneo.AppMovil
@@ -32,6 +33,8 @@ namespace TypingSoft.Borneo.AppMovil
             builder.Services.AddSingleton<Services.SeguridadService>();
             builder.Services.AddSingleton<Services.LocalDBService>();
             builder.Services.AddSingleton<Services.LocalDatabaseService>();
+            builder.Services.AddSingleton<SincronizacionService>();
+
 
             #endregion
 

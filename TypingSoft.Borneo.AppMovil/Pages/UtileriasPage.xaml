@@ -42,16 +42,29 @@
         </Grid>
 
         <!-- Blue title section -->
-        <Frame BackgroundColor="Black" 
-               Padding="10" 
-               HasShadow="False" 
-               CornerRadius="0">
-            <Label Text="INFORMACION DE VENTA" 
-                   TextColor="White" 
-                   FontSize="16" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center"/>
+        <Frame Padding="10" Margin="10" BorderColor="Gray" CornerRadius="5">
+            <StackLayout>
+                <Label Text="Cliente:" FontAttributes="Bold"/>
+                <Label Text="{Binding VentaActual.NombreCliente}" />
+
+                <Label Text="Productos:" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <CollectionView ItemsSource="{Binding VentaActual.Productos}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Nombre}" />
+                                <Label Text="{Binding Cantidad, StringFormat=' x {0}'}" Margin="10,0,0,0"/>
+                                <Label Text="{Binding Precio, StringFormat=' - ${0:F2}'}" Margin="10,0,0,0"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Total:" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <Label Text="{Binding VentaActual.Total, StringFormat='${0:F2}'}" />
+            </StackLayout>
         </Frame>
+
 
         <!-- Empty space -->
         <BoxView HeightRequest="100" 

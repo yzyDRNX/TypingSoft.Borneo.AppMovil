@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TypingSoft.Borneo.AppMovil.Models.Custom;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -16,7 +17,16 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 OnPropertyChanged();
             }
         }
-
+        private VentaGeneralRequestDTO _ventaActual;
+        public VentaGeneralRequestDTO VentaActual
+        {
+            get => _ventaActual;
+            set
+            {
+                _ventaActual = value;
+                OnPropertyChanged();
+            }
+        }
         public UtileriasPageViewModel()
         {
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");

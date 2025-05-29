@@ -2,15 +2,13 @@
 
 namespace TypingSoft.Borneo.AppMovil.Local
 {
-    [Table("Empleados")]
-    public class EmpleadoLocal
+    public class RutaLocal
     {
         [PrimaryKey]
         [AutoIncrement]
         [Column("Id")]
         public Guid Id { get; set; }
-        [Column("Empleado")]
-        public string? Empleado { get; set; }
-        
+        [Column("Descripcion")]
+        public string? Descripcion { get; set; }
     }
 }

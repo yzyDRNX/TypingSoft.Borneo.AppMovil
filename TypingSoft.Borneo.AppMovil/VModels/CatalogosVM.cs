@@ -66,32 +66,70 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 // Llamada a la API
                 var (exitoso, mensaje, listaEmpleados) = await _catalogos.ObtenerEmpleados();
 
-                if (exitoso)
+                if (exitoso && listaEmpleados != null && listaEmpleados.Any())
                 {
                     // Actualiza la UI
                     ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(listaEmpleados);
 
                     // Convierte y guarda en SQLite
                     var empleadosLocales = listaEmpleados
-                        .Select(e => new Local.EmpleadoLocal { Id = e.Id, Nombre = e.Empleado })
+                        .Select(e => new Local.EmpleadoLocal
+                        {
+                            Id = e.Id,
+                            Empleado = e.Empleado
+                            // Si tienes ApellidoPaterno y ApellidoMaterno, mapea aquí
+                        })
                         .ToList();
 
                     await _localDb.GuardarEmpleadosAsync(empleadosLocales);
                 }
                 else
                 {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener empleados.");
+                    // Si falla la API, intenta cargar desde SQLite
+                    var empleadosLocales = await _localDb.ObtenerEmpleadosAsync();
+                    if (empleadosLocales != null && empleadosLocales.Any())
+                    {
+                        ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(
+                            empleadosLocales.Select(e => new Models.Custom.EmpleadosLista
+                            {
+                                Id = e.Id,
+                                Empleado = e.Empleado // Ajusta si tienes más campos
+                            })
+                        );
+                        await MostrarAlertaAsync("Modo sin conexión", "Mostrando empleados locales.");
+                    }
+                    else
+                    {
+                        await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener empleados y no hay datos locales.");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                await MostrarAlertaAsync("Excepción", ex.Message);
+                // En caso de excepción, intenta cargar desde SQLite
+                var empleadosLocales = await _localDb.ObtenerEmpleadosAsync();
+                if (empleadosLocales != null && empleadosLocales.Any())
+                {
+                    ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(
+                        empleadosLocales.Select(e => new Models.Custom.EmpleadosLista
+                        {
+                            Id = e.Id,
+                            Empleado = e.Empleado // Ajusta si tienes más campos
+                        })
+                    );
+                    await MostrarAlertaAsync("Modo sin conexión", "Mostrando empleados locales.");
+                }
+                else
+                {
+                    await MostrarAlertaAsync("Excepción", ex.Message + "\nNo hay datos locales.");
+                }
             }
             finally
             {
                 Procesando = false;
             }
         }
+
 
 
         public async Task ObtenerClientesAsync()
@@ -110,19 +148,56 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
                     // Convierte y guarda en SQLite
                     var clientesLocales = listaClientes
-                        .Select(c => new Local.ClienteLocal { IdCliente = c.IdCliente, IdClienteAsociado = c.IdClienteAsociado, Cliente = c.Cliente })
+                        .Select(c => new Local.ClienteLocal
+                        {
+                            IdCliente = c.IdCliente,
+                            IdClienteAsociado = c.IdClienteAsociado,
+                            Cliente = c.Cliente
+                        })
                         .ToList();
 
                     await _localDb.GuardarClientesAsync(clientesLocales);
+
                 }
                 else
                 {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener clientes.");
+                    var clientesLocales = await _localDb.ObtenerClientesAsync();
+                    if (clientesLocales != null && clientesLocales.Any())
+                    {
+                        ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
+                            clientesLocales.Select(c => new Models.Custom.ClientesLista
+                            {
+                                IdCliente = c.IdCliente,
+                                IdClienteAsociado = c.IdClienteAsociado,
+                                Cliente = c.Cliente
+                            })
+                        );
+                        await MostrarAlertaAsync("Modo sin conexión", "Mostrando clientes locales.");
+                    }
+                    else
+                    {
+                        await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener clientes y no hay datos locales.");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                await MostrarAlertaAsync("Excepción", ex.Message);
+                var clientesLocales = await _localDb.ObtenerClientesAsync();
+                if (clientesLocales != null && clientesLocales.Any())
+                {
+                    ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
+                        clientesLocales.Select(c => new Models.Custom.ClientesLista
+                        {
+                            IdCliente = c.IdCliente,
+                            IdClienteAsociado = c.IdClienteAsociado,
+                            Cliente = c.Cliente
+                        })
+                    );
+                }
+                else
+                {
+                    await MostrarAlertaAsync("Excepción", ex.Message + "\nNo hay datos locales.");
+                }
             }
             finally
             {

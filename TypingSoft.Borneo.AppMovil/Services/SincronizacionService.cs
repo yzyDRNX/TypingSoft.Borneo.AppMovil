@@ -1,60 +1,146 @@
-﻿// Services/SincronizacionService.cs
-using TypingSoft.Borneo.AppMovil.Models.API;
-using SQLite;
-using Newtonsoft.Json;
+﻿using TypingSoft.Borneo.AppMovil.BL;
+using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Services;
+using TypingSoft.Borneo.AppMovil.Helpers;
+using System.Threading.Tasks;
+using System.Linq;
 
-public class SincronizacionService
+namespace TypingSoft.Borneo.AppMovil.Services
 {
-    private readonly HttpClient _http;
-    private readonly SQLiteAsyncConnection _db;
-
-    public SincronizacionService()
+    public class SincronizacionService
     {
-        _http = new HttpClient();
-        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "borneo.db3");
-        _db = new SQLiteAsyncConnection(dbPath);
-        _db.CreateTableAsync<ClientesLocal>().Wait();
-    }
+        private readonly CatalogosBL _catalogos;
+        private readonly LocalDatabaseService _localDb;
 
-    public async Task DescargarClientesDesdeApi(Guid idRuta)
-    {
-        try
+        public SincronizacionService(CatalogosBL catalogos, LocalDatabaseService localDb)
         {
-            var url = $"https://localhost/api/Catalogos/ObtenerClientes?IdRuta={idRuta}";
-            var response = await _http.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
+            _catalogos = catalogos;
+            _localDb = localDb;
+        }
+        public async Task SincronizarCatalogosAsync()
+        {
+            // Empleados
+            var resultadoEmp = await _catalogos.ObtenerEmpleados();
+            if (resultadoEmp.Exitoso && resultadoEmp.Empleados != null)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var resultado = JsonConvert.DeserializeObject<ClientesResponse>(json);
-
-                foreach (var c in resultado.Data)
+                var empleadosLocales = resultadoEmp.Empleados.Select(e => new EmpleadoLocal
                 {
-                    var clienteLocal = new ClientesLocal
-                    {
-                        IdCliente = c.IdCliente,
-                        IdClienteAsociado = c.IdClienteAsociado,
-                        Cliente = c.Cliente
-                    };
-
-                    await _db.InsertOrReplaceAsync(clienteLocal);
+                    Id = e.Id,
+                    Empleado = e.Empleado
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarEmpleadosAsync(empleadosLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Empleados guardados: {empleadosLocales.Count}");
                 }
-
-                Console.WriteLine("Clientes sincronizados correctamente.");
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando empleados: {ex.Message}");
+                }
             }
-            else
+
+            // Clientes
+            var resultadoCli = await _catalogos.ObtenerClientes(Settings.IdRuta);
+            if (resultadoCli.Exitoso && resultadoCli.Clientes != null)
             {
-                Console.WriteLine($"Error al obtener clientes: {response.StatusCode}");
+                var clientesLocales = resultadoCli.Clientes.Select(c => new ClienteLocal
+                {
+                    IdCliente = c.IdCliente,
+                    IdClienteAsociado = c.IdClienteAsociado,
+                    Cliente = c.Cliente
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarClientesAsync(clientesLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Clientes guardados: {clientesLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando clientes: {ex.Message}");
+                }
+            }
+
+            // Productos
+            var (exitosoProd, mensajeProd, productos) = await _catalogos.ObtenerProductos();
+            if (exitosoProd && productos != null)
+            {
+                var productosLocales = productos.Select(p => new ProductoLocal
+                {
+                    Id = p.Id,
+                    Producto = p.Producto
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarProductosAsync(productosLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Productos guardados: {productosLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando productos: {ex.Message}");
+                }
+            }
+
+            // Formas
+            var (exitosoForm, mensajeForm, formas) = await _catalogos.ObtenerFormas();
+            if (exitosoForm && formas != null)
+            {
+                var formasLocales = formas.Select(f => new FormaLocal
+                {
+                    IdForma = f.IdForma,
+                    Forma = f.Forma
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarFormasAsync(formasLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Formas guardadas: {formasLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando formas: {ex.Message}");
+                }
+            }
+
+            // Condiciones
+            var (exitosoCond, mensajeCond, condiciones) = await _catalogos.ObtenerCondiciones();
+            if (exitosoCond && condiciones != null)
+            {
+                var condicionesLocales = condiciones.Select(c => new CondicionLocal
+                {
+                    IdCondicion = c.IdCondicion,
+                    Condicion = c.Condicion
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarCondicionesAsync(condicionesLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Condiciones guardadas: {condicionesLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando condiciones: {ex.Message}");
+                }
+            }
+
+            // Precios
+            var (exitosoPrec, mensajePrec, precios) = await _catalogos.ObtenerPrecios(Settings.IdClienteAsociado);
+            if (exitosoPrec && precios != null)
+            {
+                var preciosLocales = precios.Select(p => new PrecioLocal
+                {
+                    IdProducto = p.IdProducto,
+                    Producto = p.Producto,
+                    Precio = p.Precio.ToString()
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarPreciosAsync(preciosLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Precios guardados: {preciosLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios: {ex.Message}");
+                }
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
 
-    public async Task<List<ClientesLocal>> ObtenerClientesLocales()
-    {
-        return await _db.Table<ClientesLocal>().ToListAsync();
     }
 }
