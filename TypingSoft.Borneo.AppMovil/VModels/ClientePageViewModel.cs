@@ -6,31 +6,8 @@ using TypingSoft.Borneo.AppMovil.Services;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
-    public class UtileriasPageViewModel : INotifyPropertyChanged
+    public class ClientePageViewModel : INotifyPropertyChanged
     {
-        private string _fechaActual;
-        public string FechaActual
-        {
-            get => _fechaActual;
-            set
-            {
-                _fechaActual = value;
-                OnPropertyChanged();
-            }
-        }
-        private VentaGeneralRequestDTO _ventaActual;
-        public VentaGeneralRequestDTO VentaActual
-        {
-            get => _ventaActual;
-            set
-            {
-                _ventaActual = value;
-                OnPropertyChanged();
-            }
-        }
-
-        
-
         private string _descripcionRuta;
         public string DescripcionRuta
         {
@@ -42,10 +19,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        // En el constructor o método de inicialización:
-        public UtileriasPageViewModel()
+        public ClientePageViewModel() // <-- Corregido aquí
         {
-            FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
         }
 
@@ -54,8 +29,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var db = new LocalDatabaseService();
             DescripcionRuta = await db.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

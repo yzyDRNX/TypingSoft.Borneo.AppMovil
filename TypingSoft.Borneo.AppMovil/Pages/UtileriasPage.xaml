@@ -21,11 +21,12 @@
                    Grid.Column="0"
                    Margin="5,5,0,0"/>
 
-            <Label Text="EE-001." 
-                   TextColor="White" 
-                   Grid.Row="0" 
-                   Grid.Column="1"
-                   Margin="5,5,0,0"/>
+            <Label Text="{Binding DescripcionRuta}" 
+       TextColor="White" 
+       Grid.Row="0" 
+       Grid.Column="1"
+       Margin="5,5,0,0"/>
+
 
             <Label Text="Fecha" 
        TextColor="White" 

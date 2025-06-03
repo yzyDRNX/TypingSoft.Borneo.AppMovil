@@ -15,10 +15,31 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Text="Unidad." TextColor="White" Grid.Row="0" Grid.Column="0" Margin="5,5,0,0"/>
-            <Label Text="EE-001." TextColor="White" Grid.Row="0" Grid.Column="1" Margin="5,5,0,0"/>
-            <Label Text="Fecha." TextColor="White" Grid.Row="1" Grid.Column="0" Margin="5,0,0,5"/>
-            <Label Text="01- Octubre - 2017" TextColor="White" Grid.Row="1" Grid.Column="1" Margin="5,0,0,5"/>
+            <Label Text="Unidad" 
+            TextColor="White" 
+            Grid.Row="0" 
+            Grid.Column="0"
+            Margin="5,5,0,0"/>
+
+            <Label Text="{Binding DescripcionRuta}" 
+TextColor="White" 
+Grid.Row="0" 
+Grid.Column="1"
+Margin="5,5,0,0"/>
+
+
+            <Label Text="Fecha" 
+TextColor="White" 
+Grid.Row="1" 
+Grid.Column="0"
+Margin="5,0,0,5"/>
+
+            <Label Text="{Binding FechaActual}" 
+TextColor="White" 
+Grid.Row="1" 
+Grid.Column="1"
+Margin="5,0,0,5"/>
+
         </Grid>
 
         <!-- Blue title section -->

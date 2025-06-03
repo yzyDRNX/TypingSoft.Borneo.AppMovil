@@ -14,6 +14,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         private readonly BL.CatalogosBL _catalogos;
         private readonly LocalDatabaseService _localDb;
 
+
         public CatalogosVM(BL.CatalogosBL catalogos, LocalDatabaseService localDb)
         {
             _catalogos = catalogos;
@@ -26,10 +27,19 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
             ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
 
+            fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
+            _ = CargarDescripcionRutaAsync();
         }
+
         #endregion
 
         #region Propiedades observables
+        [ObservableProperty]
+        string fechaActual;
+
+        [ObservableProperty]
+        string descripcionRuta;
+
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
 
@@ -54,6 +64,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         #endregion
 
         #region Métodos
+
+        private async Task CargarDescripcionRutaAsync()
+        {
+            var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+            System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
+            DescripcionRuta = descripcion;
+        }
 
 
         public async Task ObtenerEmpleadosAsync()

@@ -27,6 +27,13 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.DeleteAllAsync<RutaLocal>();
             await _database.InsertAsync(ruta);
         }
+        public async Task<string?> ObtenerDescripcionRutaAsync()
+        {
+            var ruta = await ObtenerRutaAsync();
+            return ruta?.Descripcion;
+        }
+
+
 
         // Método para obtener la ruta guardada
         public async Task<RutaLocal?> ObtenerRutaAsync()

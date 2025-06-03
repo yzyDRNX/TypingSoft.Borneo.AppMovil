@@ -2,7 +2,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages;
 
 public partial class MenuPage : ContentPage
 {
-	public MenuPage()
+    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
+    public MenuPage()
 	{
 		InitializeComponent();
 	}
