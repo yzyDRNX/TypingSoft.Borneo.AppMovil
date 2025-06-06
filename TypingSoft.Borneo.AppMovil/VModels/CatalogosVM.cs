@@ -73,13 +73,14 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         }
 
 
+        [RelayCommand]
         public async Task ObtenerEmpleadosAsync()
         {
+            MensajeProcesando = "Cargando Empleados...";
+            Procesando = true;
+
             try
             {
-                MensajeProcesando = "Cargando Empleados";
-                Procesando = true;
-
                 // Llamada a la API
                 var (exitoso, mensaje, listaEmpleados) = await _catalogos.ObtenerEmpleados();
 
@@ -94,52 +95,22 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                         {
                             Id = e.Id,
                             Empleado = e.Empleado
-                            // Si tienes ApellidoPaterno y ApellidoMaterno, mapea aquí
+                            // Agrega más campos si tu modelo local tiene más
                         })
                         .ToList();
 
                     await _localDb.GuardarEmpleadosAsync(empleadosLocales);
+
+                    MensajeProcesando = "Empleados actualizados desde servidor.";
                 }
                 else
                 {
-                    // Si falla la API, intenta cargar desde SQLite
-                    var empleadosLocales = await _localDb.ObtenerEmpleadosAsync();
-                    if (empleadosLocales != null && empleadosLocales.Any())
-                    {
-                        ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(
-                            empleadosLocales.Select(e => new Models.Custom.EmpleadosLista
-                            {
-                                Id = e.Id,
-                                Empleado = e.Empleado // Ajusta si tienes más campos
-                            })
-                        );
-                        await MostrarAlertaAsync("Modo sin conexión", "Mostrando empleados locales.");
-                    }
-                    else
-                    {
-                        await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener empleados y no hay datos locales.");
-                    }
+                    await CargarEmpleadosDesdeLocal("Fallo al obtener empleados del servidor.");
                 }
             }
             catch (Exception ex)
             {
-                // En caso de excepción, intenta cargar desde SQLite
-                var empleadosLocales = await _localDb.ObtenerEmpleadosAsync();
-                if (empleadosLocales != null && empleadosLocales.Any())
-                {
-                    ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(
-                        empleadosLocales.Select(e => new Models.Custom.EmpleadosLista
-                        {
-                            Id = e.Id,
-                            Empleado = e.Empleado // Ajusta si tienes más campos
-                        })
-                    );
-                    await MostrarAlertaAsync("Modo sin conexión", "Mostrando empleados locales.");
-                }
-                else
-                {
-                    await MostrarAlertaAsync("Excepción", ex.Message + "\nNo hay datos locales.");
-                }
+                await CargarEmpleadosDesdeLocal($"Error inesperado: {ex.Message}");
             }
             finally
             {
@@ -147,23 +118,55 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
+        private async Task CargarEmpleadosDesdeLocal(string mensajeError)
+        {
+            var empleadosLocales = await _localDb.ObtenerEmpleadosAsync();
+
+            if (empleadosLocales != null && empleadosLocales.Any())
+            {
+                ListadoEmpleados = new ObservableCollection<Models.Custom.EmpleadosLista>(
+                    empleadosLocales.Select(e => new Models.Custom.EmpleadosLista
+                    {
+                        Id = e.Id,
+                        Empleado = e.Empleado
+                        // Ajusta aquí si usas más campos como Apellidos, etc.
+                    })
+                );
+                await MostrarAlertaAsync("Modo sin conexión", "Mostrando empleados locales.");
+            }
+            else
+            {
+                await MostrarAlertaAsync("Error", mensajeError + "\nNo hay datos locales disponibles.");
+            }
+        }
 
 
+
+        [RelayCommand]
         public async Task ObtenerClientesAsync()
         {
+            MensajeProcesando = "Cargando Clientes...";
+            Procesando = true;
+
             try
             {
-                MensajeProcesando = "Cargando Clientes";
-                Procesando = true;
-
+                // Revisar idRuta válido en Settings
                 Guid idRuta = Helpers.Settings.IdRuta;
+                if (idRuta == Guid.Empty)
+                {
+                    // Si no hay ruta en Settings, paso directamente al modo offline
+                    await CargarClientesDesdeLocal();
+                    return;
+                }
+
+                // llamar a la API
                 var (exitoso, mensaje, listaClientes) = await _catalogos.ObtenerClientes(idRuta);
 
-                if (exitoso)
+                if (exitoso && listaClientes != null)
                 {
                     ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(listaClientes);
 
-                    // Convierte y guarda en SQLite
+                    // Guardar en SQLite, poblando la entidad local
                     var clientesLocales = listaClientes
                         .Select(c => new Local.ClienteLocal
                         {
@@ -175,46 +178,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
                     await _localDb.GuardarClientesAsync(clientesLocales);
 
+                    MensajeProcesando = "Clientes actualizados desde servidor.";
                 }
                 else
                 {
-                    var clientesLocales = await _localDb.ObtenerClientesAsync();
-                    if (clientesLocales != null && clientesLocales.Any())
-                    {
-                        ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
-                            clientesLocales.Select(c => new Models.Custom.ClientesLista
-                            {
-                                IdCliente = c.IdCliente,
-                                IdClienteAsociado = c.IdClienteAsociado,
-                                Cliente = c.Cliente
-                            })
-                        );
-                        await MostrarAlertaAsync("Modo sin conexión", "Mostrando clientes locales.");
-                    }
-                    else
-                    {
-                        await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener clientes y no hay datos locales.");
-                    }
+                    // Si la API no devolvió datos (exitoso == false o lista == null), voy a offline
+                    await CargarClientesDesdeLocal();
                 }
             }
             catch (Exception ex)
             {
-                var clientesLocales = await _localDb.ObtenerClientesAsync();
-                if (clientesLocales != null && clientesLocales.Any())
-                {
-                    ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
-                        clientesLocales.Select(c => new Models.Custom.ClientesLista
-                        {
-                            IdCliente = c.IdCliente,
-                            IdClienteAsociado = c.IdClienteAsociado,
-                            Cliente = c.Cliente
-                        })
-                    );
-                }
-                else
-                {
-                    await MostrarAlertaAsync("Excepción", ex.Message + "\nNo hay datos locales.");
-                }
+                // Si ocurrió cualquier excepción voy a offline
+                await CargarClientesDesdeLocal();
             }
             finally
             {
@@ -222,40 +197,103 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
+        private async Task CargarClientesDesdeLocal()
+        {
+            // Obtengo el IdRuta que guardé previamente en BD local
+            Guid? idRutaLocal = await _localDb.ObtenerIdRutaAsync();
+            if (!idRutaLocal.HasValue || idRutaLocal.Value == Guid.Empty)
+            {
+                await MostrarAlertaAsync("Advertencia", "No hay ruta local válida.");
+                return;
+            }
+
+            // Recupero sólo los clientes de esa ruta
+            var clientesLocales = await _localDb.ObtenerClientesAsync(idRutaLocal.Value);
+            if (clientesLocales != null && clientesLocales.Any())
+            {
+                ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
+                    clientesLocales.Select(c => new Models.Custom.ClientesLista
+                    {
+                        IdCliente = c.IdCliente,
+                        IdClienteAsociado = c.IdClienteAsociado,
+                        Cliente = c.Cliente
+                    })
+                );
+                await MostrarAlertaAsync("Modo sin conexión", "Mostrando clientes locales.");
+            }
+            else
+            {
+                await MostrarAlertaAsync("Advertencia", "No hay datos locales.");
+            }
+        }
+
+        [RelayCommand]
         public async Task ObtenerProductosAsync()
         {
+            MensajeProcesando = "Cargando Productos...";
+            Procesando = true;
+
             try
             {
-                MensajeProcesando = "Cargando Productos";
-                Procesando = true;
-
+                // Llamada a la API
                 var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos();
 
-                if (exitoso)
+                if (exitoso && listaProductos != null)
                 {
                     ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>(listaProductos);
 
-                    // Convierte y guarda en SQLite
+                    // Convertir a entidad local y guardar en SQLite
                     var productosLocales = listaProductos
-                        .Select(p => new Local.ProductoLocal { Id = p.Id, Producto = p.Producto })
+                        .Select(p => new Local.ProductoLocal
+                        {
+                            Id = p.Id,
+                            Producto = p.Producto
+                        })
                         .ToList();
 
                     await _localDb.GuardarProductosAsync(productosLocales);
+
+                    MensajeProcesando = "Productos actualizados desde servidor.";
                 }
                 else
                 {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener productos.");
+                    // Si falla la API o devuelve vacío, carga local
+                    await CargarProductosDesdeLocal();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                await MostrarAlertaAsync("Excepción", ex.Message);
+                // En caso de error, cargar productos desde almacenamiento local
+                await CargarProductosDesdeLocal();
             }
             finally
             {
                 Procesando = false;
             }
         }
+
+        private async Task CargarProductosDesdeLocal()
+        {
+            var productosLocales = await _localDb.ObtenerProductosAsync();
+
+            if (productosLocales != null && productosLocales.Any())
+            {
+                ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>(
+                    productosLocales.Select(p => new Models.Custom.ProductosLista
+                    {
+                        Id = p.Id,
+                        Producto = p.Producto
+                    })
+                );
+                await MostrarAlertaAsync("Modo sin conexión", "Mostrando productos locales.");
+            }
+            else
+            {
+                await MostrarAlertaAsync("Advertencia", "No hay productos locales disponibles.");
+            }
+        }
+
+
 
         public async Task ObtenerFormasAsync()
         {
@@ -364,7 +402,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         }
 
         [RelayCommand]
-        async Task Surtir(Models.Custom.ClientesLista cliente)
+        public async Task Surtir(Models.Custom.ClientesLista cliente)
         {
             if (cliente != null && !ClientesASurtir.Contains(cliente))
             {

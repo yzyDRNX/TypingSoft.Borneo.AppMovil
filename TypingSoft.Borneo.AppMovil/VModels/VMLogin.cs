@@ -47,7 +47,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                     // Guardar en SQLite
                     var rutaLocal = new Local.RutaLocal
                     {
-                        Id = Guid.NewGuid(),
+                        Id = rutaObj.Id,
                         Descripcion = rutaObj.Descripcion
                     };
                     await _localDb.GuardarRutaAsync(rutaLocal);
@@ -86,6 +86,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 var rutaLocal = await _localDb.ObtenerRutaAsync();
                 if (rutaLocal != null && !string.IsNullOrEmpty(rutaLocal.Descripcion))
                 {
+                    Helpers.Settings.IdRuta = rutaLocal.Id;
                     Helpers.Settings.UltimaDescripcionRuta = rutaLocal.Descripcion;
                     await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
                     MensajeProcesando = "Modo sin conexión: usando ruta local.";

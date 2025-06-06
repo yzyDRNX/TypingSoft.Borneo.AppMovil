@@ -23,7 +23,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task<(HttpStatusCode StatusCode, Models.API.CondicionesResponse Respuesta)> ObtenerCondiciones() => await CallGetAsync<Models.API.CondicionesResponse>("ObtenerCondiciones");
 
-        public async Task<(HttpStatusCode StatusCode, Models.API.PreciosResponse Respuesta)> ObtenerPrecios(Guid IdClienteAsociado) => await CallGetAsync<Models.API.PreciosResponse>($"ObtenerCondiciones/{IdClienteAsociado}");
+        public async Task<(HttpStatusCode StatusCode, Models.API.PreciosResponse Respuesta)> ObtenerPrecios(Guid IdClienteAsociado) => await CallGetAsync<Models.API.PreciosResponse>($"ObtenerPrecios/{IdClienteAsociado}");
         #endregion
     }
 }

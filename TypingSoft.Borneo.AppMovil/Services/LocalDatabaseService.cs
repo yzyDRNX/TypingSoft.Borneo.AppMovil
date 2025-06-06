@@ -33,6 +33,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return ruta?.Descripcion;
         }
 
+        public async Task<Guid?> ObtenerIdRutaAsync()
+        {
+            var ruta = await ObtenerRutaAsync();
+            return ruta?.Id;
+        }
+
+
+
 
 
         // Método para obtener la ruta guardada
@@ -51,25 +59,19 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return await _database.Table<EmpleadoLocal>().ToListAsync();
         }
 
+
         public async Task GuardarClientesAsync(List<ClienteLocal> clientes)
         {
-            if (clientes == null || clientes.Count == 0)
-            {
-                System.Diagnostics.Debug.WriteLine("No hay clientes para guardar.");
-                return;
-            }
             await _database.DeleteAllAsync<ClienteLocal>();
             await _database.InsertAllAsync(clientes);
-            System.Diagnostics.Debug.WriteLine($"Clientes guardados en SQLite: {clientes.Count}");
         }
 
 
 
-        public async Task<List<ClienteLocal>> ObtenerClientesAsync()
+
+        public async Task<List<ClienteLocal>> ObtenerClientesAsync(Guid idrutaLocal)
         {
-            var lista = await _database.Table<ClienteLocal>().ToListAsync();
-            System.Diagnostics.Debug.WriteLine($"Clientes leídos de SQLite: {lista.Count}");
-            return lista;
+            return await _database.Table<ClienteLocal>().ToListAsync();
         }
 
 

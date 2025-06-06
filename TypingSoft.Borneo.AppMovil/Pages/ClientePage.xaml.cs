@@ -1,4 +1,4 @@
-using Microsoft.Maui.Controls;
+ï»¿using Microsoft.Maui.Controls;
 using System;
 using TypingSoft.Borneo.AppMovil.Models.API;
 
@@ -45,14 +45,14 @@ public partial class ClientePage : ContentPage
         var catalogosService = new Services.CatalogosService();
         var catalogosBL = new BL.CatalogosBL(catalogosService);
 
-        // Creamos también la instancia de la BD local
+        // Creamos tambiÃ©n la instancia de la BD local
         var localDb = new Services.LocalDatabaseService();
 
         // Le pasamos ambos al VM
         this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
     }
 
-    private async void OnAñadirClienteClicked(object sender, EventArgs e)
+    private async void OnAÃ±adirClienteClicked(object sender, EventArgs e)
     {
         var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
         var clienteSeleccionado = clientesPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Models.Custom.ClientesLista;
@@ -63,24 +63,22 @@ public partial class ClientePage : ContentPage
             return;
         }
 
-        // Si ya hay un cliente en la lista, no se permite añadir otro
         if (vm.ClientesASurtir.Count > 0)
         {
-            await DisplayAlert("Aviso", "Solo puedes añadir un cliente a la vez.", "OK");
+            await DisplayAlert("Aviso", "Solo puedes aÃ±adir un cliente a la vez.", "OK");
             return;
         }
 
-        // Si el cliente ya está añadido, no se agrega de nuevo
         if (vm.ClientesASurtir.Contains(clienteSeleccionado))
         {
-            await DisplayAlert("Aviso", "Este cliente ya fue añadido.", "OK");
+            await DisplayAlert("Aviso", "Este cliente ya fue aÃ±adido.", "OK");
             return;
         }
 
-        // Añadir el cliente
-        vm.ClientesASurtir.Add(clienteSeleccionado);
-
+        // âœ… Invoca el mÃ©todo Surtir del ViewModel
+        await vm.Surtir(clienteSeleccionado);
     }
+
 
     private async void OnRepartoClicked(object sender, EventArgs e)
     {
@@ -92,7 +90,7 @@ public partial class ClientePage : ContentPage
             return;
         }
 
-        // Si hay al menos un cliente, procede a la siguiente página
+        // Si hay al menos un cliente, procede a la siguiente pÃ¡gina
         await Navigation.PushAsync(new RepartoPage());
     }
 
