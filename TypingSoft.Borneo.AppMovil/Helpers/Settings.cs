@@ -3,9 +3,9 @@
     public class Settings
     {
 #if ANDROID
-        public const string UrlBaseAPI = "https://192.168.1.242:45456/api/";
+        public const string UrlBaseAPI = "https://192.168.100.7:45455/api/";
 #else
-        public const string UrlBaseAPI = "https://192.168.1.242:45456/api/";
+        public const string UrlBaseAPI = "https://192.168.100.7:45455/api/";
 #endif
 
         public static string? UltimaDescripcionRuta { get; set; }
