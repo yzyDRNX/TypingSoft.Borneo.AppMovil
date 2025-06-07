@@ -19,16 +19,24 @@ public partial class UtileriasPage : ContentPage
     VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
     private async void Impresion(object sender, EventArgs e)
     {
-        // Texto de prueba fijo
-        string textoPrueba = "¡Prueba de impresión RawBT!";
+        var vm = BindingContext as UtileriasPageViewModel;
+        //if (vm?.VentaActual == null)
+        //{
+        //    await DisplayAlert("Error", "No hay venta para imprimir.", "OK");
+        //    return;
+        //}
+
+        // Genera el texto del ticket usando tu clase de formato
+        string ticket = TicketFormatter.FormatearTicket(vm.VentaActual);
 
         // Obtén el servicio de impresión
         var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
         if (printer != null)
-            await printer.PrintTextAsync(textoPrueba);
+            await printer.PrintTextAsync(ticket);
         else
             await DisplayAlert("Error", "No se encontró el servicio de impresión.", "OK");
     }
+
 
     //private async void Impresion(object sender, EventArgs e)
     //{
