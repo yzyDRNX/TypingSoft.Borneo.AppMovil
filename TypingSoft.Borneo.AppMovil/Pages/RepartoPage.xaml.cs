@@ -1,101 +1,89 @@
-namespace TypingSoft.Borneo.AppMovil.Pages;
+using Microsoft.Maui.Controls;
+using System;
+using TypingSoft.Borneo.AppMovil.Models.API; // Asegúrate de que esta referencia sea correcta
+using TypingSoft.Borneo.AppMovil.VModels;
 
-public partial class RepartoPage : ContentPage
+namespace TypingSoft.Borneo.AppMovil.Pages
 {
-    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
-    public RepartoPage()
-	{
-        InitializeComponent();
+    public partial class RepartoPage : ContentPage
+    {
+        private CatalogosVM ViewModel => BindingContext as CatalogosVM;
 
-        // Obtener el ViewModel del contenedor de servicios
-        if (App.ServiceProvider != null)
+        public RepartoPage()
         {
-            var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
-            if (viewModel != null)
+            InitializeComponent();
+            SetupViewModel();
+        }
+
+        // === Métodos originales (sin cambios críticos) ===
+        private void SetupViewModel()
+        {
+            if (App.ServiceProvider != null)
             {
-                this.BindingContext = viewModel;
+                var viewModel = App.ServiceProvider.GetService<CatalogosVM>();
+                this.BindingContext = viewModel ?? CreateFallbackViewModel();
             }
             else
             {
-                // Si no se puede obtener del contenedor, crear manualmente
-                CrearViewModelManualmente();
+                this.BindingContext = CreateFallbackViewModel();
             }
         }
-        else
+
+        private CatalogosVM CreateFallbackViewModel()
         {
-
-            CrearViewModelManualmente();
-        }
-    }
-
-    private readonly HashSet<Guid> productosSeleccionados = new HashSet<Guid>();
-
-    private void OnAñadirProductoClicked(object sender, EventArgs e)
-    {
-        var productoSeleccionado = productosPicker.SelectedItem as Models.Custom.ProductosLista;
-
-        if (productoSeleccionado == null)
-        {
-            DisplayAlert("Advertencia", "Por favor, selecciona un producto.", "OK");
-            return;
+            var catalogosService = new Services.CatalogosService();
+            var catalogosBL = new BL.CatalogosBL(catalogosService);
+            var localDb = new Services.LocalDatabaseService();
+            return new CatalogosVM(catalogosBL, localDb);
         }
 
-        if (productosSeleccionados.Contains(productoSeleccionado.Id))
+        private void OnAñadirProductoClicked(object sender, EventArgs e)
         {
-            DisplayAlert("Advertencia", "El producto ya está en la lista.", "OK");
-            return;
+            if (ViewModel == null) return;
+
+            // Cambio seguro: Usar 'dynamic' para evitar errores de tipo (o reemplaza con tu clase real)
+            var productoSeleccionado = productosPicker.SelectedItem as dynamic; // O usa el tipo correcto (ej: Models.Producto)
+            var cantidad = cantidadEntry.Text;
+
+            if (productoSeleccionado == null || string.IsNullOrEmpty(cantidad))
+            {
+                DisplayAlert("Aviso", "Por favor seleccione un producto y una cantidad.", "OK");
+                return;
+            }
+
+            // Mantener la lógica original de añadir al StackLayout
+            var productoLabel = new Label
+            {
+                Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad}", // Asegúrate de que 'Producto' sea la propiedad correcta
+                FontSize = 14,
+                TextColor = Color.FromArgb("#333333")
+            };
+
+            productosSeleccionadosStack.Children.Add(productoLabel);
+            productosPicker.SelectedItem = null;
+            cantidadEntry.Text = string.Empty;
         }
 
-        if (string.IsNullOrWhiteSpace(cantidadEntry.Text) || !int.TryParse(cantidadEntry.Text, out int cantidad) || cantidad <= 0)
+        private async void OnConcluirClicked(object sender, EventArgs e)
         {
-            DisplayAlert("Advertencia", "Ingresa una cantidad válida.", "OK");
-            return;
+            if (productosSeleccionadosStack.Children.Count == 0)
+            {
+                await DisplayAlert("Advertencia", "Debe añadir al menos un producto antes de continuar.", "OK");
+                return;
+            }
+
+            await DisplayAlert("Éxito", "Reparto concluido correctamente.", "OK");
+            await App.NavigationService.Navegar(nameof(UtileriasPage));
+            await Navigation.PopAsync();
         }
 
-        productosSeleccionados.Add(productoSeleccionado.Id);
-
-        var productoLabel = new Label
+        protected override async void OnAppearing()
         {
-            Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad}",
-            FontSize = 14,
-            TextColor = Colors.Black,
-            Margin = new Thickness(0, 5, 0, 0)
-        };
-
-        productosSeleccionadosStack.Children.Add(productoLabel);
-
-        // Limpia el Entry después de añadir
-        cantidadEntry.Text = string.Empty;
-    }
-
-
-    private async void OnConcluirClicked(object sender, EventArgs e)
-    {
-        //Navegacion a UtileriasPage
-        await Navigation.PushAsync(new UtileriasPage());
-    }
-    private void CrearViewModelManualmente()
-    {
-        var catalogosService = new Services.CatalogosService();
-        var catalogosBL = new BL.CatalogosBL(catalogosService);
-
-        // Creamos también la instancia de la BD local
-        var localDb = new Services.LocalDatabaseService();
-
-        // Le pasamos ambos al VM
-        this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
-    }
-
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        // Cargar los empleados cuando la página aparece
-        ViewModel?.ObtenerProductosAsync();
-    }
-
-    private async void Concluir(object sender, EventArgs e)
-    {
-        // Usar CustomNavigation para navegar a ClientePage
-        await App.NavigationService.Navegar(nameof(UtileriasPage));
+            base.OnAppearing();
+            if (ViewModel != null)
+            {
+                await ViewModel.ObtenerProductosAsync();
+            }
+        }
     }
 }

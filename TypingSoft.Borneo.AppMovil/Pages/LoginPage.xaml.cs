@@ -1,9 +1,11 @@
-using ZXing.Net.Maui;
+Ôªøusing ZXing.Net.Maui;
+
 namespace TypingSoft.Borneo.AppMovil.Pages;
 
 public partial class LoginPage : ContentPage
 {
     VModels.LoginVM ViewModel => this.BindingContext as VModels.LoginVM;
+
     public LoginPage()
     {
         InitializeComponent();
@@ -15,60 +17,106 @@ public partial class LoginPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        //this.ViewModel.Ruta = string.Empty;
-   
     }
-protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
-{
-    // Procesar solo el primer cÛdigo detectado
-    var firstBarcode = e.Results.FirstOrDefault();
-    if (firstBarcode != null)
-    {
-        Console.WriteLine($"Barcodes: {firstBarcode.Format} -> {firstBarcode.Value}");
-
-        // Mostrar un mensaje al usuario
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            await DisplayAlert("CÛdigo QR leÌdo", $"Valor: {firstBarcode.Value}","Es su Ruta?", "OK");
-            await ViewModel.AutenticarRuta();
-        });
-
-        // Asignar el valor al ViewModel
-        ViewModel.Ruta = firstBarcode.Value;
-
-        // Detener la c·mara despuÈs de leer el primer cÛdigo
-        StopCamera();
-    }
-}
-
-
-
 
     private async void OnLoginButtonClicked(object sender, EventArgs e)
     {
-        // Solicitar permisos de c·mara
         var status = await Permissions.RequestAsync<Permissions.Camera>();
         if (status == PermissionStatus.Granted)
         {
-            // Activa la c·mara al hacer visible el control
             cameraBarcodeReaderView.IsVisible = true;
         }
         else
         {
-            await DisplayAlert("Permiso denegado", "Se requiere acceso a la c·mara para escanear el cÛdigo QR.", "OK");
+            await DisplayAlert("Permiso denegado", "Se requiere acceso a la c√°mara para escanear el c√≥digo QR.", "OK");
         }
     }
+
     private void StopCamera()
     {
-        // Ocultar el control para detener la c·mara
         cameraBarcodeReaderView.IsVisible = false;
-
-        // Desactivar el evento para evitar lecturas adicionales
         cameraBarcodeReaderView.BarcodesDetected -= BarcodesDetected;
+    }
 
-        // Si el control tiene un mÈtodo para liberar recursos, ll·malo aquÌ
-        // Esto depende de la implementaciÛn de ZXing.Net.Maui
+    private async void OnPageAppearing(object sender, EventArgs e)
+    {
+        MainLayout.Opacity = 0;
+        MainLayout.Scale = 0.8;
+
+        await MainLayout.FadeTo(1, 500, Easing.CubicInOut);
+        await MainLayout.ScaleTo(1, 300, Easing.CubicOut);
+    }
+
+    protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    {
+        var firstBarcode = e.Results.FirstOrDefault();
+        if (firstBarcode != null)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                ViewModel.Ruta = firstBarcode.Value;
+                await DisplayAlert("C√≥digo QR le√≠do", $"Valor: {firstBarcode.Value}", "OK");
+
+                await MostrarModalCarga(async () =>
+                {
+                    await ViewModel.AutenticarRuta();
+                });
+            });
+
+            StopCamera();
+        }
+    }
+    private async void OnManualLoginClicked(object sender, EventArgs e)
+    {
+        string ruta = ViewModel?.Ruta?.Trim();
+
+        await MostrarModalCarga(async () =>
+        {
+            // Mostrar "Verificando..." mientras se ejecuta
+            LoadingLabel.Text = "Verificando...";
+            LoadingIndicator.IsRunning = true;
+
+            // Ejecutar el comando original sin l√≥gica adicional
+            if (ViewModel.AutenticarRutaCommand?.CanExecute(null) == true)
+            {
+                ViewModel.AutenticarRutaCommand.Execute(null);
+
+                // Esperar un poco por est√©tica
+                await Task.Delay(1000);
+
+                LoadingLabel.Text = "Ruta aceptada ‚úÖ";
+            }
+            else
+            {
+                await Task.Delay(1000);
+                LoadingLabel.Text = "Ruta inv√°lida ‚ùå";
+            }
+
+            LoadingIndicator.IsRunning = false;
+            await Task.Delay(1500); // Mostrar resultado antes de cerrar
+        });
     }
 
 
+    private async Task MostrarModalCarga(Func<Task> accion)
+    {
+        LoadingOverlay.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
+        LoadingLabel.Text = "Verificando...";
+
+        try
+        {
+            await accion.Invoke();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
+        finally
+        {
+            await Task.Delay(500);
+            LoadingOverlay.IsVisible = false;
+            LoadingIndicator.IsRunning = false;
+        }
+    }
 }

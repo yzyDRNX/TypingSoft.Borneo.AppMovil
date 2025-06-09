@@ -1,105 +1,85 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
+using System.Collections.Generic;
 using TypingSoft.Borneo.AppMovil.Models.API;
+using TypingSoft.Borneo.AppMovil.VModels;
 
-namespace TypingSoft.Borneo.AppMovil.Pages;
-
-public partial class ClientePage : ContentPage
+namespace TypingSoft.Borneo.AppMovil.Pages
 {
+    public partial class ClientePage : ContentPage
+    {
+        private CatalogosVM ViewModel => BindingContext as CatalogosVM;
 
-    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
-    public ClientePage()
-	{
-        InitializeComponent();
-
-        // Obtener el ViewModel del contenedor de servicios
-        if (App.ServiceProvider != null)
+        public ClientePage()
         {
-            var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
-            if (viewModel != null)
+            InitializeComponent();
+            SetupViewModel();
+        }
+
+        private void SetupViewModel()
+        {
+            if (App.ServiceProvider != null)
             {
-                this.BindingContext = viewModel;
+                var viewModel = App.ServiceProvider.GetService<CatalogosVM>();
+                this.BindingContext = viewModel ?? CreateFallbackViewModel();
             }
             else
             {
-                // Si no se puede obtener del contenedor, crear manualmente
-                CrearViewModelManualmente();
+                this.BindingContext = CreateFallbackViewModel();
             }
         }
-        else
+
+        private CatalogosVM CreateFallbackViewModel()
         {
-
-            CrearViewModelManualmente();
-        }
-    }
-    private readonly HashSet<Guid> clientesSeleccionados = new HashSet<Guid>();
-
-    private async void SurtirClicked(object sender, EventArgs e)
-    {
-        // Navegacion a RepartoPage
-        await Navigation.PushAsync(new RepartoPage());
-    }
-
-    private void CrearViewModelManualmente()
-    {
-        var catalogosService = new Services.CatalogosService();
-        var catalogosBL = new BL.CatalogosBL(catalogosService);
-
-        // Creamos también la instancia de la BD local
-        var localDb = new Services.LocalDatabaseService();
-
-        // Le pasamos ambos al VM
-        this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
-    }
-
-    private async void OnAñadirClienteClicked(object sender, EventArgs e)
-    {
-        var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
-        var clienteSeleccionado = clientesPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Models.Custom.ClientesLista;
-
-        if (clienteSeleccionado == null)
-        {
-            await DisplayAlert("Aviso", "Por favor selecciona un cliente.", "OK");
-            return;
+            var catalogosService = new Services.CatalogosService();
+            var catalogosBL = new BL.CatalogosBL(catalogosService);
+            var localDb = new Services.LocalDatabaseService();
+            return new CatalogosVM(catalogosBL, localDb);
         }
 
-        if (vm.ClientesASurtir.Count > 0)
+        private async void OnAñadirClienteClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Aviso", "Solo puedes añadir un cliente a la vez.", "OK");
-            return;
+            if (ViewModel == null) return;
+
+            var clienteSeleccionado = clientesPicker.SelectedItem as Models.Custom.ClientesLista;
+
+            if (clienteSeleccionado == null)
+            {
+                await DisplayAlert("Aviso", "Por favor seleccione un cliente.", "OK");
+                return;
+            }
+
+            if (ViewModel.ClientesASurtir.Count > 0)
+            {
+                await DisplayAlert("Aviso", "Solo puede añadir un cliente a la vez.", "OK");
+                return;
+            }
+
+            await ViewModel.Surtir(clienteSeleccionado);
+            clientesPicker.SelectedItem = null; // Resetear selección
         }
 
-        if (vm.ClientesASurtir.Contains(clienteSeleccionado))
+        private async void OnRepartoClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Aviso", "Este cliente ya fue añadido.", "OK");
-            return;
+            if (ViewModel?.ClientesASurtir.Count == 0)
+            {
+                await DisplayAlert("Advertencia", "Debe seleccionar al menos un cliente antes de continuar.", "OK");
+                return;
+            }
+
+            await Navigation.PushAsync(new RepartoPage());
         }
 
-        // ✅ Invoca el método Surtir del ViewModel
-        await vm.Surtir(clienteSeleccionado);
-    }
-
-
-    private async void OnRepartoClicked(object sender, EventArgs e)
-    {
-        // Verifica si hay clientes seleccionados
-        var vm = BindingContext as TypingSoft.Borneo.AppMovil.VModels.CatalogosVM;
-        if (vm.ClientesASurtir.Count == 0)
+        protected override async void OnAppearing()
         {
-            await DisplayAlert("Advertencia", "Debes seleccionar al menos un cliente antes de continuar.", "OK");
-            return;
+            base.OnAppearing();
+
+            if (ViewModel != null)
+            {
+                await ViewModel.ObtenerClientesAsync();
+            }
+
+            clientesPicker.SelectedItem = null;
         }
-
-        // Si hay al menos un cliente, procede a la siguiente página
-        await Navigation.PushAsync(new RepartoPage());
     }
-
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        if (ViewModel != null)
-            await ViewModel.ObtenerClientesAsync();
-    }
-
-
 }

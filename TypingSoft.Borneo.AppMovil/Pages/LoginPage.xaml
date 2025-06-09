@@ -2,68 +2,133 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.LoginPage"
-              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-             BackgroundColor="White">
-    <StackLayout Spacing="0">
-        <!-- Header -->
-        <BoxView BackgroundColor="Black" 
-                 HeightRequest="50"/>
-        <!-- Main content -->
-        <Grid VerticalOptions="FillAndExpand">
-            <StackLayout x:Name="MainLayout" 
-                         VerticalOptions="Center" 
-                         HorizontalOptions="Center" 
-                         Spacing="10">
-                <!-- User icon -->
-                <Frame BackgroundColor="#222222" 
-                       WidthRequest="90" 
-                       HeightRequest="90" 
-                       Padding="0" 
-                       CornerRadius="0" 
-                       HorizontalOptions="Center">
-                    <Label Text="👤" 
-                           TextColor="White" 
-                           FontSize="50" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center"/>
-                </Frame>
-                <!-- Login text -->
-                <Label Text="login" 
-                       TextColor="Black" 
-                       FontSize="16" 
-                       HorizontalOptions="Center" 
-                       Margin="0,5,0,10"/>
-                <!-- Login button to scan QR -->
-                <Button Text="Iniciar sesión" 
-        Clicked="OnLoginButtonClicked" 
-        Grid.Row="2" 
-        Margin="20,0" />
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             BackgroundColor="White"
+             Appearing="OnPageAppearing">
 
-                <zxing:CameraBarcodeReaderView
-    x:Name="cameraBarcodeReaderView"
-    IsVisible="True"
-    BarcodesDetected="BarcodesDetected"
-    HorizontalOptions="FillAndExpand"
-    VerticalOptions="FillAndExpand"
-    BackgroundColor="Black"
-    Margin="10"
-    HeightRequest="300"
-    WidthRequest="300" />
+    <AbsoluteLayout>
+
+        <StackLayout Spacing="0"
+                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                     AbsoluteLayout.LayoutFlags="All">
+
+            <!-- Header -->
+            <BoxView BackgroundColor="#0A84FF" HeightRequest="50"/>
+
+            <!-- Main content -->
+            <Grid VerticalOptions="FillAndExpand" Padding="20">
+                <StackLayout x:Name="MainLayout"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="20"
+                             Opacity="0"
+                             Scale="0.8">
+
+                    <!-- User icon -->
+                    <Frame BackgroundColor="#1E1E1E"
+                           WidthRequest="100"
+                           HeightRequest="100"
+                           Padding="0"
+                           CornerRadius="50"
+                           HasShadow="True"
+                           HorizontalOptions="Center">
+                        <Label Text="👤"
+                               TextColor="White"
+                               FontSize="48"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Frame>
+
+                    <!-- Login label -->
+                    <Label Text="Iniciar sesión"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="Black"
+                           HorizontalOptions="Center"/>
+
+                    <!-- Botón QR -->
+                    <Button Text="Escanear código QR"
+                            Clicked="OnLoginButtonClicked"
+                            BackgroundColor="#0A84FF"
+                            TextColor="White"
+                            CornerRadius="10"
+                            Padding="12,8"
+                            FontSize="16"/>
+
+                    <!-- Cámara QR -->
+                    <zxing:CameraBarcodeReaderView
+                        x:Name="cameraBarcodeReaderView"
+                        IsVisible="True"
+                        BarcodesDetected="BarcodesDetected"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        BackgroundColor="Black"
+                        Margin="0"
+                        HeightRequest="250"
+                        WidthRequest="250"/>
+
+                    <!-- Entrada manual -->
+                    <Frame CornerRadius="10"
+                           Padding="0"
+                           HasShadow="False"
+                           BorderColor="#CCCCCC"
+                           BackgroundColor="#EEEEEE"
+                           HeightRequest="40">
+                        <Entry Text="{Binding Ruta}"
+                               BackgroundColor="Transparent"
+                               Placeholder="Introducir Ruta"
+                               TextColor="Black"
+                               PlaceholderColor="Gray"
+                               Margin="10,0"
+                               FontSize="14"
+                               HeightRequest="40"/>
+                    </Frame>
+
+                    <!-- Botón iniciar con ruta -->
+                    <Button Text="Iniciar con Ruta"
+                            Clicked="OnManualLoginClicked"
+                            BackgroundColor="#0A84FF"
+                            TextColor="White"
+                            CornerRadius="10"
+                            Padding="12,8"
+                            FontSize="16"/>
+                </StackLayout>
+            </Grid>
+
+            <!-- Footer -->
+            <BoxView BackgroundColor="#0A84FF" HeightRequest="50"/>
+        </StackLayout>
+
+     <!-- Modal de carga -->
+        <AbsoluteLayout x:Name="LoadingOverlay"
+                IsVisible="False"
+                BackgroundColor="#80000000"
+                AbsoluteLayout.LayoutFlags="All"
+                AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+            <Frame BackgroundColor="White"
+           CornerRadius="20"
+           Padding="30"
+           HasShadow="True"
+           AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+           AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                <StackLayout Spacing="15" HorizontalOptions="Center">
+                    <ActivityIndicator x:Name="LoadingIndicator"
+                               IsRunning="False"
+                               Color="#0A84FF"
+                               WidthRequest="40"
+                               HeightRequest="40"/>
+                    <Label x:Name="LoadingLabel"
+                   Text="Verificando..."
+                   FontSize="16"
+                   TextColor="Black"
+                   HorizontalOptions="Center"/>
+                </StackLayout>
+            </Frame>
+        </AbsoluteLayout>
 
 
 
-                <VerticalStackLayout>
-                    <Entry Text="{Binding Ruta}" BackgroundColor="Black" TextColor="White" Placeholder="Introducir Ruta" />
-                </VerticalStackLayout>
-                <Button Text="Iniciar sesión" Command="{Binding AutenticarRutaCommand}" Grid.Row="2" Margin="20,0">
-
-                </Button>
-            </StackLayout>
-
-            <!-- La cámara se añadirá dinámicamente cuando se necesite -->
-        </Grid>
-        <!-- Footer -->
-        <BoxView BackgroundColor="Black" 
-                 HeightRequest="50"/>
-    </StackLayout>
+    </AbsoluteLayout>
 </ContentPage>

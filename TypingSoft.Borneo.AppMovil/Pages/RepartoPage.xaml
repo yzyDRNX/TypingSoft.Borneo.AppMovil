@@ -2,141 +2,146 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.RepartoPage"
-             BackgroundColor="White">
-    <StackLayout Spacing="0">
-        <!-- Header section -->
-        <Grid BackgroundColor="Black" Padding="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+             BackgroundColor="#F5F5F5"
+             Title="Reparto">
 
-            <Label Text="Unidad" 
-            TextColor="White" 
-            Grid.Row="0" 
-            Grid.Column="0"
-            Margin="5,5,0,0"/>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Colores y estilos IDÉNTICOS a ClientePage.xaml -->
+            <Color x:Key="PrimaryBlue">#2160AB</Color>
+            <Color x:Key="SecondaryBlue">#2D9CDB</Color>
+            <Color x:Key="LightBackground">#E3EFFF</Color>
+            <Color x:Key="TextBlack">#333333</Color>
 
-            <Label Text="{Binding DescripcionRuta}" 
-TextColor="White" 
-Grid.Row="0" 
-Grid.Column="1"
-Margin="5,5,0,0"/>
+            <Style x:Key="SectionTitle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource PrimaryBlue}"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
 
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlue}"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="HeightRequest" Value="45"/>
+            </Style>
 
-            <Label Text="Fecha" 
-TextColor="White" 
-Grid.Row="1" 
-Grid.Column="0"
-Margin="5,0,0,5"/>
+            <Style x:Key="SecondaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource SecondaryBlue}"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="HeightRequest" Value="50"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-            <Label Text="{Binding FechaActual}" 
-TextColor="White" 
-Grid.Row="1" 
-Grid.Column="1"
-Margin="5,0,0,5"/>
-        </Grid>
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+            <!-- Encabezado (mismo diseño que ClientePage) -->
+            <Grid BackgroundColor="Black" Padding="15,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <!-- Blue title section -->
-        <Frame BackgroundColor="Black" 
-               Padding="10" 
-               HasShadow="False" 
-               CornerRadius="0">
-            <Label Text="INFORMACION DE VENTA" 
-                   TextColor="White" 
-                   FontSize="16" 
-                   HorizontalOptions="Center" 
-                   VerticalOptions="Center"/>
-        </Frame>
+                <HorizontalStackLayout Grid.Row="0" Spacing="5">
+                    <Label Text="Unidad:" TextColor="White" FontAttributes="Bold" FontSize="14"/>
+                    <Label Text="{Binding DescripcionRuta}" TextColor="White" FontSize="14"/>
+                </HorizontalStackLayout>
 
-        <!-- Empty space -->
-        <BoxView HeightRequest="20" 
-                 BackgroundColor="White"/>
+                <HorizontalStackLayout Grid.Row="1" Spacing="5">
+                    <Label Text="Fecha:" TextColor="White" FontAttributes="Bold" FontSize="14"/>
+                    <Label Text="{Binding FechaActual}" TextColor="White" FontSize="14"/>
+                </HorizontalStackLayout>
+            </Grid>
 
-        <!-- Garrafones Entregados section -->
-        <Frame BackgroundColor="Black" 
-            Padding="10" 
-            HasShadow="False" 
-            CornerRadius="0">
-            <Label Text="Productos para Entrega" 
-                FontSize="16" 
-                HorizontalOptions="Center"/>
-        </Frame>
+            <!-- Título (mismo estilo que ClientePage) -->
+            <Frame BackgroundColor="{StaticResource PrimaryBlue}" 
+                   Padding="15"
+                   CornerRadius="0"
+                   HasShadow="True">
+                <Label Text="INFORMACIÓN DE VENTA" 
+                       TextColor="White"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </Frame>
 
-        <Grid Margin="20,10" ColumnSpacing="10" RowSpacing="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <!-- Sección de productos (mismo diseño de ClientePage) -->
+            <Frame Margin="20,15"
+                   CornerRadius="8"
+                   BackgroundColor="White"
+                   BorderColor="#DDDDDD"
+                   HasShadow="True"
+                   Padding="15">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="PRODUCTOS PARA ENTREGA" 
+                           Style="{StaticResource SectionTitle}"/>
 
-            <Picker x:Name="productosPicker" 
-                ItemsSource="{Binding ListadoProductos}"
-                ItemDisplayBinding="{Binding Producto}" 
-                BackgroundColor="Black"
-                TextColor="White"
-                HeightRequest="40"
-                VerticalOptions="Center"
-                Grid.Column="0"
-            />
+                    <!-- Grid con Picker, Entry y Button (conservando los mismos nombres y bindings) -->
+                    <Grid ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-            <Entry x:Name="cantidadEntry"
-                Placeholder="Cantidad"
-                Keyboard="Numeric"
-                BackgroundColor="Black"
-                TextColor="white"
-                HeightRequest="40"
-                VerticalOptions="Center"
-                Grid.Column="1"
-            />
+                        <Picker x:Name="productosPicker"
+                                ItemsSource="{Binding ListadoProductos}"
+                                ItemDisplayBinding="{Binding Producto}"
+                                Title="Seleccione un producto"
+                                TitleColor="#666666"
+                                TextColor="Black"
+                                FontSize="14"
+                                HeightRequest="45"
+                                Grid.Column="0"/>
 
+                        <Entry x:Name="cantidadEntry"
+                               Placeholder="Cantidad"
+                               Keyboard="Numeric"
+                               TextColor="Black"
+                               HeightRequest="45"
+                               FontSize="14"
+                               Grid.Column="1"/>
 
-            <Button Text="Añadir" 
-                BackgroundColor="#2160AB" 
-                TextColor="White" 
-                HeightRequest="40" 
-                Padding="15,0" 
-                CornerRadius="0"
-                Grid.Column="2"
-                Clicked="OnAñadirProductoClicked" 
-            />
+                        <Button Text="AÑADIR"
+                                Style="{StaticResource PrimaryButton}"
+                                Grid.Column="2"
+                                Clicked="OnAñadirProductoClicked"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
 
-        </Grid>
+            <!-- Lista de productos (conservando el StackLayout para no romper la lógica) -->
+            <Frame Margin="20,0,20,10"
+                   CornerRadius="8"
+                   BackgroundColor="White"
+                   BorderColor="#DDDDDD"
+                   HasShadow="True"
+                   Padding="0">
+                <VerticalStackLayout>
+                    <Label Text="PRODUCTOS SELECCIONADOS" 
+                           Style="{StaticResource SectionTitle}"
+                           Margin="15,10"/>
 
-        <!-- Product List section -->
-        <Frame BackgroundColor="#E3EFFF"
-Padding="10"
-HasShadow="False"
-CornerRadius="0"
-Margin="0,10,0,0">
-            <VerticalStackLayout Spacing="5">
-                <Label 
-     Text="Productos Seleccionados:"
-     TextColor="Black"
-     FontAttributes="Bold"
-     FontSize="14" 
- />
-                <StackLayout x:Name="productosSeleccionadosStack" Spacing="2"/>
-            </VerticalStackLayout>
-        </Frame>
+                    <BoxView HeightRequest="1" BackgroundColor="#EEEEEE"/>
 
-        <!-- Start Route Button -->
-        <Button Text="Concluir" 
-                BackgroundColor="Black"       
-                TextColor="White" 
-                Margin="20,20,20,0" 
-                HeightRequest="50" 
-                CornerRadius="0"
-                Clicked="OnConcluirClicked"
-                />
+                    <!-- ¡NO CAMBIÉ el StackLayout para no afectar el code-behind! -->
+                    <StackLayout x:Name="productosSeleccionadosStack" 
+                                 Spacing="5"
+                                 Margin="15,10"/>
+                </VerticalStackLayout>
+            </Frame>
 
-        <!-- Remaining empty space -->
-        <BoxView HeightRequest="20" 
-                 BackgroundColor="White" 
-                 VerticalOptions="FillAndExpand"/>
-    </StackLayout>
+            <!-- Botón de concluir (mismo estilo) -->
+            <Button Text="CONCLUIR"
+                    Style="{StaticResource SecondaryButton}"
+                    Margin="20,0,20,20"
+                    Clicked="OnConcluirClicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

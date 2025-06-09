@@ -1,107 +1,108 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
+using System.Collections.Generic;
 using TypingSoft.Borneo.AppMovil.Models.API;
 
-namespace TypingSoft.Borneo.AppMovil.Pages;
-
-public partial class EmpleadosPage : ContentPage
+namespace TypingSoft.Borneo.AppMovil.Pages
 {
-    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
-
-    public EmpleadosPage()
+    public partial class EmpleadosPage : ContentPage
     {
-        InitializeComponent();
+        VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
+        private readonly HashSet<Guid> _empleadosSeleccionados = new HashSet<Guid>();
 
-        // Obtener el ViewModel del contenedor de servicios
-        if (App.ServiceProvider != null)
+        public EmpleadosPage()
         {
-            var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
-            if (viewModel != null)
+            InitializeComponent();
+            SetupViewModel();
+        }
+
+        private void SetupViewModel()
+        {
+            if (App.ServiceProvider != null)
             {
-                this.BindingContext = viewModel;
+                var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
+                this.BindingContext = viewModel ?? CreateFallbackViewModel();
             }
             else
             {
-                // Si no se puede obtener del contenedor, crear manualmente
-                CrearViewModelManualmente();
+                this.BindingContext = CreateFallbackViewModel();
             }
         }
-        else
+
+        private VModels.CatalogosVM CreateFallbackViewModel()
         {
-        
-            CrearViewModelManualmente();
+            var catalogosService = new Services.CatalogosService();
+            var catalogosBL = new BL.CatalogosBL(catalogosService);
+            var localDb = new Services.LocalDatabaseService();
+            return new VModels.CatalogosVM(catalogosBL, localDb);
         }
-    }
-    private readonly HashSet<Guid> empleadosSeleccionados = new HashSet<Guid>();
 
-    private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
-    {
-        // Obtener el empleado seleccionado del Picker
-        var empleadoSeleccionado = empleadosPicker.SelectedItem as Models.Custom.EmpleadosLista;
-
-        if (empleadoSeleccionado != null)
+        private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
         {
-            // Verificar si el empleado ya está en la lista
-            if (empleadosSeleccionados.Contains(empleadoSeleccionado.Id))
+            var empleadoSeleccionado = empleadosPicker.SelectedItem as Models.Custom.EmpleadosLista;
+
+            if (empleadoSeleccionado == null)
             {
-                // Mostrar un mensaje de alerta si el empleado ya está en la lista
-                DisplayAlert("Advertencia", "El empleado ya está en la lista.", "OK");
+                DisplayAlert("Advertencia", "Por favor, seleccione un empleado antes de añadirlo.", "OK");
                 return;
             }
 
-            // Añadir el empleado al HashSet
-            empleadosSeleccionados.Add(empleadoSeleccionado.Id);
-
-            // Crear un nuevo Label para mostrar el nombre del empleado seleccionado
-            var empleadoLabel = new Label
+            if (_empleadosSeleccionados.Contains(empleadoSeleccionado.Id))
             {
-                Text = empleadoSeleccionado.Empleado, // Accede directamente a la propiedad 'Empleado'
-                FontSize = 14,
-                TextColor = Colors.Black,
-                Margin = new Thickness(0, 5, 0, 0)
+                DisplayAlert("Advertencia", "Este empleado ya está en la lista.", "OK");
+                return;
+            }
+
+            _empleadosSeleccionados.Add(empleadoSeleccionado.Id);
+            emptyStateLabel.IsVisible = false;
+
+            var empleadoItem = new HorizontalStackLayout
+            {
+                Spacing = 10,
+                Padding = new Thickness(0, 5)
             };
 
-            // Añadir el Label al StackLayout
-            empleadosSeleccionadosStack.Children.Add(empleadoLabel);
+            empleadoItem.Children.Add(new Label
+            {
+                Text = "•",
+                TextColor = Color.FromArgb("#2160AB"),
+                FontSize = 14,
+                VerticalOptions = LayoutOptions.Center
+            });
+
+            empleadoItem.Children.Add(new Label
+            {
+                Text = empleadoSeleccionado.Empleado,
+                TextColor = Colors.Black,
+                FontSize = 14,
+                VerticalOptions = LayoutOptions.Center
+            });
+
+            empleadosSeleccionadosStack.Children.Add(empleadoItem);
         }
-        else
+
+        private async void OnEmpezarRutaClicked(object sender, EventArgs e)
         {
-            // Mostrar un mensaje si no se seleccionó ningún empleado
-            DisplayAlert("Advertencia", "Por favor, selecciona un empleado antes de añadirlo.", "OK");
-        }
-    }
+            if (_empleadosSeleccionados.Count == 0)
+            {
+                await DisplayAlert("Advertencia", "Debe seleccionar al menos un empleado para continuar.", "OK");
+                return;
+            }
 
-    private async void OnEmpezarRutaClicked(object sender, EventArgs e)
-    {
-        // Verifica si hay empleados seleccionados
-        if (empleadosSeleccionados.Count == 0)
+            await Navigation.PushAsync(new ClientePage());
+        }
+
+        protected override async void OnAppearing()
         {
-            await DisplayAlert("Advertencia", "Debes seleccionar al menos un empleado antes de continuar.", "OK");
-            return;
+            base.OnAppearing();
+
+            if (ViewModel != null)
+            {
+                await ViewModel.ObtenerEmpleadosAsync();
+            }
+
+            // Resetear selección al aparecer
+            empleadosPicker.SelectedItem = null;
         }
-
-        // Si hay al menos un empleado, procede a la siguiente página
-        await Navigation.PushAsync(new ClientePage());
-    }
-
-
-
-    private void CrearViewModelManualmente()
-    {
-        var catalogosService = new Services.CatalogosService();
-        var catalogosBL = new BL.CatalogosBL(catalogosService);
-
-        // Creamos también la instancia de la BD local
-        var localDb = new Services.LocalDatabaseService();
-
-        // Le pasamos ambos al VM
-        this.BindingContext = new VModels.CatalogosVM(catalogosBL, localDb);
-    }
-
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        // Cargar los empleados cuando la página aparece
-        ViewModel?.ObtenerEmpleadosAsync();
     }
 }
