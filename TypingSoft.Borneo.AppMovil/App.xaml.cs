@@ -19,7 +19,7 @@ namespace TypingSoft.Borneo.AppMovil
         }
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            var mainPage = new NavigationPage(new LoginPage());
+            var mainPage = new NavigationPage(new InicioPage());
             return new Window(mainPage);
         }
 

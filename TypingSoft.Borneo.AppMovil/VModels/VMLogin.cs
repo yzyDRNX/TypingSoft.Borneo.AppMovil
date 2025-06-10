@@ -59,7 +59,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                     MensajeProcesando = "Sincronizando catálogos...";
                     await _sincronizacion.SincronizarCatalogosAsync();
 
-                    await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
+                    await Navegacion.Navegar(nameof(Pages.MenuPage));
                     MensajeProcesando = mensaje;
                     return;
                 }
@@ -70,7 +70,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                     if (rutaLocal != null && !string.IsNullOrEmpty(rutaLocal.Descripcion))
                     {
                         Helpers.Settings.UltimaDescripcionRuta = rutaLocal.Descripcion;
-                        await Navegacion.Navegar(nameof(Pages.EmpleadosPage));
+                        await Navegacion.Navegar(nameof(Pages.MenuPage));
                         MensajeProcesando = "Modo sin conexión: usando ruta local.";
                         return;
                     }

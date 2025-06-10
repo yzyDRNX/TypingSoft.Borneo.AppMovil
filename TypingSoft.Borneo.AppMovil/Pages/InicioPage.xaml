@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.InicioPage"
+             Title="InicioPage"
+             BackgroundColor="White">
+
+    <AbsoluteLayout>
+
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All">
+
+            <StackLayout Spacing="0">
+
+                <!-- Header -->
+                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
+
+                <!-- Main content -->
+                <StackLayout Padding="20" Spacing="30" VerticalOptions="FillAndExpand">
+
+                    <!-- Espacio para foto -->
+                    <Frame BackgroundColor="#F5F5F5"
+                           CornerRadius="15"
+                           Padding="0"
+                           HasShadow="True"
+                           HorizontalOptions="Center"
+                           Margin="0,20,0,0">
+
+                        <StackLayout Spacing="0">
+                            <!-- Placeholder para imagen -->
+                            <Frame BackgroundColor="#E0E0E0"
+                                   CornerRadius="15"
+                                   Padding="0"
+                                   HeightRequest="200"
+                                   WidthRequest="300"
+                                   HorizontalOptions="Center"
+                                   HasShadow="False">
+
+                                <!-- Imagen placeholder - puedes reemplazar con Image cuando tengas la foto -->
+                                <StackLayout VerticalOptions="Center" 
+                                           HorizontalOptions="Center"
+                                           Spacing="10">
+                                    <Label Text="📷"
+                                           FontSize="48"
+                                           TextColor="#999999"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Espacio para foto"
+                                           FontSize="14"
+                                           TextColor="#666666"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+
+                                <!-- Cuando tengas la imagen, reemplaza el StackLayout anterior con:
+                                <Image x:Name="UserPhoto"
+                                       Source="{Binding PhotoSource}"
+                                       Aspect="AspectFill"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/> -->
+                            </Frame>
+                        </StackLayout>
+                    </Frame>
+
+                    <!-- Sección central con entrada de datos -->
+                    <StackLayout Spacing="20" VerticalOptions="Center">
+
+                        <!-- Título -->
+                        <Label Text="Configuración de URL"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="Black"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Entry para URL -->
+                        <Frame CornerRadius="12"
+                               Padding="0"
+                               HasShadow="False"
+                               BorderColor="#CCCCCC"
+                               BackgroundColor="#F8F8F8"
+                               HeightRequest="55"
+                               Margin="0,5">
+                            <Entry x:Name="UrlEntry"
+                                   Text="{Binding UrlInput}"
+                                   BackgroundColor="Transparent"
+                                   Placeholder="Introducir URL (https://ejemplo.com)"
+                                   TextColor="Black"
+                                   PlaceholderColor="Gray"
+                                   Margin="15,0"
+                                   FontSize="16"
+                                   HeightRequest="55"
+                                   VerticalOptions="Center"
+                                   Keyboard="Url"/>
+                        </Frame>
+
+                        <!-- Botón para enviar -->
+                        <Button x:Name="SendUrlButton"
+                                Text="Enviar URL"
+                                Clicked="OnSendUrlClicked"
+                                BackgroundColor="#0A84FF"
+                                TextColor="White"
+                                CornerRadius="12"
+                                Padding="15,12"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                WidthRequest="200"/>
+
+                        <!-- Indicador de estado (opcional) -->
+                        <Label x:Name="StatusLabel"
+                               Text=""
+                               FontSize="14"
+                               TextColor="#666666"
+                               HorizontalOptions="Center"
+                               IsVisible="False"
+                               Margin="0,10,0,0"/>
+
+                    </StackLayout>
+
+                    <!-- Espacio adicional para el scroll -->
+                    <BoxView HeightRequest="50" BackgroundColor="Transparent"/>
+
+                </StackLayout>
+
+                <!-- Footer -->
+                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Modal de carga (para cuando se envíe la URL) -->
+        <AbsoluteLayout x:Name="LoadingOverlay"
+                        IsVisible="False"
+                        BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+            <Frame BackgroundColor="White"
+                   CornerRadius="20"
+                   Padding="30"
+                   HasShadow="True"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                   AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                <StackLayout Spacing="15" HorizontalOptions="Center">
+                    <ActivityIndicator x:Name="LoadingIndicator"
+                                       IsRunning="False"
+                                       Color="#0A84FF"
+                                       WidthRequest="40"
+                                       HeightRequest="40"/>
+                    <Label x:Name="LoadingLabel"
+                           Text="Enviando URL..."
+                           FontSize="16"
+                           TextColor="Black"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Frame>
+        </AbsoluteLayout>
+
+    </AbsoluteLayout>
+</ContentPage>
