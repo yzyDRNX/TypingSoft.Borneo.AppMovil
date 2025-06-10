@@ -12,7 +12,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
     {
         #region Campos y constructor
         private readonly BL.CatalogosBL _catalogos;
-        private readonly LocalDatabaseService _localDb;
+        public readonly LocalDatabaseService _localDb;
 
 
         public CatalogosVM(BL.CatalogosBL catalogos, LocalDatabaseService localDb)
@@ -416,7 +416,30 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
             await Application.Current.MainPage.DisplayAlert("Clientes a Surtir", nombres, "OK");
         }
-
+        [RelayCommand]
+        public async Task GuardarClientesTemporalAsync()
+        {
+            if (ClientesASurtir.Count == 0)
+            {
+                await MostrarAlertaAsync("Aviso", "No hay clientes seleccionados para guardar.");
+                return;
+            }
+            try
+            {
+                // Guardar los clientes seleccionados en la base de datos local
+                var clientesLocales = ClientesASurtir.Select(c => new Local.ClienteLocal
+                {
+                    IdCliente = c.IdCliente,
+                    Cliente = c.Cliente
+                }).ToList();
+                await _localDb.GuardarClientesAsync(clientesLocales);
+                await MostrarAlertaAsync("Éxito", "Clientes guardados temporalmente.");
+            }
+            catch (Exception ex)
+            {
+                await MostrarAlertaAsync("Error", $"No se pudieron guardar los clientes: {ex.Message}");
+            }
+        }
 
 
         #endregion

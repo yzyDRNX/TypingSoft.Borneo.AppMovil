@@ -19,6 +19,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<CondicionLocal>().Wait();
             _database.CreateTableAsync<PrecioLocal>().Wait();
             _database.CreateTableAsync<RutaLocal>().Wait();
+            _database.CreateTableAsync<SeleccionTemporal>().Wait();
         }
 
         public async Task GuardarRutaAsync(RutaLocal ruta)
@@ -119,5 +120,53 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<PrecioLocal>().ToListAsync();
         }
+        public async Task GuardarClienteTemporalAsync(string cliente)
+        {
+            var seleccion = await _database.Table<SeleccionTemporal>().FirstOrDefaultAsync();
+
+            if (seleccion == null)
+            {
+                seleccion = new SeleccionTemporal { Cliente = cliente };
+                await _database.InsertAsync(seleccion);
+            }
+            else
+            {
+                seleccion.Cliente = cliente;
+                await _database.UpdateAsync(seleccion);
+            }
+        }
+
+        public async Task GuardarProductoTemporalAsync(string producto)
+        {
+            var seleccion = await _database.Table<SeleccionTemporal>().FirstOrDefaultAsync();
+
+            if (seleccion == null)
+            {
+                seleccion = new SeleccionTemporal { Producto = producto };
+                await _database.InsertAsync(seleccion);
+            }
+            else
+            {
+                seleccion.Producto = producto;
+                await _database.UpdateAsync(seleccion);
+            }
+        }
+
+        public async Task<SeleccionTemporal?> ObtenerSeleccionTemporalAsync()
+        {
+            return await _database.Table<SeleccionTemporal>().FirstOrDefaultAsync();
+        }
+
+        public async Task LimpiarSeleccionTemporalAsync()
+        {
+            await _database.DeleteAllAsync<SeleccionTemporal>();
+        }
+        public async Task GuardarSeleccionTemporalAsync(List<SeleccionTemporal> seleccion)
+        {
+            await _database.DeleteAllAsync<SeleccionTemporal>(); // Limpia la selección anterior
+            await _database.InsertAllAsync(seleccion);
+        }
+
+
     }
 }

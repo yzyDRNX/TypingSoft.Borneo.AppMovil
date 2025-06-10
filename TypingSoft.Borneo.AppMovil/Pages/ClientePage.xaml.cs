@@ -9,6 +9,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
     public partial class ClientePage : ContentPage
     {
         private CatalogosVM ViewModel => BindingContext as CatalogosVM;
+        
 
         public ClientePage()
         {
@@ -56,8 +57,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
 
             await ViewModel.Surtir(clienteSeleccionado);
+            await ViewModel._localDb.GuardarClienteTemporalAsync(clienteSeleccionado.Cliente); // ← Guardar en base local
+
             clientesPicker.SelectedItem = null; // Resetear selección
         }
+
 
         private async void OnRepartoClicked(object sender, EventArgs e)
         {
