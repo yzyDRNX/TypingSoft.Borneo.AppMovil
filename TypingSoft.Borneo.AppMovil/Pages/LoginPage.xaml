@@ -8,127 +8,180 @@
 
     <AbsoluteLayout>
 
-        <StackLayout Spacing="0"
-                     AbsoluteLayout.LayoutBounds="0,0,1,1"
-                     AbsoluteLayout.LayoutFlags="All">
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All">
 
-            <!-- Header -->
-            <BoxView BackgroundColor="#0A84FF" HeightRequest="50"/>
+            <StackLayout Spacing="0">
 
-            <!-- Main content -->
-            <Grid VerticalOptions="FillAndExpand" Padding="20">
-                <StackLayout x:Name="MainLayout"
-                             VerticalOptions="Center"
-                             HorizontalOptions="Center"
-                             Spacing="20"
-                             Opacity="0"
-                             Scale="0.8">
+                <!-- Header -->
+                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
 
-                    <!-- User icon -->
-                    <Frame BackgroundColor="#1E1E1E"
-                           WidthRequest="100"
-                           HeightRequest="100"
-                           Padding="0"
-                           CornerRadius="50"
-                           HasShadow="True"
-                           HorizontalOptions="Center">
-                        <Label Text="👤"
-                               TextColor="White"
-                               FontSize="48"
+                <!-- Main content -->
+                <StackLayout Padding="20" Spacing="25">
+
+                    <StackLayout x:Name="MainLayout"
+                                 HorizontalOptions="Center"
+                                 Spacing="20"
+                                 Opacity="0"
+                                 Scale="0.8">
+
+                        <!-- User icon -->
+                        <Frame BackgroundColor="#1E1E1E"
+                               WidthRequest="80"
+                               HeightRequest="80"
+                               Padding="0"
+                               CornerRadius="40"
+                               HasShadow="True"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-                    </Frame>
+                               Margin="0,10">
+                            <Label Text="👤"
+                                   TextColor="White"
+                                   FontSize="40"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
 
-                    <!-- Login label -->
-                    <Label Text="Iniciar sesión"
-                           FontSize="20"
-                           FontAttributes="Bold"
-                           TextColor="Black"
-                           HorizontalOptions="Center"/>
-
-                    <!-- Botón QR -->
-                    <Button Text="Escanear código QR"
-                            Clicked="OnLoginButtonClicked"
-                            BackgroundColor="#0A84FF"
-                            TextColor="White"
-                            CornerRadius="10"
-                            Padding="12,8"
-                            FontSize="16"/>
-
-                    <!-- Cámara QR -->
-                    <zxing:CameraBarcodeReaderView
-                        x:Name="cameraBarcodeReaderView"
-                        IsVisible="True"
-                        BarcodesDetected="BarcodesDetected"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        BackgroundColor="Black"
-                        Margin="0"
-                        HeightRequest="250"
-                        WidthRequest="250"/>
-
-                    <!-- Entrada manual -->
-                    <Frame CornerRadius="10"
-                           Padding="0"
-                           HasShadow="False"
-                           BorderColor="#CCCCCC"
-                           BackgroundColor="#EEEEEE"
-                           HeightRequest="40">
-                        <Entry Text="{Binding Ruta}"
-                               BackgroundColor="Transparent"
-                               Placeholder="Introducir Ruta"
+                        <!-- Login label -->
+                        <Label Text="Iniciar sesión"
+                               FontSize="24"
+                               FontAttributes="Bold"
                                TextColor="Black"
-                               PlaceholderColor="Gray"
-                               Margin="10,0"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,10"/>
+
+                    </StackLayout>
+
+                    <!-- Sección QR -->
+                    <StackLayout Spacing="15">
+
+                        <!-- Botón QR -->
+                        <Button Text="Escanear código QR"
+                                Clicked="OnLoginButtonClicked"
+                                BackgroundColor="#0A84FF"
+                                TextColor="White"
+                                CornerRadius="12"
+                                Padding="15,12"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+
+                        <!-- Cámara QR -->
+                        <Frame CornerRadius="15"
+                               Padding="0"
+                               HasShadow="True"
+                               BackgroundColor="Black"
+                               HorizontalOptions="Center"
+                               Margin="0,10">
+                            <zxing:CameraBarcodeReaderView
+                                x:Name="cameraBarcodeReaderView"
+                                IsVisible="True"
+                                BarcodesDetected="BarcodesDetected"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                BackgroundColor="Black"
+                                HeightRequest="280"
+                                WidthRequest="220"/>
+                        </Frame>
+
+                    </StackLayout>
+
+                    <!-- Separador visual -->
+                    <StackLayout Orientation="Horizontal" 
+                                 HorizontalOptions="FillAndExpand"
+                                 Margin="0,15">
+                        <BoxView BackgroundColor="#CCCCCC" 
+                                 HeightRequest="1" 
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalOptions="Center"/>
+                        <Label Text="O" 
+                               TextColor="Gray" 
                                FontSize="14"
-                               HeightRequest="40"/>
-                    </Frame>
+                               Margin="15,0"
+                               VerticalOptions="Center"/>
+                        <BoxView BackgroundColor="#CCCCCC" 
+                                 HeightRequest="1" 
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalOptions="Center"/>
+                    </StackLayout>
 
-                    <!-- Botón iniciar con ruta -->
-                    <Button Text="Iniciar con Ruta"
-                            Clicked="OnManualLoginClicked"
-                            BackgroundColor="#0A84FF"
-                            TextColor="White"
-                            CornerRadius="10"
-                            Padding="12,8"
-                            FontSize="16"/>
+                    <!-- Sección entrada manual -->
+                    <StackLayout Spacing="15">
+
+                        <Label Text="Entrada manual"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="Black"
+                               HorizontalOptions="Center"/>
+
+                        <!-- Entrada manual -->
+                        <Frame CornerRadius="12"
+                               Padding="0"
+                               HasShadow="False"
+                               BorderColor="#CCCCCC"
+                               BackgroundColor="#F8F8F8"
+                               HeightRequest="50"
+                               Margin="0,5">
+                            <Entry Text="{Binding Ruta}"
+                                   BackgroundColor="Transparent"
+                                   Placeholder="Introducir Ruta"
+                                   TextColor="Black"
+                                   PlaceholderColor="Gray"
+                                   Margin="15,0"
+                                   FontSize="16"
+                                   HeightRequest="50"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+
+                        <!-- Botón iniciar con ruta -->
+                        <Button Text="Iniciar con Ruta"
+                                Clicked="OnManualLoginClicked"
+                                BackgroundColor="#0A84FF"
+                                TextColor="White"
+                                CornerRadius="12"
+                                Padding="15,12"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+
+                    </StackLayout>
+
+                    <!-- Espacio adicional para el scroll -->
+                    <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
+
                 </StackLayout>
-            </Grid>
 
-            <!-- Footer -->
-            <BoxView BackgroundColor="#0A84FF" HeightRequest="50"/>
-        </StackLayout>
+                <!-- Footer -->
+                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
 
-     <!-- Modal de carga -->
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Modal de carga -->
         <AbsoluteLayout x:Name="LoadingOverlay"
-                IsVisible="False"
-                BackgroundColor="#80000000"
-                AbsoluteLayout.LayoutFlags="All"
-                AbsoluteLayout.LayoutBounds="0,0,1,1">
+                        IsVisible="False"
+                        BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
 
             <Frame BackgroundColor="White"
-           CornerRadius="20"
-           Padding="30"
-           HasShadow="True"
-           AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
-           AbsoluteLayout.LayoutFlags="PositionProportional">
+                   CornerRadius="20"
+                   Padding="30"
+                   HasShadow="True"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                   AbsoluteLayout.LayoutFlags="PositionProportional">
 
                 <StackLayout Spacing="15" HorizontalOptions="Center">
                     <ActivityIndicator x:Name="LoadingIndicator"
-                               IsRunning="False"
-                               Color="#0A84FF"
-                               WidthRequest="40"
-                               HeightRequest="40"/>
+                                       IsRunning="False"
+                                       Color="#0A84FF"
+                                       WidthRequest="40"
+                                       HeightRequest="40"/>
                     <Label x:Name="LoadingLabel"
-                   Text="Verificando..."
-                   FontSize="16"
-                   TextColor="Black"
-                   HorizontalOptions="Center"/>
+                           Text="Verificando..."
+                           FontSize="16"
+                           TextColor="Black"
+                           HorizontalOptions="Center"/>
                 </StackLayout>
             </Frame>
         </AbsoluteLayout>
-
-
 
     </AbsoluteLayout>
 </ContentPage>
