@@ -9,6 +9,8 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     public class StaticSettings
     {
         public const string IdRuta = "IdRuta";
+        public const string IdCliente = "IdCliente";
+        public const string IdEmpleado="IdCliente" ;
         public static void FijarConfiguracion(string configuracion, string valor)
         {
             Preferences.Remove(configuracion);
