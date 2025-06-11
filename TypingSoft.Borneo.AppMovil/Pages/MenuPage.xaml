@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.MenuPage"
              BackgroundColor="White"
+             xmlns:VM="clr-namespace:TypingSoft.Borneo.AppMovil.VModels" 
+             x:DataType="VM:MenuVM"
               NavigationPage.HasNavigationBar="False">
 
     <AbsoluteLayout>
@@ -64,7 +66,7 @@
                        HasShadow="False" 
                        CornerRadius="0"
                        Margin="0">
-                    <Label Text="INFORMACIÓN DE VENTA" 
+                    <Label Text="MENU PRINCIPAL" 
                            TextColor="White" 
                            FontSize="18" 
                            FontAttributes="Bold"
@@ -78,30 +80,31 @@
                     <!-- Espacio decorativo -->
                     <BoxView HeightRequest="10" BackgroundColor="Transparent"/>
 
-                    <!-- Título del menú -->
-                    <StackLayout Spacing="10">
-                        <Frame BackgroundColor="#2C2C2C" 
-                               Padding="15" 
-                               HasShadow="True" 
-                               CornerRadius="12"
-                               Margin="0,0,0,10">
-                            <Label Text="🏠 Menú Principal" 
-                                   TextColor="White"
-                                   FontSize="18" 
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center"/>
-                        </Frame>
-                    </StackLayout>
-
+                   
                     <!-- Botones del menú -->
                     <StackLayout Spacing="15">
+                        <!-- Botón Bajar Base de Datos -->
+                        <Frame CornerRadius="12" 
+                      Padding="0" 
+                      HasShadow="True"
+                      BackgroundColor="#1E1E1E">
+                            <Button Text="⬇️ Descargar Datos"
+                           BackgroundColor="Transparent"
+                           TextColor="White"
+                           HeightRequest="55"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="FillAndExpand"
+                                    Command="{Binding SincronizarCatalogosCommand}"
+                                    />
+                                    </Frame>
 
                         <!-- Botón Sincronizar Base de Datos -->
                         <Frame CornerRadius="12" 
                                Padding="0" 
                                HasShadow="True"
                                BackgroundColor="#1E1E1E">
-                            <Button Text="🔄 Sincronizar Base de Datos"
+                            <Button Text="🔄 Sincronizar Datos"
                                     BackgroundColor="Transparent"
                                     TextColor="White"
                                     HeightRequest="55"
@@ -110,18 +113,20 @@
                                     HorizontalOptions="FillAndExpand"/>
                         </Frame>
 
-                        <!-- Botón Bajar Base de Datos -->
+                        <!-- Botón Inicio -->
                         <Frame CornerRadius="12" 
-                               Padding="0" 
-                               HasShadow="True"
-                               BackgroundColor="#1E1E1E">
-                            <Button Text="⬇️ Bajar Base de Datos"
-                                    BackgroundColor="Transparent"
-                                    TextColor="White"
-                                    HeightRequest="55"
-                                    FontSize="16"
-                                    FontAttributes="Bold"
-                                    HorizontalOptions="FillAndExpand"/>
+        Padding="0" 
+        HasShadow="True"
+        BackgroundColor="#34C759">
+                            <Button Text="💰 Iniciar"
+             BackgroundColor="Transparent"
+             TextColor="White"
+             HeightRequest="55"
+             FontSize="16"
+             FontAttributes="Bold"
+          
+            Command="{Binding NavegarInicioCommand}"
+             HorizontalOptions="FillAndExpand"/>
                         </Frame>
 
                         <!-- Botón Generar Venta -->
@@ -129,30 +134,17 @@
                                Padding="0" 
                                HasShadow="True"
                                BackgroundColor="#0A84FF">
-                            <Button Text="💰 Generar Venta"
+                            <Button Text="Cerrar Sesion"
                                     BackgroundColor="Transparent"
                                     TextColor="White"
                                     HeightRequest="55"
                                     FontSize="16"
                                     FontAttributes="Bold"
-                                    Clicked="OnGenerarVentaClicked"
+                                  Command="{Binding CerrarSesionCommand}"
                                     HorizontalOptions="FillAndExpand"/>
                         </Frame>
 
-                        <!-- Botón Inicio -->
-                        <Frame CornerRadius="12" 
-                               Padding="0" 
-                               HasShadow="True"
-                               BackgroundColor="#34C759">
-                            <Button Text="🏡 Inicio"
-                                    BackgroundColor="Transparent"
-                                    TextColor="White"
-                                    HeightRequest="55"
-                                    FontSize="16"
-                                    FontAttributes="Bold"
-                                    Clicked="OnEmpeladoClicked"
-                                    HorizontalOptions="FillAndExpand"/>
-                        </Frame>
+                       
 
                     </StackLayout>
 
@@ -161,8 +153,6 @@
 
                 </StackLayout>
 
-                <!-- Footer -->
-                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
 
             </StackLayout>
         </ScrollView>

@@ -10,18 +10,10 @@ public partial class MenuPage : ContentPage
      public MenuPage()
 	{
 		InitializeComponent();
-        var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
+        var viewModel = App.ServiceProvider.GetService<VModels.MenuVM>();
         if (viewModel != null)
             this.BindingContext = viewModel;
     }
-    private async void OnGenerarVentaClicked(object sender, EventArgs e)
-    {
-        // Usar CustomNavigation para navegar a ClientePage
-        await App.NavigationService.Navegar(nameof(ClientePage));
-    }
-    private async void OnEmpeladoClicked(object sender, EventArgs e)
-    {
-        // Usar CustomNavigation para navegar a ClientePage
-        await App.NavigationService.Navegar(nameof(EmpleadosPage));
-    }
+   
+
 }
