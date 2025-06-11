@@ -31,11 +31,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
 
+
         private async Task CargarDescripcionRutaAsync()
         {
             var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
             System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
-            descripcionRuta = descripcion;
+            DescripcionRuta = descripcion;
         }
 
 
@@ -63,7 +64,11 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
 
 
-        
+        private async void CargarDescripcionRuta()
+        {
+            var db = new LocalDatabaseService();
+            DescripcionRuta = await db.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+        }
         #region Alerta 
         private Task MostrarAlertaAsync(string titulo, string mensaje)
         {

@@ -21,7 +21,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>();
             ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
             ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
-
+            fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
+            _ = CargarDescripcionRutaAsync();
         }
 
         [ObservableProperty]
@@ -88,7 +89,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        private async Task CargarProductosDesdeLocal()
+        public async Task CargarProductosDesdeLocal()
         {
             var productosLocales = await _localDb.ObtenerProductosAsync();
 
@@ -215,6 +216,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             {
                 Procesando = false;
             }
+        }
+        private async Task CargarDescripcionRutaAsync()
+        {
+            var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+            System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
+            DescripcionRuta = descripcion;
         }
 
 

@@ -82,7 +82,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             if (ViewModel != null)
             {
-                await ViewModel.ObtenerClientesAsync();
+                await ViewModel.CargarClientesDesdeLocal();
             }
 
             clientesPicker.SelectedItem = null;

@@ -84,7 +84,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             base.OnAppearing();
             if (ViewModel != null)
             {
-                await ViewModel.ObtenerProductosAsync();
+                await ViewModel.CargarProductosDesdeLocal();
             }
         }
     }
