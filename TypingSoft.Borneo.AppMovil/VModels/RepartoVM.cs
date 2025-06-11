@@ -44,50 +44,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
 
 
-        [RelayCommand]
-        public async Task ObtenerProductosAsync()
-        {
-            MensajeProcesando = "Cargando Productos...";
-            Procesando = true;
-
-            try
-            {
-                // Llamada a la API
-                var (exitoso, mensaje, listaProductos) = await _catalogos.ObtenerProductos();
-
-                if (exitoso && listaProductos != null)
-                {
-                    ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>(listaProductos);
-
-                    // Convertir a entidad local y guardar en SQLite
-                    var productosLocales = listaProductos
-                        .Select(p => new Local.ProductoLocal
-                        {
-                            Id = p.Id,
-                            Producto = p.Producto
-                        })
-                        .ToList();
-
-                    await _localDb.GuardarProductosAsync(productosLocales);
-
-                    MensajeProcesando = "Productos actualizados desde servidor.";
-                }
-                else
-                {
-                    // Si falla la API o devuelve vacío, carga local
-                    await CargarProductosDesdeLocal();
-                }
-            }
-            catch (Exception)
-            {
-                // En caso de error, cargar productos desde almacenamiento local
-                await CargarProductosDesdeLocal();
-            }
-            finally
-            {
-                Procesando = false;
-            }
-        }
+        
 
         public async Task CargarProductosDesdeLocal()
         {

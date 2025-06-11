@@ -63,12 +63,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         }
 
 
-
-        private async void CargarDescripcionRuta()
-        {
-            var db = new LocalDatabaseService();
-            DescripcionRuta = await db.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
-        }
         #region Alerta 
         private Task MostrarAlertaAsync(string titulo, string mensaje)
         {
