@@ -55,7 +55,7 @@ public partial class LoginPage : ContentPage
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 ViewModel.Ruta = firstBarcode.Value;
-                await DisplayAlert("Código QR leído", $"Valor: {firstBarcode.Value}", "OK");
+               // await DisplayAlert("Código QR leído", $"Valor: {firstBarcode.Value}", "OK");
 
                 await MostrarModalCarga(async () =>
                 {

@@ -4,7 +4,8 @@
              x:Class="TypingSoft.Borneo.AppMovil.Pages.LoginPage"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              BackgroundColor="White"
-             Appearing="OnPageAppearing">
+             Appearing="OnPageAppearing"
+             NavigationPage.HasNavigationBar="False">
 
     <AbsoluteLayout>
 
@@ -55,14 +56,14 @@
                     <StackLayout Spacing="15">
 
                         <!-- Botón QR -->
-                        <Button Text="Escanear código QR"
+                        <!--<Button Text="Escanear código QR"
                                 Clicked="OnLoginButtonClicked"
                                 BackgroundColor="#0A84FF"
                                 TextColor="White"
                                 CornerRadius="12"
                                 Padding="15,12"
                                 FontSize="16"
-                                FontAttributes="Bold"/>
+                                FontAttributes="Bold"/>-->
 
                         <!-- Cámara QR -->
                         <Frame CornerRadius="15"
@@ -85,7 +86,7 @@
                     </StackLayout>
 
                     <!-- Separador visual -->
-                    <StackLayout Orientation="Horizontal" 
+                    <!--<StackLayout Orientation="Horizontal" 
                                  HorizontalOptions="FillAndExpand"
                                  Margin="0,15">
                         <BoxView BackgroundColor="#CCCCCC" 
@@ -101,10 +102,10 @@
                                  HeightRequest="1" 
                                  HorizontalOptions="FillAndExpand"
                                  VerticalOptions="Center"/>
-                    </StackLayout>
+                    </StackLayout>-->
 
                     <!-- Sección entrada manual -->
-                    <StackLayout Spacing="15">
+                    <!--<StackLayout Spacing="15">
 
                         <Label Text="Entrada manual"
                                FontSize="16"
@@ -112,7 +113,7 @@
                                TextColor="Black"
                                HorizontalOptions="Center"/>
 
-                        <!-- Entrada manual -->
+                        --><!-- Entrada manual --><!--
                         <Frame CornerRadius="12"
                                Padding="0"
                                HasShadow="False"
@@ -131,7 +132,7 @@
                                    VerticalOptions="Center"/>
                         </Frame>
 
-                        <!-- Botón iniciar con ruta -->
+                        --><!-- Botón iniciar con ruta --><!--
                         <Button Text="Iniciar con Ruta"
                                 Clicked="OnManualLoginClicked"
                                 BackgroundColor="#0A84FF"
@@ -141,7 +142,7 @@
                                 FontSize="16"
                                 FontAttributes="Bold"/>
 
-                    </StackLayout>
+                    </StackLayout>-->
 
                     <!-- Espacio adicional para el scroll -->
                     <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
@@ -149,7 +150,7 @@
                 </StackLayout>
 
                 <!-- Footer -->
-                <BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>
+                <!--<BoxView BackgroundColor="#0A84FF" HeightRequest="60"/>-->
 
             </StackLayout>
         </ScrollView>

@@ -113,7 +113,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
                 var res = await PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
                 return ProcessResponse<TResponse>(res);
             }
-            catch
+            catch (Exception ex)
             {
                 return (HttpStatusCode.BadRequest, default);
             }

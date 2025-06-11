@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using TypingSoft.Borneo.AppMovil.Helpers;
 using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.BL
@@ -21,7 +22,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
                 {
                     if (respuesta.Exito)
                     {
-
+                        StaticSettings.FijarConfiguracion(StaticSettings.IdRuta,respuesta.Data.Id.ToString());
                         return (true, respuesta.Mensaje, respuesta.Data);
                     }
                     else
