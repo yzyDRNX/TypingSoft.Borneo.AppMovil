@@ -19,7 +19,18 @@ namespace TypingSoft.Borneo.AppMovil
         }
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            var mainPage = new NavigationPage(new InicioPage());
+
+            NavigationPage mainPage;
+            string IdRuta =Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.IdRuta);
+
+            if (IdRuta != null)
+            {
+                mainPage = new NavigationPage(new MenuPage());
+            } else
+            {
+                mainPage = new NavigationPage(new InicioPage());
+            }
+          
             return new Window(mainPage);
         }
 
