@@ -58,6 +58,11 @@ namespace TypingSoft.Borneo.AppMovil
             services.AddSingleton<VModels.CatalogosVM>();
             services.AddSingleton<VModels.LoginVM>();
             services.AddSingleton<VModels.MenuVM>();
+            services.AddSingleton<VModels.EmpleadosVM>();
+            services.AddSingleton<VModels.RepartoVM>();
+            services.AddSingleton<VModels.UtileriasPageViewModel>();
+            services.AddSingleton<VModels.ClientePageViewModel>();
+            services.AddSingleton<VModels.UrlPageVM>();
         }
     }
 }

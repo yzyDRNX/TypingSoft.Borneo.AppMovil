@@ -7,34 +7,37 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class EmpleadosPage : ContentPage
     {
-        VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
+        VModels.EmpleadosVM? ViewModel;
         private readonly HashSet<Guid> _empleadosSeleccionados = new HashSet<Guid>();
 
         public EmpleadosPage()
         {
             InitializeComponent();
-            SetupViewModel();
+            ViewModel = App.ServiceProvider.GetService<VModels.EmpleadosVM>();
+            if (ViewModel != null)
+            {
+                this.BindingContext = ViewModel;
+              
+            }
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+             
         }
 
-        private void SetupViewModel()
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (App.ServiceProvider != null)
+            switch (e.PropertyName)
             {
-                var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
-                this.BindingContext = viewModel ?? CreateFallbackViewModel();
+                case "ListadoEmpleados":
+                    empleadosPicker.ItemsSource = ViewModel?.ListadoEmpleados;
+                    empleadosPicker.SelectedItem = null; // Resetear selección al cargar la lista
+                    emptyStateLabel.IsVisible = ViewModel?.ListadoEmpleados.Count == 0;
+                    empleadosSeleccionadosStack.Children.Clear(); // Limpiar la lista de empleados seleccionados
+                    _empleadosSeleccionados.Clear(); // Limpiar el conjunto de IDs seleccionados
+                    break;  
+                default:
+                    break;
             }
-            else
-            {
-                this.BindingContext = CreateFallbackViewModel();
-            }
-        }
-
-        private VModels.CatalogosVM CreateFallbackViewModel()
-        {
-            var catalogosService = new Services.CatalogosService();
-            var catalogosBL = new BL.CatalogosBL(catalogosService);
-            var localDb = new Services.LocalDatabaseService();
-            return new VModels.CatalogosVM(catalogosBL, localDb);
         }
 
         private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
@@ -98,7 +101,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             if (ViewModel != null)
             {
-                await ViewModel.ObtenerEmpleadosAsync();
+                await ViewModel.CargarEmpleadosDesdeLocal();
             }
 
             // Resetear selección al aparecer

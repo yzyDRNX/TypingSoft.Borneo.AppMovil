@@ -84,7 +84,7 @@
 	  <MauiXaml Update="Pages\EmpleadosPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\InicioPage.xaml">
+	  <MauiXaml Update="Pages\UrlPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\LoginPage.xaml">
@@ -106,6 +106,12 @@
 	  <Folder Include="CustomViews\" />
 	  <Folder Include="MopUps\" />
 	  <Folder Include="CustomControls\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Pages\UrlPage.xaml.cs">
+	    <DependentUpon>UrlPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

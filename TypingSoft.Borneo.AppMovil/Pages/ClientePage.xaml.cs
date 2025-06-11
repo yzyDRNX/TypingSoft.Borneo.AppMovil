@@ -8,25 +8,27 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class ClientePage : ContentPage
     {
-        private CatalogosVM ViewModel => BindingContext as CatalogosVM;
-        
+        VModels.ClientePageViewModel ViewModel;
+
 
         public ClientePage()
         {
             InitializeComponent();
-            SetupViewModel();
-        }
+            ViewModel = App.ServiceProvider.GetService<VModels.ClientePageViewModel>();
+            if (ViewModel != null)
+            {
+                this.BindingContext = ViewModel;
 
-        private void SetupViewModel()
-        {
-            if (App.ServiceProvider != null)
-            {
-                var viewModel = App.ServiceProvider.GetService<CatalogosVM>();
-                this.BindingContext = viewModel ?? CreateFallbackViewModel();
             }
-            else
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+        }
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                this.BindingContext = CreateFallbackViewModel();
+                
             }
         }
 
@@ -63,7 +65,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         }
 
 
-        private async void OnRepartoClicked(object sender, EventArgs e)
+        public async void OnRepartoClicked(object sender, EventArgs e)
         {
             if (ViewModel?.ClientesASurtir.Count == 0)
             {

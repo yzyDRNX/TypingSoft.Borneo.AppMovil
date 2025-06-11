@@ -101,7 +101,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Picker x:Name="empleadosPicker"
-                                ItemsSource="{Binding ListadoEmpleados}"
+                                ItemsSource="{Binding ListaEmpleados}"
                                 ItemDisplayBinding="{Binding Empleado}"
                                 Title="Seleccione un empleado"
                                 TitleColor="#666666"

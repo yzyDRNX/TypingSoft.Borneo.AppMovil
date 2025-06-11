@@ -7,25 +7,27 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class RepartoPage : ContentPage
     {
-        private CatalogosVM ViewModel => BindingContext as CatalogosVM;
+        VModels.RepartoVM ViewModel;
+
 
         public RepartoPage()
         {
             InitializeComponent();
-            SetupViewModel();
-        }
+            ViewModel = App.ServiceProvider.GetService<VModels.RepartoVM>();
+            if (ViewModel != null)
+            {
+                this.BindingContext = ViewModel;
 
-        // === Métodos originales (sin cambios críticos) ===
-        private void SetupViewModel()
-        {
-            if (App.ServiceProvider != null)
-            {
-                var viewModel = App.ServiceProvider.GetService<CatalogosVM>();
-                this.BindingContext = viewModel ?? CreateFallbackViewModel();
             }
-            else
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+        }
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                this.BindingContext = CreateFallbackViewModel();
+
             }
         }
 
