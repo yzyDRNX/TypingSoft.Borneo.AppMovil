@@ -7,11 +7,13 @@ using TypingSoft.Borneo.AppMovil.VModels;
 
 public partial class MenuPage : ContentPage
 {
-    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
-    public MenuPage()
+     public MenuPage()
 	{
 		InitializeComponent();
-	}
+        var viewModel = App.ServiceProvider.GetService<VModels.CatalogosVM>();
+        if (viewModel != null)
+            this.BindingContext = viewModel;
+    }
     private async void OnGenerarVentaClicked(object sender, EventArgs e)
     {
         // Usar CustomNavigation para navegar a ClientePage
