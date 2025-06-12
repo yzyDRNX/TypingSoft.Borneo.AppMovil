@@ -18,6 +18,9 @@ namespace TypingSoft.Borneo.AppMovil.Local
         [Column("Vuelta")]
         public int Vuelta { get; set; }
 
+        [Column("Fecha")]
+        public DateTime Fecha { get; set; }
+
 
     }
 }

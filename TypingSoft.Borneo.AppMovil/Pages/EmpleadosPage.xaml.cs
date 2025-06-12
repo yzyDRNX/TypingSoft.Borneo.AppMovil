@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using TypingSoft.Borneo.AppMovil.Models.API;
+using TypingSoft.Borneo.AppMovil.Local;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
 {
@@ -92,9 +93,30 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
+            if (ViewModel == null || ViewModel.IdRutaActual == null)
+            {
+                await DisplayAlert("Error", "No se encontró la ruta actual. Asegúrate de que esté cargada.", "OK");
+                return;
+            }
+
+            var nuevaVenta = new VentaGeneralLocal
+            {
+                IdRuta = ViewModel.IdRutaActual, // ← usa .Value porque es Guid?
+                Fecha = DateTime.Now,
+                Vuelta = 1
+            };
+
+            await ViewModel._localDb.GuardarVentaAsync(nuevaVenta);
+
+            var ventas = await ViewModel._localDb.ObtenerVentasAsync();
+            System.Diagnostics.Debug.WriteLine($"Ventas totales registradas: {ventas.Count}");
+
             await Navigation.PushAsync(new ClientePage());
         }
- 
+
+
+
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();

@@ -28,6 +28,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         string descripcionRuta;
+
+        [ObservableProperty]
+        private Guid idRutaActual;
+
         [ObservableProperty]
         ObservableCollection<Models.Custom.EmpleadosLista> listadoEmpleados;
 
@@ -35,9 +39,24 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         private async Task CargarDescripcionRutaAsync()
         {
             var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
-            System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
             DescripcionRuta = descripcion;
+
+            // Aquí recuperas el Guid de la ruta (puede ser nulo)
+            Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
+
+            if (idRuta.HasValue)
+            {
+                IdRutaActual = idRuta.Value;
+            }
+            else
+            {
+                // Maneja el caso en que no se pudo obtener el IdRuta
+                await MostrarAlertaAsync("Error", "No se pudo obtener el Id de la ruta.");
+                IdRutaActual = Guid.Empty; // o no lo asignas, según tu lógica
+            }
         }
+
+
 
 
         public async Task CargarEmpleadosDesdeLocal()

@@ -20,7 +20,9 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<PrecioLocal>().Wait();
             _database.CreateTableAsync<RutaLocal>().Wait();
             _database.CreateTableAsync<SeleccionTemporal>().Wait();
+            _database.CreateTableAsync<VentaGeneralLocal>().Wait(); // ← Nuevo
         }
+
 
         public async Task GuardarRutaAsync(RutaLocal ruta)
         {
@@ -167,6 +169,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.InsertAllAsync(seleccion);
         }
 
+        public async Task GuardarVentaAsync(VentaGeneralLocal venta)
+        {
+            await _database.InsertAsync(venta);
+        }
+        public async Task<List<VentaGeneralLocal>> ObtenerVentasAsync()
+        {
+            return await _database.Table<VentaGeneralLocal>().ToListAsync();
+        }
 
     }
 }
