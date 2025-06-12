@@ -18,8 +18,6 @@ public partial class UtileriasPage : ContentPage
         bleManager = App.ServiceProvider.GetService<IBleManager>();
     }
 
-    VModels.CatalogosVM ViewModel => this.BindingContext as VModels.CatalogosVM;
-
     private async void Impresion(object sender, EventArgs e)
     {
         var vm = BindingContext as UtileriasPageViewModel;

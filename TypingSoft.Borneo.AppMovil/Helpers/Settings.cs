@@ -8,5 +8,7 @@
         public static string? UltimaDescripcionRuta { get; set; }
         public static Guid IdRuta { get; set; }
         public static Guid IdClienteAsociado { get; set; }
+
+        public static Guid IdVentaGeneral { get; set; }
     }
 }

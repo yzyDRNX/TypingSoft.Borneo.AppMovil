@@ -9,7 +9,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public CatalogosService() : base("Catalogos/")
         {
 
-        }
+        }   
         #endregion
 
         #region Metodos

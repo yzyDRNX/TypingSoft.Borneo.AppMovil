@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using TypingSoft.Borneo.AppMovil.Models.Custom;
+using TypingSoft.Borneo.AppMovil.Models.API;
 
 namespace TypingSoft.Borneo.AppMovil.Helpers
 {
     public static class TicketFormatter
     {
-        public static string FormatearTicket(VentaGeneralRequestDTO venta)
+        public static string FormatearTicket(VentaGeneralResponse venta)
         {
             var sb = new StringBuilder();
             sb.AppendLine("TICKET DE VENTA");
@@ -15,7 +15,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             {
                 foreach (var item in venta.Data)
                 {
-                    //sb.AppendLine($"Producto: {item.Nombre}  Cantidad: {item.Cantidad}  Total: {item.Total}");
+                    sb.AppendLine($"Producto: {item.IdRuta}  Cantidad: {item.Vuelta}  Total: {item.Fecha}");
                 }
             }
             sb.AppendLine("----------------------");

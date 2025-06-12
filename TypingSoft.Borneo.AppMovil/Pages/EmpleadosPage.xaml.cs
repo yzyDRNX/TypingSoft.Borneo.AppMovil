@@ -94,7 +94,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             await Navigation.PushAsync(new ClientePage());
         }
-
+ 
         protected override async void OnAppearing()
         {
             base.OnAppearing();

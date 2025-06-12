@@ -1,12 +1,16 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using TypingSoft.Borneo.AppMovil.Models.Custom;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Threading.Tasks;
+using TypingSoft.Borneo.AppMovil.Models.API;
+using TypingSoft.Borneo.AppMovil.Helpers;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
 using TypingSoft.Borneo.AppMovil.Services;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
-    public class UtileriasPageViewModel : INotifyPropertyChanged
+    public partial class UtileriasPageViewModel : Helpers.VMBase
     {
         private string _fechaActual;
         public string FechaActual
@@ -18,8 +22,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 OnPropertyChanged();
             }
         }
-        private VentaGeneralRequestDTO _ventaActual;
-        public VentaGeneralRequestDTO VentaActual
+
+        private VentaGeneralResponse _ventaActual;
+        public VentaGeneralResponse VentaActual
         {
             get => _ventaActual;
             set
@@ -29,8 +34,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        
-
         private string _descripcionRuta;
         public string DescripcionRuta
         {
@@ -38,11 +41,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             set
             {
                 _descripcionRuta = value;
-                OnPropertyChanged(nameof(DescripcionRuta));
+                OnPropertyChanged();
             }
         }
 
-        // En el constructor o método de inicialización:
         public UtileriasPageViewModel()
         {
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
@@ -55,10 +57,21 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             DescripcionRuta = await db.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
         }
 
+        // Comando de impresión
+        [RelayCommand]
+        public async Task ImprimirAsync()
+        {
+            if (VentaActual == null)
+                return;
 
+            string ticket = TicketFormatter.FormatearTicket(VentaActual);
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
+            if (printer != null)
+            {
+                await printer.PrintTextAsync(ticket);
+            }
+            // Si quieres manejar errores aquí, puedes loguearlos o mostrar un Toast si tienes acceso
+        }
     }
 }
