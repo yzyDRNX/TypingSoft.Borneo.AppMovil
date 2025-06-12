@@ -10,7 +10,16 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     {
         public const string IdRuta = "IdRuta";
         public const string IdCliente = "IdCliente";
-        public const string IdEmpleado="IdCliente" ;
+
+
+        public const string IdVentaGeneral = "IdVentaGeneral";
+        public const string IdClienteAsociado = "IdClienteAsociado";
+        public const string IdCondicionPago = "IdCondicionPago";
+        public const string IdFormaPago = "IdFormaPago";
+        public const string IdProducto = "IdProducto";
+        public const string Cantidad = "Cantidad";
+        public const string ImporteTotal = "ImporteTotal";
+
         public static void FijarConfiguracion(string configuracion, string valor)
         {
             Preferences.Remove(configuracion);
