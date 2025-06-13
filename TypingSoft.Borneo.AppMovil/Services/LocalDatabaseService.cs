@@ -1,6 +1,8 @@
-﻿using SQLite;
+﻿using HealthKit;
+using SQLite;
 using System.IO;
 using TypingSoft.Borneo.AppMovil.Local;
+using ZXing.Datamatrix;
 
 namespace TypingSoft.Borneo.AppMovil.Services
 {
@@ -127,6 +129,44 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<VentaGeneralLocal>().ToListAsync();
         }
+
+        #region Ventas
+
+        public async Task<VentaGeneralLocal> ObtenerVentaGeneralActiva()
+        {
+            return await _database.Table<VentaGeneralLocal>().Where(v => v.Sincronizado==false &&  v.Fecha.ToLongDateString()==DateTime.Now.ToShortDateString()).FirstOrDefaultAsync();
+
+        }
+
+        public async Task<bool> GuardarVentaGeneral(VentaGeneralLocal venta)
+        {
+
+            bool existe=true;
+            // Si ya existe una venta general para hoy, la actualizamos
+            var ventaExistente = _database.Table<VentaGeneralLocal>().Where(v => v.Sincronizado == false && v.Fecha.ToLongDateString() == DateTime.Now.ToShortDateString()).FirstOrDefaultAsync());
+            if (ventaExistente == null)
+            {
+                // Si no existe, la insertamos
+                await _database.InsertAsync(venta);
+                existe = false;
+            }
+
+
+            return existe;  
+        }
+
+        //Metodo para borrar la venta general activa    
+        public async Task<bool> BorrarVentaGeneralActiva()
+        {
+            var venta = await ObtenerVentaGeneralActiva();
+            if (venta != null)
+            {
+                await _database.DeleteAsync(venta);
+                return true;
+            }
+            return false;
+        }
+        #endregion
 
     }
 }
