@@ -91,7 +91,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Picker x:Name="productosPicker"
-                                ItemsSource="{Binding ListadoProductos}"
+                                ItemsSource="{Binding ListadoPreciosLocal}"
                                 ItemDisplayBinding="{Binding Producto}"
                                 Title="Seleccione un producto"
                                 TitleColor="#666666"

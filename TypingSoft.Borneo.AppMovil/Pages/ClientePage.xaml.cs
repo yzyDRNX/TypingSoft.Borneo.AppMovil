@@ -59,7 +59,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
 
             await ViewModel.Surtir(clienteSeleccionado);
-            await ViewModel._localDb.GuardarClienteTemporalAsync(clienteSeleccionado.Cliente); // ← Guardar en base local
 
             clientesPicker.SelectedItem = null; // Resetear selección
         }

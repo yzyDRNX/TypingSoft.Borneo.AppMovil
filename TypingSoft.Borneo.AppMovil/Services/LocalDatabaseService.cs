@@ -1,5 +1,4 @@
-﻿using HealthKit;
-using SQLite;
+﻿using SQLite;
 using System.IO;
 using TypingSoft.Borneo.AppMovil.Local;
 using ZXing.Datamatrix;
@@ -21,7 +20,8 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<CondicionLocal>().Wait();
             _database.CreateTableAsync<PrecioLocal>().Wait();
             _database.CreateTableAsync<RutaLocal>().Wait();
-            _database.CreateTableAsync<VentaGeneralLocal>().Wait(); // ← Nuevo
+            _database.CreateTableAsync<VentaGeneralLocal>().Wait();
+            _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
         }
 
 
@@ -119,6 +119,12 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.InsertAllAsync(precios);
         }
 
+        public async Task<List<PrecioLocal>> ObtenerPreciosAsync()
+        {
+            return await _database.Table<PrecioLocal>().ToListAsync();
+        }
+
+
 
 
         public async Task GuardarVentaAsync(VentaGeneralLocal venta)
@@ -134,25 +140,34 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task<VentaGeneralLocal> ObtenerVentaGeneralActiva()
         {
-            return await _database.Table<VentaGeneralLocal>().Where(v => v.Sincronizado==false &&  v.Fecha.ToLongDateString()==DateTime.Now.ToShortDateString()).FirstOrDefaultAsync();
+            var hoy = DateTime.Now.Date;
+            var mañana = hoy.AddDays(1);
 
+            return await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.Sincronizado == false &&
+                            v.Fecha >= hoy &&
+                            v.Fecha < mañana)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> GuardarVentaGeneral(VentaGeneralLocal venta)
         {
+            var hoy = DateTime.Now.Date;
+            var mañana = hoy.AddDays(1);
 
-            bool existe=true;
-            // Si ya existe una venta general para hoy, la actualizamos
-            var ventaExistente = _database.Table<VentaGeneralLocal>().Where(v => v.Sincronizado == false && v.Fecha.ToLongDateString() == DateTime.Now.ToShortDateString()).FirstOrDefaultAsync());
+            bool existe = true;
+            var ventaExistente = await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.Sincronizado == false &&
+                            v.Fecha >= hoy &&
+                            v.Fecha < mañana)
+                .FirstOrDefaultAsync();
+
             if (ventaExistente == null)
             {
-                // Si no existe, la insertamos
                 await _database.InsertAsync(venta);
                 existe = false;
             }
-
-
-            return existe;  
+            return existe;
         }
 
         //Metodo para borrar la venta general activa    
@@ -165,6 +180,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 return true;
             }
             return false;
+        }
+        public async Task InsertarVentaDetalleAsync(VentaDetalleLocal detalle)
+        {
+            await _database.InsertAsync(detalle);
+        }
+        public async Task<List<VentaDetalleLocal>> ObtenerDetallesAsync()
+        {
+            return await _database.Table<VentaDetalleLocal>().ToListAsync();
         }
         #endregion
 

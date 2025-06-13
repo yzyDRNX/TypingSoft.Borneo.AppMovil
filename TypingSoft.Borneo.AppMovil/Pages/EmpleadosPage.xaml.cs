@@ -101,6 +101,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             var nuevaVenta = new VentaGeneralLocal
             {
+                IdVentaGeneral = Guid.NewGuid(),
                 IdRuta = ViewModel.IdRutaActual, // ← usa .Value porque es Guid?
                 Fecha = DateTime.Now,
                 Vuelta = 1

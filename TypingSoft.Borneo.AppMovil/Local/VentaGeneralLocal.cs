@@ -1,17 +1,14 @@
 ﻿using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Local
 {
-    [Table("VentaDetalleLocal")]
+    [Table("VentaGeneralLocal")]
     public class VentaGeneralLocal
     {
         [PrimaryKey]
-        [AutoIncrement]
+        [Column("IdVentaGeneral")]
+        public Guid IdVentaGeneral { get; set; }
+
         [Column("IdRuta")]
         public Guid IdRuta { get; set; }
 

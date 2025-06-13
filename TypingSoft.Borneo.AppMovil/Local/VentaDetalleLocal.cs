@@ -1,12 +1,13 @@
 ﻿using SQLite;
 
-
 namespace TypingSoft.Borneo.AppMovil.Local
 {
     [Table("VentaDetalleLocal")]
     public class VentaDetalleLocal
     {
         [PrimaryKey]
+        public Guid IdDetalle { get; set; } = Guid.NewGuid();
+
         [Column("IdVentaGeneral")]
         public Guid IdVentaGeneral { get; set; }
 

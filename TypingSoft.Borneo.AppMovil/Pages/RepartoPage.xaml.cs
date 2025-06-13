@@ -39,24 +39,32 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             return new CatalogosVM(catalogosBL, localDb);
         }
 
-        private void OnAñadirProductoClicked(object sender, EventArgs e)
+        private async void OnAñadirProductoClicked(object sender, EventArgs e)
         {
             if (ViewModel == null) return;
 
-            // Cambio seguro: Usar 'dynamic' para evitar errores de tipo (o reemplaza con tu clase real)
-            var productoSeleccionado = productosPicker.SelectedItem as dynamic; // O usa el tipo correcto (ej: Models.Producto)
-            var cantidad = cantidadEntry.Text;
+            var productoSeleccionado = productosPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Local.PrecioLocal;
+            var cantidadTexto = cantidadEntry.Text;
 
-            if (productoSeleccionado == null || string.IsNullOrEmpty(cantidad))
+            if (productoSeleccionado == null || string.IsNullOrEmpty(cantidadTexto) || !int.TryParse(cantidadTexto, out int cantidad) || cantidad <= 0)
             {
-                DisplayAlert("Aviso", "Por favor seleccione un producto y una cantidad.", "OK");
+                await DisplayAlert("Aviso", "Por favor seleccione un producto y una cantidad válida.", "OK");
                 return;
             }
 
-            // Mantener la lógica original de añadir al StackLayout
+            // Obtener el precio (asegúrate de que esté en formato decimal)
+            if (!decimal.TryParse(productoSeleccionado.Precio, out decimal precioUnitario))
+            {
+                await DisplayAlert("Error", "El precio del producto no es válido.", "OK");
+                return;
+            }
+
+            decimal importeTotal = cantidad * precioUnitario;
+
+            // Mostrar en la UI
             var productoLabel = new Label
             {
-                Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad}", // Asegúrate de que 'Producto' sea la propiedad correcta
+                Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad} - Importe: {importeTotal:C}",
                 FontSize = 14,
                 TextColor = Color.FromArgb("#333333")
             };
@@ -84,7 +92,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             base.OnAppearing();
             if (ViewModel != null)
             {
-                await ViewModel.CargarProductosDesdeLocal();
+                await ViewModel.CargarPreciosDesdeLocal();
             }
         }
     }

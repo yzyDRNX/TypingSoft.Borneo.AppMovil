@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TypingSoft.Borneo.AppMovil.Services;
+using TypingSoft.Borneo.AppMovil.Local;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -21,6 +22,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>();
             ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
             ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
+            ListadoPreciosLocal = new ObservableCollection<PrecioLocal>();
             fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             _ = CargarDescripcionRutaAsync();
         }
@@ -30,6 +32,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         string descripcionRuta;
+
+
         [ObservableProperty]
         ObservableCollection<Models.Custom.ProductosLista> listadoProductos;
 
@@ -42,9 +46,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         ObservableCollection<Models.Custom.PreciosLista> listadoPrecios;
 
-
-
-        
+        [ObservableProperty]
+        ObservableCollection<PrecioLocal> listadoPreciosLocal = new();
 
         public async Task CargarProductosDesdeLocal()
         {
@@ -66,8 +69,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 await MostrarAlertaAsync("Advertencia", "No hay productos locales disponibles.");
             }
         }
-
-
 
         public async Task ObtenerFormasAsync()
         {
@@ -174,13 +175,41 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Procesando = false;
             }
         }
+
+        public async Task CargarPreciosDesdeLocal()
+        {
+            var preciosLocales = await _localDb.ObtenerPreciosAsync(); // Este método debe devolver List<PrecioLocal>
+            if (preciosLocales != null && preciosLocales.Any())
+                ListadoPreciosLocal = new ObservableCollection<PrecioLocal>(preciosLocales);
+            else
+                ListadoPreciosLocal.Clear();
+        }
+
+        public async Task AgregarDetalleVentaAsync(PrecioLocal producto, int cantidad, decimal importeTotal)
+        {
+            // Aquí debes obtener la venta general activa y los demás IDs necesarios
+            var ventaGeneral = await _localDb.ObtenerVentaGeneralActiva();
+            if (ventaGeneral == null) return;
+
+            var detalle = new VentaDetalleLocal
+            {
+                IdDetalle = Guid.NewGuid(),
+                IdVentaGeneral = ventaGeneral.IdVentaGeneral,
+                IdProducto = producto.IdProducto,
+                Cantidad = cantidad,
+                ImporteTotal = importeTotal,
+                // Completa los demás campos según tu lógica (cliente, condición, forma de pago)
+            };
+
+            await _localDb.InsertarVentaDetalleAsync(detalle);
+        }
+
         private async Task CargarDescripcionRutaAsync()
         {
             var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
             System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
             DescripcionRuta = descripcion;
         }
-
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)
         {
