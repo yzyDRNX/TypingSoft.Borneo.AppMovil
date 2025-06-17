@@ -92,7 +92,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             base.OnAppearing();
             if (ViewModel != null)
             {
-                await ViewModel.CargarPreciosDesdeLocal();
+                var idClienteAsociado = Helpers.StaticSettings.ObtenerValor(Helpers.StaticSettings.IdClienteAsociado);
+                await ViewModel.CargarPreciosPorClienteAsync(idClienteAsociado);
             }
         }
     }

@@ -188,6 +188,31 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 ListadoPreciosLocal.Clear();
         }
 
+        public async Task CargarPreciosPorClienteAsync(Guid idClienteAsociado)
+        {
+            // 1. Intenta obtener precios preferenciales para el cliente
+            var preciosPreferenciales = await _localDb.ObtenerPreciosPreferencialesPorClienteAsync(idClienteAsociado);
+
+            if (preciosPreferenciales != null && preciosPreferenciales.Any())
+            {
+                // Si hay precios preferenciales, los mostramos
+                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(
+                    preciosPreferenciales.Select(p => new PreciosGeneralesLocal
+                    {
+                        IdProducto = p.IdProducto,
+                        Producto = p.Producto,
+                        Precio = p.Precio
+                    })
+                );
+            }
+            else
+            {
+                // Si no hay, mostramos los precios generales
+                var preciosGenerales = await _localDb.ObtenerPreciosGeneralesAsync();
+                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(preciosGenerales);
+            }
+        }
+
         public async Task AgregarDetalleVentaAsync(PreciosGeneralesLocal producto, int cantidad, decimal importeTotal)
         {
             // Aquí debes obtener la venta general activa y los demás IDs necesarios

@@ -124,6 +124,17 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<PreciosGeneralesLocal>().ToListAsync();
         }
+
+        public async Task<List<PreciosGeneralesLocal>> ObtenerPreciosGeneralesAsync()
+        {
+            return await _database.Table<PreciosGeneralesLocal>().ToListAsync();
+        }
+        public async Task<List<PreciosPreferencialesLocal>> ObtenerPreciosPreferencialesPorClienteAsync(Guid idClienteAsociado)
+        {
+            return await _database.Table<PreciosPreferencialesLocal>()
+                .Where(p => p.IdClienteAsociado == idClienteAsociado)
+                .ToListAsync();
+        }
         public async Task GuardarPreciosPreferencialesAsync(List<PreciosPreferencialesLocal> preciosPref)
         {
             await _database.DeleteAllAsync<PreciosPreferencialesLocal>();
