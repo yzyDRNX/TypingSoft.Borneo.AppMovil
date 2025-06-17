@@ -58,6 +58,10 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
+            // Guarda el IdClienteAsociado y el IdCliente del cliente seleccionado
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, clienteSeleccionado.IdCliente.ToString());
+
             await ViewModel.Surtir(clienteSeleccionado);
 
             clientesPicker.SelectedItem = null; // Resetear selección

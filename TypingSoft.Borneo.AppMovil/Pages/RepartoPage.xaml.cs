@@ -43,7 +43,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         {
             if (ViewModel == null) return;
 
-            var productoSeleccionado = productosPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Local.PrecioLocal;
+            var productoSeleccionado = productosPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Local.PreciosGeneralesLocal;
             var cantidadTexto = cantidadEntry.Text;
 
             if (productoSeleccionado == null || string.IsNullOrEmpty(cantidadTexto) || !int.TryParse(cantidadTexto, out int cantidad) || cantidad <= 0)

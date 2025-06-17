@@ -21,8 +21,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
             ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>();
             ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
-            ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
-            ListadoPreciosLocal = new ObservableCollection<PrecioLocal>();
+            ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>();
+            ListadoPreciosPreferenciales = new ObservableCollection<Models.Custom.PreciosPreferencialesLista>();
+            ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>();
             fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             _ = CargarDescripcionRutaAsync();
         }
@@ -42,12 +43,14 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         ObservableCollection<Models.Custom.CondicionesLista> listadoCondiciones;
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.PreciosPreferencialesLista> listadoPreciosPreferenciales;
 
         [ObservableProperty]
-        ObservableCollection<Models.Custom.PreciosLista> listadoPrecios;
+        ObservableCollection<Models.Custom.PreciosGeneralesLista> listadoPreciosGenerales;
 
         [ObservableProperty]
-        ObservableCollection<PrecioLocal> listadoPreciosLocal = new();
+        ObservableCollection<PreciosGeneralesLocal> listadoPreciosLocal = new();
 
         public async Task CargarProductosDesdeLocal()
         {
@@ -140,7 +143,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        public async Task ObtenerPreciosAsync()
+        public async Task ObtenerPreciosGeneralesAsync()
         {
             try
             {
@@ -148,18 +151,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Procesando = true;
 
                 Guid IdClienteAsociado = Helpers.Settings.IdClienteAsociado;
-                var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPrecios(IdClienteAsociado);
+                var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPreciosGenerales();
 
                 if (exitoso)
                 {
-                    ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>(listaPrecios);
+                    ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>(listaPrecios);
 
                     // Convierte y guarda en SQLite
                     var preciosLocales = listaPrecios
-                        .Select(p => new Local.PrecioLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
+                        .Select(p => new Local.PreciosGeneralesLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
                         .ToList();
 
-                    await _localDb.GuardarPreciosAsync(preciosLocales);
+                    await _localDb.GuardarPreciosGeneralesAsync(preciosLocales);
                 }
                 else
                 {
@@ -180,12 +183,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             var preciosLocales = await _localDb.ObtenerPreciosAsync(); // Este método debe devolver List<PrecioLocal>
             if (preciosLocales != null && preciosLocales.Any())
-                ListadoPreciosLocal = new ObservableCollection<PrecioLocal>(preciosLocales);
+                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(preciosLocales);
             else
                 ListadoPreciosLocal.Clear();
         }
 
-        public async Task AgregarDetalleVentaAsync(PrecioLocal producto, int cantidad, decimal importeTotal)
+        public async Task AgregarDetalleVentaAsync(PreciosGeneralesLocal producto, int cantidad, decimal importeTotal)
         {
             // Aquí debes obtener la venta general activa y los demás IDs necesarios
             var ventaGeneral = await _localDb.ObtenerVentaGeneralActiva();

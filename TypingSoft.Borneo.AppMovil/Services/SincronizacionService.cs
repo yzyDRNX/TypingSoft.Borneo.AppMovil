@@ -120,11 +120,11 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 }
             }
 
-            // Precios
-            var (exitosoPrec, mensajePrec, precios) = await _catalogos.ObtenerPrecios(Settings.IdClienteAsociado);
+            // Precios Generales
+            var (exitosoPrec, mensajePrec, precios) = await _catalogos.ObtenerPreciosGenerales();
             if (exitosoPrec && precios != null)
             {
-                var preciosLocales = precios.Select(p => new PrecioLocal
+                var preciosLocales = precios.Select(p => new PreciosGeneralesLocal
                 {
                     IdProducto = p.IdProducto,
                     Producto = p.Producto,
@@ -132,8 +132,32 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 }).ToList();
                 try
                 {
-                    await _localDb.GuardarPreciosAsync(preciosLocales);
-                    System.Diagnostics.Debug.WriteLine($"[SQLite] Precios guardados: {preciosLocales.Count}");
+                    await _localDb.GuardarPreciosGeneralesAsync(preciosLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Precios generales guardados: {preciosLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios: {ex.Message}");
+                }
+            }
+
+
+
+            var (exitosoPrecPref, mensajePrecPref, preciosPref) = await _catalogos.ObtenerPreciosPreferenciales();
+            if (exitosoPrecPref && preciosPref != null)
+            {
+                var preciosLocales = preciosPref.Select(p => new PreciosPreferencialesLocal
+                {
+                    IdProducto = p.IdProducto,
+                    Producto = p.Producto,
+                    Precio = p.Precio.ToString(),
+                    IdClienteAsociado = p.IdClienteAsociado
+
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarPreciosPreferencialesAsync(preciosLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Precios preferenciales guardados: {preciosLocales.Count}");
                 }
                 catch (Exception ex)
                 {
@@ -141,6 +165,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 }
             }
         }
+
 
     }
 }

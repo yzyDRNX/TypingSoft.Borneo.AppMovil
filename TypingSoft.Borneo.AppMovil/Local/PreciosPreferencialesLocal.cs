@@ -2,11 +2,11 @@
 
 namespace TypingSoft.Borneo.AppMovil.Local
 {
-    [Table("Precios")]
-    public class PrecioLocal
+    [Table("PreciosPreferenciales")]
+    public class PreciosPreferencialesLocal
     {
-        [PrimaryKey]
-        [AutoIncrement]
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
         [Column("IdProducto")]
         public Guid IdProducto { get; set; }
 
@@ -16,5 +16,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
         [Column("Precio")]
         public string? Precio { get; set; }
 
+        [Column("IdClienteAsociado")]
+        public Guid IdClienteAsociado { get; set; } 
     }
 }

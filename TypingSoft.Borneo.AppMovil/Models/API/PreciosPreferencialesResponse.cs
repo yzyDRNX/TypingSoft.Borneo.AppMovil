@@ -6,19 +6,20 @@ using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Models.API
 {
-    public class PreciosResponse: ResponseBase
+    public class PreciosPreferencialesResponse : ResponseBase
     {
-        public PreciosResponse()
+        public PreciosPreferencialesResponse()
         {
-            this.Data = new List<Precios>();
+            this.Data = new List<PreciosPref>();
         }
-        public List<Precios> Data { get; set; }
+        public List<PreciosPref> Data { get; set; }
 
-        public class Precios
+        public class PreciosPref
         {
             public Guid IdProducto { get; set; }
             public string? Producto { get; set; }
             public decimal Precio { get; set; }
+            public Guid IdClienteAsociado { get; set; } 
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿namespace TypingSoft.Borneo.AppMovil.Models.Custom
 {
-    public class PreciosGeneralesLista
+    public class PreciosPreferencialesLista
     {
-        public PreciosGeneralesLista()
+        public PreciosPreferencialesLista()
         {
 
         }
         public Guid IdProducto { get; set; }
         public string? Producto { get; set; }
         public decimal Precio { get; set; }
+        public Guid IdClienteAsociado { get; set; } // Identificador del cliente asociado al precio preferencial
     }
 }

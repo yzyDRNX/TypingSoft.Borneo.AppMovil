@@ -171,21 +171,21 @@ namespace TypingSoft.Borneo.AppMovil.BL
             return (exitoso, mensaje, condicionesLista);
         }
 
-        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.PreciosLista> Precios)> ObtenerPrecios(Guid IdClienteAsociado)
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.PreciosGeneralesLista> Precios)> ObtenerPreciosGenerales()
         {
             var exitoso = false;
             var mensaje = "Ocurrió un error en la petición";
-            var preciosLista = new List<Models.Custom.PreciosLista>();
+            var preciosLista = new List<Models.Custom.PreciosGeneralesLista>();
 
             try
             {
-                var peticion = await this.CatalogosService.ObtenerPrecios(IdClienteAsociado);
+                var peticion = await this.CatalogosService.ObtenerPreciosGenerales();
                 exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
                 if (exitoso)
                 {
                     foreach (var catalogo in peticion.Respuesta.Data)
                     {
-                        preciosLista.Add(new Models.Custom.PreciosLista
+                        preciosLista.Add(new Models.Custom.PreciosGeneralesLista
                         {
                             IdProducto = catalogo.IdProducto,
                             Producto = catalogo.Producto,
@@ -197,10 +197,45 @@ namespace TypingSoft.Borneo.AppMovil.BL
             catch (Exception)
             {
                 mensaje = "Ocurrió un error en la petición";
-                preciosLista = new List<Models.Custom.PreciosLista>();
+                preciosLista = new List<Models.Custom.PreciosGeneralesLista>();
             }
 
             return (exitoso, mensaje, preciosLista);
         }
+
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.PreciosPreferencialesLista> PreciosPref)> ObtenerPreciosPreferenciales()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var preciosLista = new List<Models.Custom.PreciosPreferencialesLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerPreciosPreferenciales();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        preciosLista.Add(new Models.Custom.PreciosPreferencialesLista
+                        {
+                            IdProducto = catalogo.IdProducto,
+                            Producto = catalogo.Producto,
+                            Precio = catalogo.Precio,
+                            IdClienteAsociado = catalogo.IdClienteAsociado
+                            
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                preciosLista = new List<Models.Custom.PreciosPreferencialesLista>();
+            }
+
+            return (exitoso, mensaje, preciosLista);
+        }
+
     }
 }

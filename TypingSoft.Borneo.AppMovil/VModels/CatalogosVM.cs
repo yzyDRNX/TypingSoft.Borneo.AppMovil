@@ -25,7 +25,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoProductos = new ObservableCollection<Models.Custom.ProductosLista>();
             ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>();
             ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>();
-            ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>();
+            ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>();
+            ListadoPreciosPreferenciales = new ObservableCollection<Models.Custom.PreciosPreferencialesLista>();
 
             fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             _ = CargarDescripcionRutaAsync();
@@ -60,7 +61,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         ObservableCollection<Models.Custom.CondicionesLista> listadoCondiciones;
 
         [ObservableProperty]
-        ObservableCollection<Models.Custom.PreciosLista> listadoPrecios;
+        ObservableCollection<Models.Custom.PreciosGeneralesLista> listadoPreciosGenerales;
+        [ObservableProperty]
+        ObservableCollection<Models.Custom.PreciosPreferencialesLista> listadoPreciosPreferenciales;
         #endregion
 
         #region Métodos
@@ -373,18 +376,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Procesando = true;
 
                 Guid IdClienteAsociado = Helpers.Settings.IdClienteAsociado;
-                var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPrecios(IdClienteAsociado);
+                var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPreciosGenerales();
 
                 if (exitoso)
                 {
-                    ListadoPrecios = new ObservableCollection<Models.Custom.PreciosLista>(listaPrecios);
+                    ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>(listaPrecios);
 
                     // Convierte y guarda en SQLite
                     var preciosLocales = listaPrecios
-                        .Select(p => new Local.PrecioLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
+                        .Select(p => new Local.PreciosGeneralesLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
                         .ToList();
 
-                    await _localDb.GuardarPreciosAsync(preciosLocales);
+                    await _localDb.GuardarPreciosGeneralesAsync(preciosLocales);
                 }
                 else
                 {

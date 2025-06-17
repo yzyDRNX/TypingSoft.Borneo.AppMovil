@@ -18,10 +18,11 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<ProductoLocal>().Wait();
             _database.CreateTableAsync<FormaLocal>().Wait();
             _database.CreateTableAsync<CondicionLocal>().Wait();
-            _database.CreateTableAsync<PrecioLocal>().Wait();
+            _database.CreateTableAsync<PreciosGeneralesLocal>().Wait();
             _database.CreateTableAsync<RutaLocal>().Wait();
             _database.CreateTableAsync<VentaGeneralLocal>().Wait();
             _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
+            _database.CreateTableAsync<PreciosPreferencialesLocal>().Wait();
         }
 
 
@@ -113,19 +114,26 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return await _database.Table<CondicionLocal>().ToListAsync();
         }
 
-        public async Task GuardarPreciosAsync(List<PrecioLocal> precios)
+        public async Task GuardarPreciosGeneralesAsync(List<PreciosGeneralesLocal> precios)
         {
-            await _database.DeleteAllAsync<PrecioLocal>();
+            await _database.DeleteAllAsync<PreciosGeneralesLocal>();
             await _database.InsertAllAsync(precios);
         }
 
-        public async Task<List<PrecioLocal>> ObtenerPreciosAsync()
+        public async Task<List<PreciosGeneralesLocal>> ObtenerPreciosAsync()
         {
-            return await _database.Table<PrecioLocal>().ToListAsync();
+            return await _database.Table<PreciosGeneralesLocal>().ToListAsync();
+        }
+        public async Task GuardarPreciosPreferencialesAsync(List<PreciosPreferencialesLocal> preciosPref)
+        {
+            await _database.DeleteAllAsync<PreciosPreferencialesLocal>();
+            await _database.InsertAllAsync(preciosPref);
         }
 
-
-
+        public async Task<List<PreciosPreferencialesLocal>> ObtenerPreciosPreferencialesAsync()
+        {
+            return await _database.Table<PreciosPreferencialesLocal>().ToListAsync();
+        }
 
         public async Task GuardarVentaAsync(VentaGeneralLocal venta)
         {

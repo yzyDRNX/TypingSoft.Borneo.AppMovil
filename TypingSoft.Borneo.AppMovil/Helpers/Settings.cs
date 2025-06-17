@@ -3,7 +3,7 @@
     public class Settings
     {
 
-        public const string UrlBaseAPI = "http://192.168.1.250:45455/API/";
+        public const string UrlBaseAPI = "http://192.168.1.244:45455/API/";
 
         public static string? UltimaDescripcionRuta { get; set; }
         public static Guid IdRuta { get; set; }
