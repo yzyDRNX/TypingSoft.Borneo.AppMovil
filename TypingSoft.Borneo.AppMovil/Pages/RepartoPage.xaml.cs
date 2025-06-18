@@ -52,7 +52,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            // Obtener el precio (asegúrate de que esté en formato decimal)
             if (!decimal.TryParse(productoSeleccionado.Precio, out decimal precioUnitario))
             {
                 await DisplayAlert("Error", "El precio del producto no es válido.", "OK");
@@ -72,6 +71,31 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             productosSeleccionadosStack.Children.Add(productoLabel);
             productosPicker.SelectedItem = null;
             cantidadEntry.Text = string.Empty;
+
+            // --- ACTUALIZA EL TICKET LOCAL CON EL PRODUCTO ---
+            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
+            var ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
+
+            if (ultimoTicket != null)
+            {
+                ultimoTicket.Descripcion = productoSeleccionado.Producto ?? string.Empty;
+                ultimoTicket.Cantidad = cantidad;
+                ultimoTicket.ImporteTotal = importeTotal;
+                await ViewModel._localDb.ActualizarTicketAsync(ultimoTicket);
+            }
+            else
+            {
+                // Si no existe un ticket, crea uno nuevo (opcional)
+                var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketLocal
+                {
+                    Id = Guid.NewGuid(),
+                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
+                    Cantidad = cantidad,
+                    ImporteTotal = importeTotal,
+                    Fecha = DateTime.Now
+                };
+                await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
+            }
         }
 
         private async void OnConcluirClicked(object sender, EventArgs e)
@@ -80,6 +104,21 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 await DisplayAlert("Advertencia", "Debe añadir al menos un producto antes de continuar.", "OK");
                 return;
+            }
+
+            // Consultar y mostrar los tickets guardados en la base de datos local
+            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
+            if (tickets == null || tickets.Count == 0)
+            {
+                await DisplayAlert("Tickets", "No hay tickets registrados.", "OK");
+            }
+            else
+            {
+                string resumen = string.Join(Environment.NewLine + Environment.NewLine, tickets.Select(t =>
+                    $"Fecha: {t.Fecha:dd/MM/yyyy HH:mm}\nCliente: {t.Cliente}\nProducto: {t.Descripcion}\nCantidad: {t.Cantidad}\nImporte: {t.ImporteTotal:C}\nEmpleado: {t.Empleado}"
+                ));
+
+                await DisplayAlert("Tickets en BD", resumen, "OK");
             }
 
             await DisplayAlert("Éxito", "Reparto concluido correctamente.", "OK");

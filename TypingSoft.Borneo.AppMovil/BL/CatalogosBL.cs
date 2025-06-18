@@ -31,8 +31,8 @@ namespace TypingSoft.Borneo.AppMovil.BL
                     {
                         empleadosLista.Add(new Models.Custom.EmpleadosLista
                         {
-                            Id = catalogo.Id,          
-                            Empleado = catalogo.Empleado 
+                            Id = catalogo.Id,
+                            Empleado = catalogo.Empleado
                         });
                     }
                 }
@@ -63,7 +63,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
                         clientesLista.Add(new Models.Custom.ClientesLista
                         {
                             IdCliente = catalogo.IdCliente,
-                            IdClienteAsociado = catalogo.IdClienteAsociado, 
+                            IdClienteAsociado = catalogo.IdClienteAsociado,
                             Cliente = catalogo.Cliente
                         });
                     }
@@ -223,7 +223,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
                             Producto = catalogo.Producto,
                             Precio = catalogo.Precio,
                             IdClienteAsociado = catalogo.IdClienteAsociado
-                            
+
                         });
                     }
                 }

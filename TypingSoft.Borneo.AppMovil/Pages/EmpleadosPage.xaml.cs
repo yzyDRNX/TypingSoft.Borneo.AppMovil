@@ -41,19 +41,19 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
         }
 
-        private void OnAñadirEmpleadoClicked(object sender, EventArgs e)
+        private async void OnAñadirEmpleadoClicked(object sender, EventArgs e)
         {
             var empleadoSeleccionado = empleadosPicker.SelectedItem as Models.Custom.EmpleadosLista;
 
             if (empleadoSeleccionado == null)
             {
-                DisplayAlert("Advertencia", "Por favor, seleccione un empleado antes de añadirlo.", "OK");
+                await DisplayAlert("Advertencia", "Por favor, seleccione un empleado antes de añadirlo.", "OK");
                 return;
             }
 
             if (_empleadosSeleccionados.Contains(empleadoSeleccionado.Id))
             {
-                DisplayAlert("Advertencia", "Este empleado ya está en la lista.", "OK");
+                await DisplayAlert("Advertencia", "Este empleado ya está en la lista.", "OK");
                 return;
             }
 
@@ -83,6 +83,22 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             });
 
             empleadosSeleccionadosStack.Children.Add(empleadoItem);
+
+            // --- GUARDAR NOMBRE DEL EMPLEADO EN TICKETLOCAL ---
+            var ticket = new TicketLocal
+            {
+                Id = Guid.NewGuid(),
+                Empleado = empleadoSeleccionado.Empleado ?? string.Empty, // Guarda el nombre
+                Fecha = DateTime.Now,
+                Cliente = string.Empty,
+                Cantidad = 0,
+                Descripcion = string.Empty,
+                ImporteTotal = 0m
+            };
+
+            await ViewModel._localDb.InsertarTicketAsync(ticket);
+
+            await DisplayAlert("Éxito", "Empleado guardado en el ticket.", "OK");
         }
 
         private async void OnEmpezarRutaClicked(object sender, EventArgs e)
@@ -114,9 +130,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             await Navigation.PushAsync(new ClientePage());
         }
-
-
-
 
         protected override async void OnAppearing()
         {

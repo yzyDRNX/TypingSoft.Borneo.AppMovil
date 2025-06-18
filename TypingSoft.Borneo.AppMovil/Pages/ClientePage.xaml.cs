@@ -1,6 +1,7 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
+using System.Linq; // <-- Asegúrate de tener esto
 using TypingSoft.Borneo.AppMovil.Models.API;
 using TypingSoft.Borneo.AppMovil.VModels;
 
@@ -62,9 +63,29 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, clienteSeleccionado.IdCliente.ToString());
 
+            // --- ACTUALIZA EL TICKET LOCAL CON EL CLIENTE ---
+            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
+            var ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
+
+            if (ultimoTicket != null)
+            {
+                ultimoTicket.Cliente = clienteSeleccionado.Cliente ?? string.Empty;
+                await ViewModel._localDb.ActualizarTicketAsync(ultimoTicket);
+            }
+            else
+            {
+                var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketLocal
+                {
+                    Id = Guid.NewGuid(),
+                    Cliente = clienteSeleccionado.Cliente ?? string.Empty,
+                    Fecha = DateTime.Now
+                };
+                await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
+            }
+
             await ViewModel.Surtir(clienteSeleccionado);
 
-            clientesPicker.SelectedItem = null; // Resetear selección
+            clientesPicker.SelectedItem = null;
         }
 
 

@@ -23,15 +23,28 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<VentaGeneralLocal>().Wait();
             _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
             _database.CreateTableAsync<PreciosPreferencialesLocal>().Wait();
+            _database.CreateTableAsync<TicketLocal>().Wait();
+        }
+        public async Task InsertarTicketAsync(TicketLocal ticket)
+        {
+            await _database.InsertAsync(ticket);
         }
 
+        public async Task<List<TicketLocal>> ObtenerTicketsAsync()
+        {
+            return await _database.Table<TicketLocal>().ToListAsync();
+        }
 
+        public async Task ActualizarTicketAsync(TicketLocal ticket)
+        {
+            await _database.UpdateAsync(ticket);
+        }
         public async Task GuardarRutaAsync(RutaLocal ruta)
         {
-            // Si solo quieres una ruta, puedes limpiar antes
             await _database.DeleteAllAsync<RutaLocal>();
             await _database.InsertAsync(ruta);
         }
+
         public async Task<string?> ObtenerDescripcionRutaAsync()
         {
             var ruta = await ObtenerRutaAsync();
@@ -43,10 +56,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
             var ruta = await ObtenerRutaAsync();
             return ruta?.Id;
         }
-
-
-
-
 
         // Método para obtener la ruta guardada
         public async Task<RutaLocal?> ObtenerRutaAsync()
@@ -64,21 +73,16 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return await _database.Table<EmpleadoLocal>().ToListAsync();
         }
 
-
         public async Task GuardarClientesAsync(List<ClienteLocal> clientes)
         {
             await _database.DeleteAllAsync<ClienteLocal>();
             await _database.InsertAllAsync(clientes);
         }
 
-
-
-
         public async Task<List<ClienteLocal>> ObtenerClientesAsync(Guid idrutaLocal)
         {
             return await _database.Table<ClienteLocal>().ToListAsync();
         }
-
 
         public async Task GuardarProductosAsync(List<ProductoLocal> productos)
         {
@@ -100,8 +104,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.DeleteAllAsync<FormaLocal>();
             await _database.InsertAllAsync(formas);
         }
-
-        
 
         public async Task GuardarCondicionesAsync(List<CondicionLocal> condiciones)
         {

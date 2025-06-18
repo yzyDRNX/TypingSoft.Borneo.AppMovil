@@ -7,11 +7,17 @@ using TypingSoft.Borneo.AppMovil.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using TypingSoft.Borneo.AppMovil.Services;
+using TypingSoft.Borneo.AppMovil.Local;
+using System.Linq;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
     public partial class UtileriasPageViewModel : Helpers.VMBase
     {
+        private readonly LocalDatabaseService _localDb;
+        private int _numeroImpresiones = 0;
+        private TicketLocal _ultimoTicket;
+
         private string _fechaActual;
         public string FechaActual
         {
@@ -19,17 +25,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             set
             {
                 _fechaActual = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private VentaGeneralResponse _ventaActual;
-        public VentaGeneralResponse VentaActual
-        {
-            get => _ventaActual;
-            set
-            {
-                _ventaActual = value;
                 OnPropertyChanged();
             }
         }
@@ -47,31 +42,53 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         public UtileriasPageViewModel()
         {
+            _localDb = new LocalDatabaseService();
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
+            _ = CargarUltimoTicketAsync();
         }
 
         private async void CargarDescripcionRuta()
         {
-            var db = new LocalDatabaseService();
-            DescripcionRuta = await db.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+            DescripcionRuta = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+        }
+
+        private async Task CargarUltimoTicketAsync()
+        {
+            var tickets = await _localDb.ObtenerTicketsAsync();
+            _ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
+        }
+
+        private async Task ImprimirTicketAsync(TicketLocal ticket)
+        {
+            var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
+            if (printer != null)
+            {
+                // Imprime ORIGINAL
+                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, 1);
+                await printer.PrintTextAsync(ticketOriginal);
+
+                // Imprime REIMPRESION
+                string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, 2);
+                await printer.PrintTextAsync(ticketReimpresion);
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "No se encontró el servicio de impresión.", "OK");
+            }
         }
 
         // Comando de impresión
         [RelayCommand]
         public async Task ImprimirAsync()
         {
-            if (VentaActual == null)
-                return;
-
-            string ticket = TicketFormatter.FormatearTicket(VentaActual);
-
-            var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
-            if (printer != null)
+            if (_ultimoTicket == null)
             {
-                await printer.PrintTextAsync(ticket);
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");
+                return;
             }
-            // Si quieres manejar errores aquí, puedes loguearlos o mostrar un Toast si tienes acceso
+
+            await ImprimirTicketAsync(_ultimoTicket);
         }
     }
 }

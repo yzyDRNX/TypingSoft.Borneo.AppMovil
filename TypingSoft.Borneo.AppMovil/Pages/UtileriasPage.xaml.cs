@@ -21,19 +21,7 @@ public partial class UtileriasPage : ContentPage
     private async void Impresion(object sender, EventArgs e)
     {
         var vm = BindingContext as UtileriasPageViewModel;
-        //if (vm?.VentaActual == null)
-        //{
-        //    await DisplayAlert("Error", "No hay venta para imprimir.", "OK");
-        //    return;
-        //}
-
-        string ticket = TicketFormatter.FormatearTicket(vm.VentaActual);
-
-        // Obtén el servicio de impresión
-        var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
-        if (printer != null)
-            await printer.PrintTextAsync(ticket);
-        else
-            await DisplayAlert("Error", "No se encontró el servicio de impresión.", "OK");
+        if (vm != null)
+            await vm.ImprimirAsync();
     }
 }
