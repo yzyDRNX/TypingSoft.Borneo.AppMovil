@@ -10,6 +10,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
     {
         VModels.EmpleadosVM? ViewModel;
         private readonly HashSet<Guid> _empleadosSeleccionados = new HashSet<Guid>();
+        private string? _primerEmpleadoSeleccionado; // Guarda el primer empleado
 
         public EmpleadosPage()
         {
@@ -18,11 +19,9 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             if (ViewModel != null)
             {
                 this.BindingContext = ViewModel;
-              
             }
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-             
         }
 
         private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -35,7 +34,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                     emptyStateLabel.IsVisible = ViewModel?.ListadoEmpleados.Count == 0;
                     empleadosSeleccionadosStack.Children.Clear(); // Limpiar la lista de empleados seleccionados
                     _empleadosSeleccionados.Clear(); // Limpiar el conjunto de IDs seleccionados
-                    break;  
+                    _primerEmpleadoSeleccionado = null; // Reinicia al cargar lista nueva
+                    break;
                 default:
                     break;
             }
@@ -84,21 +84,26 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             empleadosSeleccionadosStack.Children.Add(empleadoItem);
 
-            // --- GUARDAR NOMBRE DEL EMPLEADO EN TICKETLOCAL ---
-            var ticket = new TicketLocal
+            // Solo guarda el primer empleado seleccionado en el ticket
+            if (_primerEmpleadoSeleccionado == null)
             {
-                Id = Guid.NewGuid(),
-                Empleado = empleadoSeleccionado.Empleado ?? string.Empty, // Guarda el nombre
-                Fecha = DateTime.Now,
-                Cliente = string.Empty,
-                Cantidad = 0,
-                Descripcion = string.Empty,
-                ImporteTotal = 0m
-            };
+                _primerEmpleadoSeleccionado = empleadoSeleccionado.Empleado ?? string.Empty;
 
-            await ViewModel._localDb.InsertarTicketAsync(ticket);
+                var ticket = new TicketLocal
+                {
+                    Id = Guid.NewGuid(),
+                    Empleado = _primerEmpleadoSeleccionado,
+                    Fecha = DateTime.Now,
+                    Cliente = string.Empty,
+                    Cantidad = 0,
+                    Descripcion = string.Empty,
+                    ImporteTotal = 0m
+                };
 
-            await DisplayAlert("Éxito", "Empleado guardado en el ticket.", "OK");
+                await ViewModel._localDb.InsertarTicketAsync(ticket);
+
+                await DisplayAlert("Éxito", "Empleado guardado en el ticket.", "OK");
+            }
         }
 
         private async void OnEmpezarRutaClicked(object sender, EventArgs e)
