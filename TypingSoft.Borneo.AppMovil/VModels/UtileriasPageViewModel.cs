@@ -64,12 +64,15 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
             if (printer != null)
             {
-                // Imprime ORIGINAL
-                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, 1);
+                // 1. Obtén los detalles del ticket
+                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticket.Id);
+
+                // 2. Imprime ORIGINAL
+                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, 1);
                 await printer.PrintTextAsync(ticketOriginal);
 
-                // Imprime REIMPRESION
-                string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, 2);
+                // 3. Imprime REIMPRESION
+                string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, detalles, 2);
                 await printer.PrintTextAsync(ticketReimpresion);
             }
             else

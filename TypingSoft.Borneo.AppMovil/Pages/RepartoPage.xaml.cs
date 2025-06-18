@@ -72,29 +72,41 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             productosPicker.SelectedItem = null;
             cantidadEntry.Text = string.Empty;
 
-            // --- ACTUALIZA EL TICKET LOCAL CON EL PRODUCTO ---
+            // --- GUARDAR DETALLE DEL PRODUCTO EN TicketDetalleLocal ---
             var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
             var ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
 
             if (ultimoTicket != null)
             {
-                ultimoTicket.Descripcion = productoSeleccionado.Producto ?? string.Empty;
-                ultimoTicket.Cantidad = cantidad;
-                ultimoTicket.ImporteTotal = importeTotal;
-                await ViewModel._localDb.ActualizarTicketAsync(ultimoTicket);
+                // Inserta un nuevo detalle para este producto
+                var detalle = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
+                {
+                    TicketId = ultimoTicket.Id,
+                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
+                    Cantidad = cantidad,
+                    Importe = importeTotal
+                };
+                await ViewModel._localDb.InsertarTicketDetalleAsync(detalle);
             }
             else
             {
-                // Si no existe un ticket, crea uno nuevo (opcional)
+                // Si no existe un ticket, crea uno nuevo y luego el detalle
                 var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketLocal
                 {
                     Id = Guid.NewGuid(),
-                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
-                    Cantidad = cantidad,
-                    ImporteTotal = importeTotal,
                     Fecha = DateTime.Now
+                    // Los demás campos pueden quedar vacíos o por defecto
                 };
                 await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
+
+                var detalle = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
+                {
+                    TicketId = nuevoTicket.Id,
+                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
+                    Cantidad = cantidad,
+                    Importe = importeTotal
+                };
+                await ViewModel._localDb.InsertarTicketDetalleAsync(detalle);
             }
         }
 
