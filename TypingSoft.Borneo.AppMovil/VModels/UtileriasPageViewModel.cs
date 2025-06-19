@@ -90,16 +90,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 OnPropertyChanged(nameof(NombreCliente));
 
                 var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
-                Productos.Clear();
-                foreach (var d in detalles)
+                // Agrupar por descripción y precio unitario
+                var agrupados = detalles
+                .GroupBy(d => new {
+                    Descripcion = d.Descripcion,
+                    PrecioUnitario = d.Cantidad == 0 ? 0m : d.Importe / d.Cantidad
+                })
+                .Select(g => new ProductoVentaDTO
                 {
-                    Productos.Add(new ProductoVentaDTO
-                    {
-                        Nombre = d.Descripcion,
-                        Cantidad = d.Cantidad,
-                        Precio = d.Importe / (d.Cantidad == 0 ? 1 : d.Cantidad) // Evita división por cero
-                    });
-                }
+                Nombre = g.Key.Descripcion,
+                Cantidad = g.Sum(x => x.Cantidad),
+                Precio = g.Key.PrecioUnitario
+                });
+
+                Productos.Clear();
+                foreach (var p in agrupados)
+                    Productos.Add(p);
+
                 OnPropertyChanged(nameof(Productos));
                 OnPropertyChanged(nameof(Total));
             }
@@ -143,28 +150,20 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task OtraVentaMismoClienteAsync()
         {
-            var clienteActual = VentaActual?.Cliente;
-            if (string.IsNullOrEmpty(clienteActual))
+            if (VentaActual == null)
             {
-                await App.Current.MainPage.DisplayAlert("Aviso", "No hay cliente seleccionado.", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta activa.", "OK");
                 return;
             }
 
-            var nuevoTicket = new TicketLocal
-            {
-                Id = Guid.NewGuid(),
-                Cliente = clienteActual,
-                Fecha = DateTime.Now
-            };
-            await _localDb.InsertarTicketAsync(nuevoTicket);
-
-            // Navega a la pantalla de reparto para capturar productos
+            // Simplemente volvemos a la captura de productos
             await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
 
-            // Espera a que la navegación termine y luego limpia solo productos
+            // Una vez en RepartoPage solo limpiamos los campos de producto
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.RepartoPage page)
-                page.LimpiarCamposYListas(true); // true = solo productos
+                page.LimpiarCamposYListas(true);
         }
+
 
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
