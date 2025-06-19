@@ -10,7 +10,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     {
         public const string IdRuta = "IdRuta";
         public const string IdCliente = "IdCliente";
-
+        public const string Cliente = "Cliente";
 
         public const string IdVentaGeneral = "IdVentaGeneral";
         public const string IdClienteAsociado = "IdClienteAsociado";

@@ -60,8 +60,12 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
 
             // Guarda el IdClienteAsociado y el IdCliente del cliente seleccionado
-            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, clienteSeleccionado.IdCliente.ToString());
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
+
+            // Al seleccionar un cliente en ClientePage.xaml.cs
+            Helpers.StaticSettings.FijarConfiguracion("NombreCliente", clienteSeleccionado.Cliente.ToString() ?? string.Empty);
 
             // --- ACTUALIZA EL TICKET LOCAL CON EL CLIENTE ---
             var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
@@ -110,6 +114,14 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
 
             clientesPicker.SelectedItem = null;
+        }
+
+
+        public void LimpiarCamposYListas()
+        {
+            clientesPicker.SelectedItem = null;
+            ViewModel?.ClientesASurtir.Clear();
+            // Otros campos si es necesario
         }
     }
 }

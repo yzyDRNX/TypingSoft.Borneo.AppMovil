@@ -17,7 +17,16 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         private readonly LocalDatabaseService _localDb;
         private int _numeroImpresiones = 0;
         private TicketLocal _ultimoTicket;
-
+        private TicketLocal _ventaActual;
+        public TicketLocal VentaActual
+        {
+            get => _ventaActual;
+            set
+            {
+                _ventaActual = value;
+                OnPropertyChanged();
+            }
+        }
         private string _fechaActual;
         public string FechaActual
         {
@@ -40,12 +49,24 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
+        public ObservableCollection<ProductoVentaDTO> Productos { get; set; } = new();
+        public string NombreCliente => VentaActual?.Cliente ?? string.Empty;
+        public decimal Total => Productos.Sum(p => p.Precio * p.Cantidad);
+
         public UtileriasPageViewModel()
         {
             _localDb = new LocalDatabaseService();
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
             _ = CargarUltimoTicketAsync();
+            _ = CargarVentaActualYProductos();
+
+            // Recupera el cliente seleccionado correctamente
+            string nombreCliente = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.Cliente);
+            if (!string.IsNullOrEmpty(nombreCliente))
+            {
+                VentaActual = new TicketLocal { Cliente = nombreCliente };
+            }
         }
 
         private async void CargarDescripcionRuta()
@@ -57,6 +78,31 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             var tickets = await _localDb.ObtenerTicketsAsync();
             _ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
+        }
+
+        public async Task CargarVentaActualYProductos()
+        {
+            var tickets = await _localDb.ObtenerTicketsAsync();
+            var ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
+            if (ultimoTicket != null)
+            {
+                VentaActual = ultimoTicket;
+                OnPropertyChanged(nameof(NombreCliente));
+
+                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
+                Productos.Clear();
+                foreach (var d in detalles)
+                {
+                    Productos.Add(new ProductoVentaDTO
+                    {
+                        Nombre = d.Descripcion,
+                        Cantidad = d.Cantidad,
+                        Precio = d.Importe / (d.Cantidad == 0 ? 1 : d.Cantidad) // Evita división por cero
+                    });
+                }
+                OnPropertyChanged(nameof(Productos));
+                OnPropertyChanged(nameof(Total));
+            }
         }
 
         private async Task ImprimirTicketAsync(TicketLocal ticket)
@@ -93,5 +139,51 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             await ImprimirTicketAsync(_ultimoTicket);
         }
+
+        [RelayCommand]
+        public async Task OtraVentaMismoClienteAsync()
+        {
+            var clienteActual = VentaActual?.Cliente;
+            if (string.IsNullOrEmpty(clienteActual))
+            {
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay cliente seleccionado.", "OK");
+                return;
+            }
+
+            var nuevoTicket = new TicketLocal
+            {
+                Id = Guid.NewGuid(),
+                Cliente = clienteActual,
+                Fecha = DateTime.Now
+            };
+            await _localDb.InsertarTicketAsync(nuevoTicket);
+
+            // Navega a la pantalla de reparto para capturar productos
+            await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
+
+            // Espera a que la navegación termine y luego limpia solo productos
+            if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.RepartoPage page)
+                page.LimpiarCamposYListas(true); // true = solo productos
+        }
+
+        [RelayCommand]
+        public async Task SiguienteEntregaAsync()
+        {
+            VentaActual = null;
+
+            // Navega a la pantalla de selección de cliente
+            await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
+
+            // Espera a que la navegación termine y luego limpia
+            if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
+                page.LimpiarCamposYListas(); // O page.LimpiarTodo() si así se llama tu método
+        }
+    }
+
+    public class ProductoVentaDTO
+    {
+        public string Nombre { get; set; }
+        public int Cantidad { get; set; }
+        public decimal Precio { get; set; }
     }
 }

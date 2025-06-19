@@ -98,7 +98,7 @@
                                    FontAttributes="Bold" 
                                    TextColor="{StaticResource TextBlack}"
                                    FontSize="14"/>
-                            <Label Text="{Binding VentaActual.NombreCliente}" 
+                            <Label Text="{Binding NombreCliente}" 
                                    TextColor="{StaticResource TextBlack}"
                                    FontSize="14"/>
                         </HorizontalStackLayout>
@@ -110,7 +110,7 @@
                                TextColor="{StaticResource TextBlack}"
                                FontSize="14"/>
 
-                        <CollectionView ItemsSource="{Binding VentaActual.Productos}"
+                        <CollectionView ItemsSource="{Binding Productos}"
                                         BackgroundColor="Transparent">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
@@ -145,7 +145,7 @@
                                    FontAttributes="Bold" 
                                    TextColor="{StaticResource PrimaryBlue}"
                                    FontSize="16"/>
-                            <Label Text="{Binding VentaActual.Total, StringFormat='${0:F2}'}" 
+                            <Label Text="{Binding Total, StringFormat='${0:F2}'}" 
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource PrimaryBlue}"
                                    FontSize="16"/>
@@ -195,7 +195,8 @@
                             <Button Text="+"
                                     Style="{StaticResource UtilityButton}"
                                     HorizontalOptions="Center"
-                                    FontSize="40"/>
+                                    FontSize="40"
+                                    Clicked="OtraVentaMismoCliente"/>
                             <Label Text="Otra venta Mismo Cliente" 
                                    FontSize="12" 
                                    HorizontalOptions="Center"
@@ -207,7 +208,8 @@
                         <VerticalStackLayout Grid.Column="2" Spacing="8">
                             <Button Text="▶▶"
                                     Style="{StaticResource UtilityButton}"
-                                    HorizontalOptions="Center"/>
+                                    HorizontalOptions="Center"
+                                    Clicked="SiguienteEntrega"/>
                             <Label Text="Siguiente Entrega" 
                                    FontSize="12" 
                                    HorizontalOptions="Center"

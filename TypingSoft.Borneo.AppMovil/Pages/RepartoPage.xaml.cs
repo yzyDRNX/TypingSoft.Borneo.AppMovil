@@ -119,19 +119,19 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
 
             // Consultar y mostrar los tickets guardados en la base de datos local
-            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
-            if (tickets == null || tickets.Count == 0)
-            {
-                await DisplayAlert("Tickets", "No hay tickets registrados.", "OK");
-            }
-            else
-            {
-                string resumen = string.Join(Environment.NewLine + Environment.NewLine, tickets.Select(t =>
-                    $"Fecha: {t.Fecha:dd/MM/yyyy HH:mm}\nCliente: {t.Cliente}\nProducto: {t.Descripcion}\nCantidad: {t.Cantidad}\nImporte: {t.ImporteTotal:C}\nEmpleado: {t.Empleado}"
-                ));
+            //var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
+            //if (tickets == null || tickets.Count == 0)
+            //{
+            //    await DisplayAlert("Tickets", "No hay tickets registrados.", "OK");
+            //}
+            //else
+            //{
+            //    string resumen = string.Join(Environment.NewLine + Environment.NewLine, tickets.Select(t =>
+            //        $"Fecha: {t.Fecha:dd/MM/yyyy HH:mm}\nCliente: {t.Cliente}\nProducto: {t.Descripcion}\nCantidad: {t.Cantidad}\nImporte: {t.ImporteTotal:C}\nEmpleado: {t.Empleado}"
+            //    ));
 
-                await DisplayAlert("Tickets en BD", resumen, "OK");
-            }
+            //    await DisplayAlert("Tickets en BD", resumen, "OK");
+            //}
 
             await DisplayAlert("Éxito", "Reparto concluido correctamente.", "OK");
             await App.NavigationService.Navegar(nameof(UtileriasPage));
@@ -145,6 +145,20 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 var idClienteAsociado = Helpers.StaticSettings.ObtenerValor(Helpers.StaticSettings.IdClienteAsociado);
                 await ViewModel.CargarPreciosPorClienteAsync(idClienteAsociado);
+            }
+        }
+
+
+        public void LimpiarCamposYListas(bool limpiarSoloProductos = false)
+        {
+            productosPicker.SelectedItem = null;
+            cantidadEntry.Text = string.Empty;
+            productosSeleccionadosStack.Children.Clear();
+            // Si tienes una lista de productos en el ViewModel, límpiala aquí
+
+            if (!limpiarSoloProductos)
+            {
+                // Si tuvieras que limpiar el cliente, lo harías aquí
             }
         }
     }
