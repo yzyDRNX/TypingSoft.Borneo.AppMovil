@@ -164,6 +164,37 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios: {ex.Message}");
                 }
             }
+            var (exitosoFact, mensajeFact, facturacion) = await _catalogos.ObtenerFacturacion();
+            if (exitosoFact && facturacion != null)
+            {
+                var facturacionLocales = facturacion.Select(f => new FacturacionLocal
+                {
+                    Id = f.Id,
+                    IdAsociado = f.IdAsociado,
+                    RazonSocial = f.RazonSocial,
+                    Calle = f.Calle,
+                    NumeroExterior = f.NumeroExterior,
+                    NumeroInterior = f.NumeroInterior,
+                    Colonia = f.Colonia,
+                    CP = f.CP,
+                    Municipio = f.Municipio,
+                    Estado = f.Estado,
+                    IdFormaPago = f.IdFormapago,
+                    IdMetodoPago = f.IdMetodoPago,
+                    IdUsoCFDI = f.IdUsoCFDI
+
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarFacturacionAsync(facturacionLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Facturación guardada: {facturacionLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando facturación: {ex.Message}");
+                }
+            }
+
         }
 
 

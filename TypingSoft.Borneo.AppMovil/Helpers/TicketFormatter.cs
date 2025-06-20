@@ -15,9 +15,10 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
             sb.AppendLine("            BORNEO              ");
             sb.AppendLine("    Agua Purificada Borneo");
-            sb.AppendLine("          S.A. de C.V.");
             sb.AppendLine("   Tuxtla Gutierrez, Chiapas    ");
-            sb.AppendLine("          APB080318M65          ");
+            sb.AppendLine("      RFC: APB080318M65         ");
+            sb.AppendLine("    Telefono: 961 614 05 47     ");
+            sb.AppendLine(" Lugar de expedicion:      ");
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
 
@@ -48,14 +49,15 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
             sb.AppendLine("         NOMBRE Y FIRMA:");
             sb.AppendLine();
             sb.AppendLine($"ATENDIO: {ticket.Empleado}");
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("AL PONER SU FIRMA ESTA DE ACUERDO CON LA INFORMACION");
-            sb.AppendLine("QUE CONTIENE LA NOTA. CUALQUIER ANOMALIA EN ESTA NOTA");
-            sb.AppendLine("DE REMISION REPORTELA AL TELEFONO: 6140 547");
+            sb.AppendLine("         5QUE CONTIENE LA NOTA.");
             sb.AppendLine();
             sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
             sb.AppendLine();

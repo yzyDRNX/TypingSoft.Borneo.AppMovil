@@ -236,6 +236,48 @@ namespace TypingSoft.Borneo.AppMovil.BL
 
             return (exitoso, mensaje, preciosLista);
         }
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.FacturacionLista> PreciosPref)> ObtenerFacturacion()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var preciosLista = new List<Models.Custom.FacturacionLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerFacturacion();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        preciosLista.Add(new Models.Custom.FacturacionLista
+                        {
+                            Id = catalogo.Id,
+                            IdAsociado = catalogo.IdAsociado,
+                            RazonSocial = catalogo.RazonSocial,
+                            Calle = catalogo.Calle,
+                            NumeroExterior = catalogo.NumeroExterior,
+                            NumeroInterior = catalogo.NumeroInterior,
+                            Colonia = catalogo.Colonia,
+                            CP = catalogo.CP,
+                            Municipio = catalogo.Municipio,
+                            Estado = catalogo.Estado,
+                            IdFormapago = catalogo.IdFormapago,
+                            IdMetodoPago = catalogo.IdMetodoPago,
+                            IdUsoCFDI = catalogo.IdUsoCFDI
+
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                preciosLista = new List<Models.Custom.FacturacionLista>();
+            }
+
+            return (exitoso, mensaje, preciosLista);
+        }
 
     }
 }
