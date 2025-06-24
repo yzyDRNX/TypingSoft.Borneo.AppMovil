@@ -76,6 +76,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 await MostrarAlertaAsync("Advertencia", "No hay datos locales.");
             }
         }
+
         [RelayCommand]
         public async Task Surtir(Models.Custom.ClientesLista cliente)
         {
@@ -107,13 +108,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var condicion = condiciones.FirstOrDefault();
             var forma = formas.FirstOrDefault();
 
-            if (producto == null || condicion == null || forma == null)
+            if (producto == null || condicion == null)
             {
-                await MostrarAlertaAsync("Error", "No hay productos, condiciones o formas de pago disponibles.");
+                await MostrarAlertaAsync("Error", "No hay productos o condiciones disponibles.");
                 return;
             }
 
-            // 3. Crear el detalle de venta
+            // 3. Buscar facturación para el cliente
+            var facturaciones = await _localDb.ObtenerFacturacionesAsync();
+            var facturacionCliente = facturaciones.FirstOrDefault(f => f.IdAsociado == cliente.IdClienteAsociado);
+
+            Guid idFormaPago = forma != null ? forma.IdForma : Guid.Empty;
+            if (facturacionCliente != null)
+            {
+                idFormaPago = facturacionCliente.IdFormaPago;
+            }
+
+            // 4. Crear el detalle de venta
             var detalle = new Local.VentaDetalleLocal
             {
                 IdDetalle = Guid.NewGuid(),
@@ -123,12 +134,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 ImporteTotal = 0,
                 IdClienteAsociado = cliente.IdClienteAsociado,
                 IdCondicionPago = condicion.IdCondicion,
-                IdFormaPago = forma.IdForma
+                IdFormaPago = idFormaPago
             };
 
             await _localDb.InsertarVentaDetalleAsync(detalle);
 
-            // 4. Añadir cliente a la lista visual si no está
+            // 5. Añadir cliente a la lista visual si no está
             if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
                 ClientesASurtir.Add(cliente);
 

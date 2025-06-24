@@ -20,5 +20,6 @@ namespace TypingSoft.Borneo.AppMovil.Local
 
         [Column("Sincronizado")]
         public bool Sincronizado { get; set; }
+
     }
 }

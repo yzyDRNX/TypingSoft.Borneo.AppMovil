@@ -18,7 +18,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<ProductoLocal>().Wait();
             _database.CreateTableAsync<FormaLocal>().Wait();
             _database.CreateTableAsync<CondicionLocal>().Wait();
-            _database.CreateTableAsync<PreciosGeneralesLocal>().Wait();
+            _database.CreateTableAsync<PreciosGeneralesLocal>().Wait();                    
             _database.CreateTableAsync<RutaLocal>().Wait();
             _database.CreateTableAsync<VentaGeneralLocal>().Wait();
             _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
