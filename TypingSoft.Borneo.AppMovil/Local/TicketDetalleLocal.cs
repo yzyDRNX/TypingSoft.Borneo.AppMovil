@@ -12,5 +12,6 @@ namespace TypingSoft.Borneo.AppMovil.Local
         public string? Descripcion { get; set; }
         public int Cantidad { get; set; }
         public decimal Importe { get; set; }
+        public Guid IdCliente { get; set; }
     }
 }

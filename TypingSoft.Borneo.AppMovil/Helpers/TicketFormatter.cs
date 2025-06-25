@@ -7,7 +7,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     public static class TicketFormatter
     {
         // Llama a este método pasando el ticket y el número de impresiones previas
-        public static string FormatearTicketLocal(TicketLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones)
+        public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones)
         {
             var sb = new StringBuilder();
             string tipoCopia = numeroImpresiones <= 1 ? "ORIGINAL" : "REIMPRESION";
@@ -24,7 +24,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 
             sb.AppendLine($"         *** {tipoCopia} ***         ");
             sb.AppendLine("--------------------------------");
-            sb.AppendLine($"CLIENTE: {ticket.Cliente}");
+           /// sb.AppendLine($"CLIENTE: {ticket.Cliente}");
             sb.AppendLine("--------------------------------");
             sb.AppendLine("CANT  DESCRIPCION       IMPORTE");
             sb.AppendLine("--------------------------------");
@@ -54,7 +54,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine($"ATENDIO: {ticket.Empleado}");
+        //  sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("AL PONER SU FIRMA ESTA DE ACUERDO CON LA INFORMACION");
@@ -63,7 +63,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
+            //b.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine("      [ AREA PARA LOGO / INFO ] ");

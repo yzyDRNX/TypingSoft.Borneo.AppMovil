@@ -16,7 +16,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
     {
         private readonly LocalDatabaseService _localDb;
         private int _numeroImpresiones = 1;
-        private TicketLocal _ultimoTicket;
+        private TicketDetalleLocal _ultimoTicket;
         private TicketLocal _ventaActual;
         public TicketLocal VentaActual
         {
@@ -58,7 +58,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             _localDb = new LocalDatabaseService();
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
-            _ = CargarUltimoTicketAsync();
+          //  _ = CargarUltimoTicketAsync();
             _ = CargarVentaActualYProductos();
 
             // Recupera el cliente seleccionado correctamente
@@ -74,11 +74,11 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             DescripcionRuta = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
         }
 
-        private async Task CargarUltimoTicketAsync()
-        {
-            var tickets = await _localDb.ObtenerTicketsAsync();
-            _ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
-        }
+        //private async Task CargarUltimoTicketAsync()
+        //{
+        //    var tickets = await _localDb.ObtenerTicketsAsync();
+        //    _ultimoTicket = tickets?.OrderByDescending(t => t.IdCliente).FirstOrDefault();
+        //}
 
         public async Task CargarVentaActualYProductos()
         {
@@ -89,7 +89,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 VentaActual = ultimoTicket;
                 OnPropertyChanged(nameof(NombreCliente));
 
-                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
+                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.IdCliente);
                 // Agrupar por descripción y precio unitario
                 var agrupados = detalles
                 .GroupBy(d => new {
@@ -112,13 +112,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        private async Task ImprimirTicketAsync(TicketLocal ticket)
+        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket)
         {
             var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
             if (printer != null)
             {
                 // 1. Obtén los detalles del ticket
-                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticket.Id);
+                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticket.IdCliente);
 
                 // 1. Imprime ORIGINAL
                 // 2. Imprime REIMPRESION
@@ -148,6 +148,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task ImprimirAsync()
         {
+            var RS = await _localDb.ObtenerDetallesPorTicketAsync(Helpers.Settings.IdClienteAsociado);
+
+            _ultimoTicket = RS.FirstOrDefault();
+
             if (_ultimoTicket == null)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");

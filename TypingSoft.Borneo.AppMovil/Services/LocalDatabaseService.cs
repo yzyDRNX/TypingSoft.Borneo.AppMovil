@@ -44,7 +44,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public async Task<List<TicketDetalleLocal>> ObtenerDetallesPorTicketAsync(Guid ticketId)
         {
             return await _database.Table<TicketDetalleLocal>()
-                .Where(d => d.TicketId == ticketId)
+                .Where(d => d.IdCliente == ticketId)
                 .ToListAsync();
         }
 

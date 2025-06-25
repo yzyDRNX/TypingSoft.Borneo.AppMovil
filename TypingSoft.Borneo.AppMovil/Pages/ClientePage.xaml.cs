@@ -82,6 +82,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 {
                     Id = Guid.NewGuid(),
                     Cliente = clienteSeleccionado.Cliente ?? string.Empty,
+                    IdCliente = clienteSeleccionado.IdClienteAsociado,
                     Fecha = DateTime.Now
                 };
                 await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);

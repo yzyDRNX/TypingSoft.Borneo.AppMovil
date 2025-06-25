@@ -6,7 +6,10 @@ namespace TypingSoft.Borneo.AppMovil.Local
     public class TicketLocal
     {
         [PrimaryKey]
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
+        [Column("IdCliente")]
+        public Guid IdCliente { get; set; }
+
 
         [Column("Cliente")]
         public string Cliente { get; set; }
