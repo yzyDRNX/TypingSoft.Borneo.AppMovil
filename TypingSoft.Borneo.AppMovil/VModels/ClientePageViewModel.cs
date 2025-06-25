@@ -148,7 +148,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             // Mostrar la lista actual de clientes a surtir
             var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
-            await Application.Current.MainPage.DisplayAlert("Clientes a Surtir", nombres, "OK");
         }
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)

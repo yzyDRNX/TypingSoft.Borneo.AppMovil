@@ -133,7 +133,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             //    await DisplayAlert("Tickets en BD", resumen, "OK");
             //}
 
-            await DisplayAlert("Éxito", "Reparto concluido correctamente.", "OK");
             await App.NavigationService.Navegar(nameof(UtileriasPage));
             await Navigation.PopAsync();
         }

@@ -43,7 +43,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
         private async void OnAñadirClienteClicked(object sender, EventArgs e)
         {
-            if (ViewModel == null) return;
+            //if (ViewModel == null) return;
 
             var clienteSeleccionado = clientesPicker.SelectedItem as Models.Custom.ClientesLista;
 

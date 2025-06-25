@@ -102,7 +102,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
                 await ViewModel._localDb.InsertarTicketAsync(ticket);
 
-                await DisplayAlert("Éxito", "Empleado guardado en el ticket.", "OK");
             }
         }
 
