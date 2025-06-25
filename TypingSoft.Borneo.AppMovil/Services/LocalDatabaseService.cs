@@ -23,7 +23,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<VentaGeneralLocal>().Wait();
             _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
             _database.CreateTableAsync<PreciosPreferencialesLocal>().Wait();
-            _database.CreateTableAsync<TicketLocal>().Wait();
             _database.CreateTableAsync<TicketDetalleLocal>().Wait();
             _database.CreateTableAsync<FacturacionLocal>().Wait();
         }
@@ -48,17 +47,17 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 .ToListAsync();
         }
 
-        public async Task InsertarTicketAsync(TicketLocal ticket)
+        public async Task InsertarTicketAsync(TicketDetalleLocal ticket)
         {
             await _database.InsertAsync(ticket);
         }
 
-        public async Task<List<TicketLocal>> ObtenerTicketsAsync()
+        public async Task<List<TicketDetalleLocal>> ObtenerTicketsAsync()
         {
-            return await _database.Table<TicketLocal>().ToListAsync();
+            return await _database.Table<TicketDetalleLocal>().ToListAsync();
         }
 
-        public async Task ActualizarTicketAsync(TicketLocal ticket)
+        public async Task ActualizarTicketAsync(TicketDetalleLocal ticket)
         {
             await _database.UpdateAsync(ticket);
         }

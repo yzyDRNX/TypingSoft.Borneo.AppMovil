@@ -84,24 +84,12 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             empleadosSeleccionadosStack.Children.Add(empleadoItem);
 
-            // Solo guarda el primer empleado seleccionado en el ticket
+            // Solo guarda el primer empleado seleccionado en StaticSettings
             if (_primerEmpleadoSeleccionado == null)
             {
                 _primerEmpleadoSeleccionado = empleadoSeleccionado.Empleado ?? string.Empty;
-
-                var ticket = new TicketLocal
-                {
-                    Id = Guid.NewGuid(),
-                    Empleado = _primerEmpleadoSeleccionado,
-                    Fecha = DateTime.Now,
-                    Cliente = string.Empty,
-                    Cantidad = 0,
-                    Descripcion = string.Empty,
-                    ImporteTotal = 0m
-                };
-
-                await ViewModel._localDb.InsertarTicketAsync(ticket);
-
+                Helpers.StaticSettings.FijarConfiguracion("Empleado", _primerEmpleadoSeleccionado);
+                // Ya NO insertes aquí un TicketDetalleLocal vacío
             }
         }
 

@@ -1,21 +1,43 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TypingSoft.Borneo.AppMovil.Services;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
     public partial class MenuVM:Helpers.VMBase
     {
 
-
+        private readonly BL.CatalogosBL _catalogos;
+        public readonly LocalDatabaseService _localDb;
         private readonly Services.SincronizacionService _sincronizacion;
 
-        public MenuVM(Services.SincronizacionService sincronizacion)
+        public MenuVM(Services.SincronizacionService sincronizacion, BL.CatalogosBL catalogos, LocalDatabaseService localDb)
         {
+            _catalogos = catalogos;
+            _localDb = localDb;
             _sincronizacion = sincronizacion;
+            fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
+            _ = CargarDescripcionRutaAsync();
+        }
+
+
+        [ObservableProperty]
+        string fechaActual;
+
+        [ObservableProperty]
+        string descripcionRuta;
+
+        private async Task CargarDescripcionRutaAsync()
+        {
+            var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
+            System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
+            DescripcionRuta = descripcion;
         }
 
         [RelayCommand]

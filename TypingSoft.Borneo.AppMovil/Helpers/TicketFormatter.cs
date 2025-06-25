@@ -18,15 +18,16 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("   Tuxtla Gutierrez, Chiapas    ");
             sb.AppendLine("      RFC: APB080318M65         ");
             sb.AppendLine("    Telefono: 961 614 05 47     ");
-            sb.AppendLine(" Lugar de expedicion:      ");
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
-
             sb.AppendLine($"         *** {tipoCopia} ***         ");
             sb.AppendLine("--------------------------------");
-           /// sb.AppendLine($"CLIENTE: {ticket.Cliente}");
+            sb.AppendLine();
+            sb.AppendLine($"CLIENTE: {ticket.Cliente}");
+            sb.AppendLine();
             sb.AppendLine("--------------------------------");
+            sb.AppendLine();
             sb.AppendLine("CANT  DESCRIPCION       IMPORTE");
+            sb.AppendLine();
             sb.AppendLine("--------------------------------");
 
             decimal total = 0;
@@ -36,10 +37,10 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
                 string descripcion = (d.Descripcion ?? "").Length > 17
                     ? d.Descripcion.Substring(0, 17)
                     : (d.Descripcion ?? "").PadRight(17);
-                string importe = d.Importe.ToString("N2").PadLeft(8);
+                string importe = d.ImporteTotal.ToString("N2").PadLeft(8);
 
                 sb.AppendLine($"{cantidad} {descripcion} {importe}");
-                total += d.Importe;
+                total += d.ImporteTotal;
             }
 
             sb.AppendLine("--------------------------------");
@@ -54,7 +55,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
-        //  sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado
+            sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("AL PONER SU FIRMA ESTA DE ACUERDO CON LA INFORMACION");
@@ -63,7 +64,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
             sb.AppendLine();
             sb.AppendLine();
-            //b.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
+            sb.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine("      [ AREA PARA LOGO / INFO ] ");

@@ -43,10 +43,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
         private async void OnAñadirClienteClicked(object sender, EventArgs e)
         {
-            //if (ViewModel == null) return;
-
             var clienteSeleccionado = clientesPicker.SelectedItem as Models.Custom.ClientesLista;
-
             if (clienteSeleccionado == null)
             {
                 await DisplayAlert("Aviso", "Por favor seleccione un cliente.", "OK");
@@ -64,29 +61,18 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
 
-            // Al seleccionar un cliente en ClientePage.xaml.cs
-            Helpers.StaticSettings.FijarConfiguracion("NombreCliente", clienteSeleccionado.Cliente.ToString() ?? string.Empty);
+            // --- CREA UN NUEVO TICKET CABECERA ---
+            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado"); // Recupera el empleado guardado
 
-            // --- ACTUALIZA EL TICKET LOCAL CON EL CLIENTE ---
-            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
-            var ultimoTicket = tickets?.OrderByDescending(t => t.Fecha).FirstOrDefault();
-
-            if (ultimoTicket != null)
+            var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
             {
-                ultimoTicket.Cliente = clienteSeleccionado.Cliente ?? string.Empty;
-                await ViewModel._localDb.ActualizarTicketAsync(ultimoTicket);
-            }
-            else
-            {
-                var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketLocal
-                {
-                    Id = Guid.NewGuid(),
-                    Cliente = clienteSeleccionado.Cliente ?? string.Empty,
-                    IdCliente = clienteSeleccionado.IdClienteAsociado,
-                    Fecha = DateTime.Now
-                };
-                await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
-            }
+                Id = Guid.NewGuid(),
+                IdCliente = clienteSeleccionado.IdClienteAsociado,
+                Cliente = clienteSeleccionado.Cliente ?? string.Empty,
+                Empleado = empleadoSeleccionado, // Aquí sí se asigna correctamente
+                Fecha = DateTime.Now
+            };
+            await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
 
             await ViewModel.Surtir(clienteSeleccionado);
 

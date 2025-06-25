@@ -17,8 +17,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         private readonly LocalDatabaseService _localDb;
         private int _numeroImpresiones = 1;
         private TicketDetalleLocal _ultimoTicket;
-        private TicketLocal _ventaActual;
-        public TicketLocal VentaActual
+        private TicketDetalleLocal _ventaActual;
+        public TicketDetalleLocal VentaActual
         {
             get => _ventaActual;
             set
@@ -65,7 +65,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             string nombreCliente = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.Cliente);
             if (!string.IsNullOrEmpty(nombreCliente))
             {
-                VentaActual = new TicketLocal { Cliente = nombreCliente };
+                VentaActual = new TicketDetalleLocal { Cliente = nombreCliente };
             }
         }
 
@@ -94,7 +94,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 var agrupados = detalles
                 .GroupBy(d => new {
                     Descripcion = d.Descripcion,
-                    PrecioUnitario = d.Cantidad == 0 ? 0m : d.Importe / d.Cantidad
+                    PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
                 })
                 .Select(g => new ProductoVentaDTO
                 {
@@ -112,17 +112,14 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket)
+        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles)
         {
             var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
             if (printer != null)
             {
-                // 1. Obtén los detalles del ticket
-                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticket.IdCliente);
-
                 // 1. Imprime ORIGINAL
                 // 2. Imprime REIMPRESION
-                if (_numeroImpresiones>2)
+                if (_numeroImpresiones > 2)
                 {
                     await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
                 }
@@ -132,11 +129,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                     await printer.PrintTextAsync(ticketOriginal);
                     _numeroImpresiones++;
                 }
-               
-
-
-                //    string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, detalles, 2);
-                //    await printer.PrintTextAsync(ticketReimpresion);
             }
             else
             {
@@ -148,17 +140,20 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task ImprimirAsync()
         {
-            var RS = await _localDb.ObtenerDetallesPorTicketAsync(Helpers.Settings.IdClienteAsociado);
-
-            _ultimoTicket = RS.FirstOrDefault();
-
-            if (_ultimoTicket == null)
+            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(Helpers.Settings.IdClienteAsociado);
+            if (detalles == null || detalles.Count == 0)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");
                 return;
             }
 
-            await ImprimirTicketAsync(_ultimoTicket);
+            var ticket = detalles.FirstOrDefault();
+            if (ticket == null)
+            {
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");
+                return;
+            }
+            await ImprimirTicketAsync(ticket, detalles);
         }
 
         [RelayCommand]
@@ -178,18 +173,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 page.LimpiarCamposYListas(true);
         }
 
-
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
-            VentaActual = null;
+            VentaActual = null; // Limpia la venta actual
 
             // Navega a la pantalla de selección de cliente
             await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
 
-            // Espera a que la navegación termine y luego limpia
+            // Espera a que la navegación termine y luego limpia la UI de ClientePage
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
-                page.LimpiarCamposYListas(); // O page.LimpiarTodo() si así se llama tu método
+                page.LimpiarCamposYListas();
         }
     }
 
