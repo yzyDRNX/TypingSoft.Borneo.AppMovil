@@ -15,7 +15,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
     public partial class UtileriasPageViewModel : Helpers.VMBase
     {
         private readonly LocalDatabaseService _localDb;
-        private int _numeroImpresiones = 0;
+        private int _numeroImpresiones = 1;
         private TicketLocal _ultimoTicket;
         private TicketLocal _ventaActual;
         public TicketLocal VentaActual
@@ -120,13 +120,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 // 1. Obtén los detalles del ticket
                 var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticket.Id);
 
-                // 2. Imprime ORIGINAL
-                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, 1);
-                await printer.PrintTextAsync(ticketOriginal);
+                // 1. Imprime ORIGINAL
+                // 2. Imprime REIMPRESION
+                if (_numeroImpresiones>2)
+                {
+                    await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
+                }
+                else
+                {
+                    string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones);
+                    await printer.PrintTextAsync(ticketOriginal);
+                    _numeroImpresiones++;
+                }
+               
 
-                // 3. Imprime REIMPRESION
-                string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, detalles, 2);
-                await printer.PrintTextAsync(ticketReimpresion);
+
+                //    string ticketReimpresion = TicketFormatter.FormatearTicketLocal(ticket, detalles, 2);
+                //    await printer.PrintTextAsync(ticketReimpresion);
             }
             else
             {
