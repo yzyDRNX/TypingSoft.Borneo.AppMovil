@@ -89,7 +89,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 VentaActual = ultimoTicket;
                 OnPropertyChanged(nameof(NombreCliente));
 
-                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.IdCliente);
+                var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
                 // Agrupar por descripción y precio unitario
                 var agrupados = detalles
                 .GroupBy(d => new {
@@ -140,21 +140,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task ImprimirAsync()
         {
-            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(Helpers.Settings.IdClienteAsociado);
-            if (detalles == null || detalles.Count == 0)
+            if (VentaActual == null)
             {
-                await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta actual cargada.", "OK");
                 return;
             }
 
-            var ticket = detalles.FirstOrDefault();
-            if (ticket == null)
+            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
+
+            if (detalles == null || detalles.Count == 0)
             {
-                await App.Current.MainPage.DisplayAlert("Aviso", "No hay ticket para imprimir.", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
                 return;
             }
-            await ImprimirTicketAsync(ticket, detalles);
+
+            await ImprimirTicketAsync(VentaActual, detalles);
         }
+
 
         [RelayCommand]
         public async Task OtraVentaMismoClienteAsync()
@@ -164,7 +166,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta activa.", "OK");
                 return;
             }
-
+            _numeroImpresiones = 1; // Reinicia el contador de impresiones
             // Simplemente volvemos a la captura de productos
             await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
 
@@ -177,6 +179,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         public async Task SiguienteEntregaAsync()
         {
             VentaActual = null; // Limpia la venta actual
+            _numeroImpresiones = 1; // Reinicia el contador de impresiones
 
             // Navega a la pantalla de selección de cliente
             await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
@@ -185,6 +188,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
                 page.LimpiarCamposYListas();
         }
+
     }
 
     public class ProductoVentaDTO
