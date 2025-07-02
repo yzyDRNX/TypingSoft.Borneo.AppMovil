@@ -7,7 +7,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     public static class TicketFormatter
     {
         // Llama a este método pasando el ticket y el número de impresiones previas
-        public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones)
+        public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
             var sb = new StringBuilder();
             string tipoCopia = numeroImpresiones <= 1 ? "ORIGINAL" : "REIMPRESION";
@@ -26,7 +26,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
-            sb.AppendLine("CANT  DESCRIPCION       IMPORTE");
+            sb.AppendLine(mostrarPrecio ? "CANT  DESCRIPCION       IMPORTE" : "CANT  DESCRIPCION");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
 
@@ -37,17 +37,25 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
                 string descripcion = (d.Descripcion ?? "").Length > 17
                     ? d.Descripcion.Substring(0, 17)
                     : (d.Descripcion ?? "").PadRight(17);
-                string importe = d.ImporteTotal.ToString("N2").PadLeft(8);
 
-                sb.AppendLine($"{cantidad} {descripcion} {importe}");
-                total += d.ImporteTotal;
+                if (mostrarPrecio)
+                {
+                    string importe = d.ImporteTotal.ToString("N2").PadLeft(8);
+                    sb.AppendLine($"{cantidad} {descripcion} {importe}");
+                    total += d.ImporteTotal;
+                }
+                else
+                {
+                    sb.AppendLine($"{cantidad} {descripcion}");
+                }
             }
 
             sb.AppendLine("--------------------------------");
-            sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
+            if (mostrarPrecio)
+                sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine();        
+            sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("         NOMBRE Y FIRMA:");
             sb.AppendLine();

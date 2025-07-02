@@ -117,15 +117,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
             if (printer != null)
             {
-                // 1. Imprime ORIGINAL
-                // 2. Imprime REIMPRESION
                 if (_numeroImpresiones > 2)
                 {
                     await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
                 }
                 else
                 {
-                    string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones);
+                    // Obtener el IdClienteAsociado (puede ser IdCliente en tu modelo)
+                    var idClienteAsociado = ticket.IdCliente;
+                    var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
+                    bool mostrarPrecio = aplicaMuestraPrecio ?? true; // Si es null, muestra el precio por defecto
+
+                    string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones, mostrarPrecio);
                     await printer.PrintTextAsync(ticketOriginal);
                     _numeroImpresiones++;
                 }
@@ -180,6 +183,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             VentaActual = null; // Limpia la venta actual
             _numeroImpresiones = 1; // Reinicia el contador de impresiones
+
+            Productos.Clear(); // Limpia los productos
+            OnPropertyChanged(nameof(Productos));
+            OnPropertyChanged(nameof(Total));
 
             // Navega a la pantalla de selección de cliente
             await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
