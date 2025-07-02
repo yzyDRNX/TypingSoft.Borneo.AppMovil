@@ -18,6 +18,9 @@ namespace TypingSoft.Borneo.AppMovil.Local
         [Column("Fecha")]
         public DateTime Fecha { get; set; }
 
+        [Column("IdStatusVenta")]
+        public Guid IdStatusVenta { get; set; }
+
         [Column("Sincronizado")]
         public bool Sincronizado { get; set; }
 

@@ -25,6 +25,16 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<PreciosPreferencialesLocal>().Wait();
             _database.CreateTableAsync<TicketDetalleLocal>().Wait();
             _database.CreateTableAsync<FacturacionLocal>().Wait();
+            _database.CreateTableAsync<ClientesAplicacionesLocal>().Wait();
+        }
+        public async Task GuardarClientesAplicacionesAsync(List<ClientesAplicacionesLocal> clientesAplicaciones)
+        {
+            await _database.DeleteAllAsync<ClientesAplicacionesLocal>();
+            await _database.InsertAllAsync(clientesAplicaciones);
+        }
+        public async Task<List<ClientesAplicacionesLocal>> ObtenerClientesAplicacionesAsync()
+        {
+            return await _database.Table<ClientesAplicacionesLocal>().ToListAsync();
         }
         public async Task GuardarFacturacionAsync(List<FacturacionLocal> facturacion)
         {

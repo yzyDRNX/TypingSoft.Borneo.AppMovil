@@ -3,7 +3,7 @@
 namespace TypingSoft.Borneo.AppMovil.Local
 {
     [Table("ClientesAplicaciones")]
-    public class ClienteAplicacionesLocal
+    public class ClientesAplicacionesLocal
     {
 
         [PrimaryKey]

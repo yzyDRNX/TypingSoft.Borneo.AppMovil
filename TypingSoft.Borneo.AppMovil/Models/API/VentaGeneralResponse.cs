@@ -15,9 +15,11 @@ namespace TypingSoft.Borneo.AppMovil.Models.API
         public List<VentaGeneral> Data { get; set; }
         public class VentaGeneral
         {
+            public Guid IdVentaGeneral { get; set; }
             public Guid IdRuta { get; set; }
             public int Vuelta { get; set; }
             public DateTime Fecha { get; set; }
+            public Guid IdStatusVenta { get; set; }
         }
 
     }

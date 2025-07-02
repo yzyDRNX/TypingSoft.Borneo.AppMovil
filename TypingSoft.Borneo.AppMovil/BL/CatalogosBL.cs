@@ -278,6 +278,43 @@ namespace TypingSoft.Borneo.AppMovil.BL
 
             return (exitoso, mensaje, preciosLista);
         }
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.ClientesAplicacionesLista> ClientesAplicaciones)> ObtenerClientesAplicaciones()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var clientesAplicacionesLista = new List<Models.Custom.ClientesAplicacionesLista>();
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerClientesAplicaciones();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+                if (exitoso)
+                {
+                    foreach (var catalogo in peticion.Respuesta.Data)
+                    {
+                        clientesAplicacionesLista.Add(new Models.Custom.ClientesAplicacionesLista
+                        {
+                            Id = catalogo.Id,
+                            IdClienteAsociado = catalogo.IdClienteAsociado,
+                            AplicaAPP = catalogo.AplicaAPP,
+                            AplicaMuestraPrecio = catalogo.AplicaMuestraPrecio,
+                            AplicaComodato = catalogo.AplicaComodato,
+                            AplicaDescuentos = catalogo.AplicaDescuentos,
+                            AplicaFacturacion = catalogo.AplicaFacturacion,
+                            AplicaCobranza = catalogo.AplicaCobranza,
+                            AplicaVales = catalogo.AplicaVales,
+                            AplicaMultiRuta = catalogo.AplicaMultiRuta
 
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                clientesAplicacionesLista = new List<Models.Custom.ClientesAplicacionesLista>();
+            }
+            return (exitoso, mensaje, clientesAplicacionesLista);
+
+        }
     }
 }

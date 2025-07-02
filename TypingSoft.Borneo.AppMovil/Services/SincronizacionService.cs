@@ -194,6 +194,32 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando facturación: {ex.Message}");
                 }
             }
+            var (exitosoCliApp, mensajeCliApp, clientesAplicaciones) = await _catalogos.ObtenerClientesAplicaciones();
+            if (exitosoCliApp && clientesAplicaciones != null)
+            {
+                var clientesAplicacionesLocales = clientesAplicaciones.Select(c => new ClientesAplicacionesLocal
+                {
+                    Id = c.Id,
+                    IdClienteAsociado = c.IdClienteAsociado,
+                    AplicaAPP = c.AplicaAPP,
+                    AplicaMuestraPrecio = c.AplicaMuestraPrecio,
+                    AplicaComodato = c.AplicaComodato,
+                    AplicaDescuentos = c.AplicaDescuentos,
+                    AplicaFacturacion = c.AplicaFacturacion,
+                    AplicaCobranza = c.AplicaCobranza,
+                    AplicaVales = c.AplicaVales,
+                    AplicaMultiRuta = c.AplicaMultiRuta,
+                }).ToList();
+                try
+                {
+                    await _localDb.GuardarClientesAplicacionesAsync(clientesAplicacionesLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Clientes aplicaciones guardados: {clientesAplicacionesLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando clientes aplicaciones: {ex.Message}");
+                }
+            }
 
         }
 
