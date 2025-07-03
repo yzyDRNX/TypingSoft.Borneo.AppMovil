@@ -18,10 +18,10 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<ProductoLocal>().Wait();
             _database.CreateTableAsync<FormaLocal>().Wait();
             _database.CreateTableAsync<CondicionLocal>().Wait();
-            _database.CreateTableAsync<PreciosGeneralesLocal>().Wait();                    
+            _database.CreateTableAsync<PreciosGeneralesLocal>().Wait();
             _database.CreateTableAsync<RutaLocal>().Wait();
             _database.CreateTableAsync<VentaGeneralLocal>().Wait();
-            _database.CreateTableAsync<VentaDetalleLocal>().Wait(); // ← Agrega esto
+            _database.CreateTableAsync<VentaDetalleLocal>().Wait();
             _database.CreateTableAsync<PreciosPreferencialesLocal>().Wait();
             _database.CreateTableAsync<TicketDetalleLocal>().Wait();
             _database.CreateTableAsync<FacturacionLocal>().Wait();
@@ -196,6 +196,13 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return await _database.Table<VentaGeneralLocal>().ToListAsync();
         }
 
+        public async Task<List<VentaGeneralLocal>> ObtenerVentasNoSincronizadasAsync()
+        {
+            return await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.Sincronizado == false)
+                .ToListAsync();
+        }
+
         #region Ventas
 
         public async Task<VentaGeneralLocal> ObtenerVentaGeneralActiva()
@@ -249,6 +256,19 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<VentaDetalleLocal>().ToListAsync();
         }
+
+        public async Task<List<VentaDetalleLocal>> ObtenerDetallesPorVentaGeneralAsync(Guid idVentaGeneral)
+        {
+            return await _database.Table<VentaDetalleLocal>()
+                .Where(d => d.IdVentaGeneral == idVentaGeneral)
+                .ToListAsync();
+        }
+
+        public async Task ActualizarVentaAsync(VentaGeneralLocal venta)
+        {
+            await _database.UpdateAsync(venta);
+        }
+
         #endregion
 
     }

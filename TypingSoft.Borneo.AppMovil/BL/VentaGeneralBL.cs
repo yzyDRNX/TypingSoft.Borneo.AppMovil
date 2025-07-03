@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TypingSoft.Borneo.AppMovil.Local;
 
 namespace TypingSoft.Borneo.AppMovil.BL
 {
@@ -30,8 +31,12 @@ namespace TypingSoft.Borneo.AppMovil.BL
                     {
                         ventasGenerales.Add(new Models.Custom.VentaGeneralRequestDTO
                         {
+                            IdVentaGeneral = catalogo.IdVentaGeneral,
                             IdRuta = catalogo.IdRuta,
                             Vuelta = catalogo.Vuelta,
+                            Fecha = catalogo.Fecha,
+                            IdStatusVenta = catalogo.IdStatusVenta,
+
                         });
                     }
                 }
@@ -42,6 +47,20 @@ namespace TypingSoft.Borneo.AppMovil.BL
                 ventasGenerales = new();
             }
             return (exitoso, mensaje, ventasGenerales);
+        }
+        // En VentaGeneralBL
+        public async Task<(bool Exitoso, string Mensaje)> ExportarVentaGeneral(VentaGeneralLocal venta)
+        {
+            var dto = new Models.Custom.VentaGeneralRequestDTO
+            {
+                IdVentaGeneral = venta.IdVentaGeneral,
+                IdRuta = venta.IdRuta,
+                Vuelta = venta.Vuelta,
+                Fecha = venta.Fecha,
+                IdStatusVenta = venta.IdStatusVenta
+            };
+            var resultado = await VentaGeneralService.CallPostAsync<Models.Custom.VentaGeneralRequestDTO, Models.API.VentaGeneralResponse>("VentaGeneral", dto);
+            return (resultado.StatusCode == System.Net.HttpStatusCode.OK, "sin mensajes");
         }
     }
 }
