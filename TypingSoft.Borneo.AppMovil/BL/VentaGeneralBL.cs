@@ -59,7 +59,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
                 Fecha = venta.Fecha,
                 IdStatusVenta = venta.IdStatusVenta
             };
-            var resultado = await VentaGeneralService.CallPostAsync<Models.Custom.VentaGeneralRequestDTO, Models.API.VentaGeneralResponse>("VentaGeneral", dto);
+            var resultado = await this.VentaGeneralService.CallPostAsync<Models.Custom.VentaGeneralRequestDTO, Models.API.VentaGeneralResponse>("VentaGeneral", dto);
             return (resultado.StatusCode == System.Net.HttpStatusCode.OK, "sin mensajes");
         }
     }

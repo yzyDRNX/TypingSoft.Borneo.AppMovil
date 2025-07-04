@@ -10,7 +10,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
 {
     public class VentaGeneralService : Helpers.HttpClientBase
     {
-        public VentaGeneralService() : base("VentaGeneral/")
+        public VentaGeneralService() : base("Reparto/")
         {
         }
         #region Métodos

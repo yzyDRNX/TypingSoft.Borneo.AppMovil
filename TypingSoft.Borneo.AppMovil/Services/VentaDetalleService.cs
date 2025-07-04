@@ -10,7 +10,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
     public class VentaDetalleService : Helpers.HttpClientBase
     {
         #region Constructor
-        public VentaDetalleService() : base("VentaDetalle/")
+        public VentaDetalleService() : base("Reparto/")
         {
         }
         #endregion
