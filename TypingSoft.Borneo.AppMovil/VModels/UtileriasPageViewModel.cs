@@ -189,7 +189,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             OnPropertyChanged(nameof(Total));
 
             // Navega a la pantalla de selección de cliente
-            await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
+            await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
 
             // Espera a que la navegación termine y luego limpia la UI de ClientePage
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)

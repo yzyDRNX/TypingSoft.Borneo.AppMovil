@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TypingSoft.Borneo.AppMovil.BL;
 using TypingSoft.Borneo.AppMovil.Helpers;
 using TypingSoft.Borneo.AppMovil.Services;
 using ZXing.Net.Maui.Controls;
@@ -28,6 +29,12 @@ namespace TypingSoft.Borneo.AppMovil
 #endif
 
             builder.Services.AddSingleton<Helpers.CustomNavigation>();
+            builder.Services.AddSingleton<VentaGeneralService>();
+            builder.Services.AddSingleton<VentaGeneralBL>();
+            builder.Services.AddSingleton<VentaDetalleService>();
+            builder.Services.AddSingleton<DetalleVentaBL>();
+            builder.Services.AddSingleton<LocalDatabaseService>();
+            builder.Services.AddSingleton<SincronizacionVentasService>();
 
             RegisterBusinessLogic(builder.Services);
             RegisterServices(builder.Services);
@@ -51,6 +58,8 @@ namespace TypingSoft.Borneo.AppMovil
             services.AddSingleton<Services.LocalDBService>();
             services.AddSingleton<Services.LocalDatabaseService>();
             services.AddSingleton<SincronizacionService>();
+            services.AddSingleton<SincronizacionVentasService>();
+            services.AddSingleton<Services.VentaDetalleService>();
         }
 
         private static void RegisterViewModels(IServiceCollection services)

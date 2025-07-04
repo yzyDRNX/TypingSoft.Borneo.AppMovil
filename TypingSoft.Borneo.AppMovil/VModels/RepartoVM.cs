@@ -210,26 +210,66 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 // Si no hay, mostramos los precios generales
                 var preciosGenerales = await _localDb.ObtenerPreciosGeneralesAsync();
                 ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(preciosGenerales);
+
+                if (preciosGenerales == null || !preciosGenerales.Any())
+                {
+                    await MostrarAlertaAsync("Sin datos", "No hay precios generales en la base local.");
+                }
+                else
+                {
+                    await MostrarAlertaAsync("OK", $"Se cargaron {preciosGenerales.Count} precios generales.");
+                }
             }
         }
 
-        public async Task AgregarDetalleVentaAsync(PreciosGeneralesLocal producto, int cantidad, decimal importeTotal)
+        public async Task AgregarDetalleVentaAsync(
+            PreciosGeneralesLocal producto, 
+            int cantidad, 
+            decimal importeTotal, 
+            Guid idClienteAsociado)
         {
-            // Aquí debes obtener la venta general activa y los demás IDs necesarios
             var ventaGeneral = await _localDb.ObtenerVentaGeneralActiva();
             if (ventaGeneral == null) return;
 
-            var detalle = new VentaDetalleLocal
+            // Guardar en VentaDetalleLocal
+            var detalleVenta = new VentaDetalleLocal
             {
                 IdDetalle = Guid.NewGuid(),
                 IdVentaGeneral = ventaGeneral.IdVentaGeneral,
                 IdProducto = producto.IdProducto,
                 Cantidad = cantidad,
                 ImporteTotal = importeTotal,
-                // Completa los demás campos según tu lógica (cliente, condición, forma de pago)
+                IdClienteAsociado = idClienteAsociado,
+                IdCondicionPago = Guid.NewGuid(), // Valor temporal
+                IdFormaPago = Guid.NewGuid()      // Valor temporal
             };
+            await _localDb.InsertarVentaDetalleAsync(detalleVenta);
 
-            await _localDb.InsertarVentaDetalleAsync(detalle);
+            // Guardar en TicketDetalleLocal
+            // Busca el ticket cabecera actual (puedes ajustar la lógica según tu flujo)
+            var tickets = await _localDb.ObtenerTicketsAsync();
+            var ticketCabecera = tickets
+                .Where(t => t.IdCliente == idClienteAsociado)
+                .OrderByDescending(t => t.Fecha)
+                .FirstOrDefault();
+
+            if (ticketCabecera != null)
+            {
+                var detalleTicket = new TicketDetalleLocal
+                {
+                    Id = Guid.NewGuid(),
+                    IdTicket = ticketCabecera.Id,
+                    IdCliente = ticketCabecera.IdCliente,
+                    Cliente = ticketCabecera.Cliente,
+                    Empleado = ticketCabecera.Empleado,
+                    Fecha = ticketCabecera.Fecha,
+                    Descripcion = producto.Producto ?? string.Empty,
+                    Cantidad = cantidad,
+                    ImporteTotal = importeTotal
+                };
+                await _localDb.InsertarTicketDetalleAsync(detalleTicket);
+            }
+            // Si no hay ticket cabecera, puedes crear uno nuevo si tu lógica lo requiere
         }
 
         private async Task CargarDescripcionRutaAsync()

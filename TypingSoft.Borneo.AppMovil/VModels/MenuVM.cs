@@ -10,18 +10,25 @@ using TypingSoft.Borneo.AppMovil.Services;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
-    public partial class MenuVM:Helpers.VMBase
+    public partial class MenuVM : Helpers.VMBase
     {
 
         private readonly BL.CatalogosBL _catalogos;
         public readonly LocalDatabaseService _localDb;
         private readonly Services.SincronizacionService _sincronizacion;
+        private readonly SincronizacionVentasService _sincronizacionVentas;
 
-        public MenuVM(Services.SincronizacionService sincronizacion, BL.CatalogosBL catalogos, LocalDatabaseService localDb)
+        public MenuVM(
+            Services.SincronizacionService sincronizacion,
+            BL.CatalogosBL catalogos,
+            LocalDatabaseService localDb,
+            SincronizacionVentasService sincronizacionVentas
+        )
         {
             _catalogos = catalogos;
             _localDb = localDb;
             _sincronizacion = sincronizacion;
+            _sincronizacionVentas = sincronizacionVentas;
             fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             _ = CargarDescripcionRutaAsync();
         }
@@ -79,6 +86,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 this.Procesando = false;
             }
         }
+
         [RelayCommand]
         public async Task CerrarSesion()
         {
@@ -89,7 +97,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 // Aquí puedes agregar la lógica para cerrar sesión, si es necesario.
                 await Navegacion.Navegar(nameof(Pages.LoginPage));
                 // Limpiar la ruta y otros datos si es necesario
-         
+
                 Helpers.Settings.UltimaDescripcionRuta = string.Empty;
                 this.MensajeProcesando = "Sesión cerrada correctamente.";
                 Helpers.StaticSettings.LimpiarSesion();
@@ -98,6 +106,26 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             {
                 this.MensajeError = $"Error al cerrar sesión: {ex.Message}";
                 this.ExisteError = true;
+            }
+            finally
+            {
+                this.Procesando = false;
+            }
+        }
+
+        [RelayCommand]
+        public async Task SincronizarVentas()
+        {
+            this.MensajeProcesando = "Sincronizando ventas...";
+            this.Procesando = true;
+            try
+            {
+                await _sincronizacionVentas.SincronizarVentasYDetallesAsync();
+                this.MensajeProcesando = "Ventas sincronizadas correctamente.";
+            }
+            catch (Exception ex)
+            {
+                this.MensajeProcesando = $"Error al sincronizar ventas: {ex.Message}";
             }
             finally
             {

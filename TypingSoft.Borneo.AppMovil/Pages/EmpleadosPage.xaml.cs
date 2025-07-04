@@ -110,9 +110,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             var nuevaVenta = new VentaGeneralLocal
             {
                 IdVentaGeneral = Guid.NewGuid(),
-                IdRuta = ViewModel.IdRutaActual, // ← usa .Value porque es Guid?
+                IdRuta = ViewModel.IdRutaActual,
                 Fecha = DateTime.Now,
-                Vuelta = 1
+                Vuelta = 1,
+                IdStatusVenta = Guid.NewGuid(),
+                Sincronizado = false // <-- ¡Esto es clave!
             };
 
             await ViewModel._localDb.GuardarVentaAsync(nuevaVenta);

@@ -148,6 +148,10 @@
             <Button Text="EMPEZAR RUTA"
                     Style="{StaticResource SecondaryButton}"
                     Clicked="OnEmpezarRutaClicked"/>
+
+            <Button Text="VOLVER AL MENÚ"
+        Style="{StaticResource SecondaryButton}"
+        Command="{Binding VolverMenuCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

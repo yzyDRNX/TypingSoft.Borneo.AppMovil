@@ -110,7 +110,8 @@
                                     HeightRequest="55"
                                     FontSize="16"
                                     FontAttributes="Bold"
-                                    HorizontalOptions="FillAndExpand"/>
+                                    HorizontalOptions="FillAndExpand"
+                                    Command="{Binding SincronizarVentasCommand}" />
                         </Frame>
 
                         <!-- Botón Inicio -->

@@ -89,6 +89,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         }
         #endregion
 
+        [RelayCommand]
+        public async Task VolverMenu()
+        {
+            // Navega a la página de menú y limpia la pila de navegación
+            await Navegacion.Navegar(nameof(Pages.MenuPage));
+        }
     }
 
 }

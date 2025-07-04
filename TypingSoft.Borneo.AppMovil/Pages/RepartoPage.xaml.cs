@@ -60,6 +60,16 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             decimal importeTotal = cantidad * precioUnitario;
 
+            // --- CORREGIDO: Obtener el idClienteAsociado como string y convertir a Guid ---
+            var idClienteAsociadoStr = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.IdClienteAsociado);
+            if (!Guid.TryParse(idClienteAsociadoStr, out Guid idClienteAsociado))
+            {
+                await DisplayAlert("Error", "No se pudo obtener el cliente asociado.", "OK");
+                return;
+            }
+
+            await ViewModel.AgregarDetalleVentaAsync(productoSeleccionado, cantidad, importeTotal, idClienteAsociado);
+
             // Mostrar en la UI
             var productoLabel = new Label
             {
@@ -71,52 +81,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             productosSeleccionadosStack.Children.Add(productoLabel);
             productosPicker.SelectedItem = null;
             cantidadEntry.Text = string.Empty;
-
-            // --- GUARDAR DETALLE DEL PRODUCTO EN TicketDetalleLocal ---
-            var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
-            var ticketCabecera = tickets
-                .Where(t => t.IdCliente == Helpers.StaticSettings.ObtenerValor(Helpers.StaticSettings.IdClienteAsociado))
-                .OrderByDescending(t => t.Fecha)
-                .FirstOrDefault();
-
-            if (ticketCabecera != null)
-            {
-                var detalle = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
-                {
-                    Id = Guid.NewGuid(),
-                    IdTicket = ticketCabecera.Id,
-                    IdCliente = ticketCabecera.IdCliente,
-                    Cliente = ticketCabecera.Cliente,
-                    Empleado = ticketCabecera.Empleado, // Aquí se copia el empleado
-                    Fecha = ticketCabecera.Fecha,
-                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
-                    Cantidad = cantidad,
-                    ImporteTotal = importeTotal
-                };
-                await ViewModel._localDb.InsertarTicketDetalleAsync(detalle);
-            }
-            else
-            {
-                // Si no existe un ticket, crea uno nuevo y luego el detalle
-                var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
-                {
-                    Id = Guid.NewGuid(),
-                    Fecha = DateTime.Now
-                    // ...
-                };
-                await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
-
-                var detalle = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
-                {
-                    Id = Guid.NewGuid(), // <-- Nuevo Guid para el detalle
-                    IdTicket = nuevoTicket.Id,
-                    IdCliente = Helpers.StaticSettings.ObtenerValor(Helpers.StaticSettings.IdClienteAsociado), // <-- Este debe coincidir con el que usas para buscar
-                    Descripcion = productoSeleccionado.Producto ?? string.Empty,
-                    Cantidad = cantidad,
-                    ImporteTotal = importeTotal
-                };
-                await ViewModel._localDb.InsertarTicketDetalleAsync(detalle);
-            }
         }
 
         private async void OnConcluirClicked(object sender, EventArgs e)
@@ -127,20 +91,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            // Consultar y mostrar los tickets guardados en la base de datos local
-            //var tickets = await ViewModel._localDb.ObtenerTicketsAsync();
-            //if (tickets == null || tickets.Count == 0)
-            //{
-            //    await DisplayAlert("Tickets", "No hay tickets registrados.", "OK");
-            //}
-            //else
-            //{
-            //    string resumen = string.Join(Environment.NewLine + Environment.NewLine, tickets.Select(t =>
-            //        $"Fecha: {t.Fecha:dd/MM/yyyy HH:mm}\nCliente: {t.Cliente}\nProducto: {t.Descripcion}\nCantidad: {t.Cantidad}\nImporte: {t.ImporteTotal:C}\nEmpleado: {t.Empleado}"
-            //    ));
-
-            //    await DisplayAlert("Tickets en BD", resumen, "OK");
-            //}
+            var detalles = await ViewModel._localDb.ObtenerDetallesAsync();
+            foreach (var d in detalles)
+            {
+                System.Diagnostics.Debug.WriteLine($"IdDetalle: {d.IdDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
+            }
 
             await App.NavigationService.Navegar(nameof(UtileriasPage));
             await Navigation.PopAsync();
