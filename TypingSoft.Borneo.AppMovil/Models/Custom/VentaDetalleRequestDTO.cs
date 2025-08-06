@@ -9,7 +9,7 @@ namespace TypingSoft.Borneo.AppMovil.Models.Custom
 {
     public class VentaDetalleRequestDTO : ResponseBase
     {
-
+        public Guid IdVentaDetalle { get; set; }
         public Guid IdVentaGeneral { get; set; }
         public Guid IdProducto { get; set; }
         public int Cantidad { get; set; }

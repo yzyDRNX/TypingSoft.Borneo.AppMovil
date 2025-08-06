@@ -127,7 +127,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             // 4. Crear el detalle de venta
             var detalle = new Local.VentaDetalleLocal
             {
-                IdDetalle = Guid.NewGuid(),
+                IdVentaDetalle = Guid.NewGuid(),
                 IdVentaGeneral = ventaGeneral.IdVentaGeneral,
                 IdProducto = producto.Id,
                 Cantidad = 1,

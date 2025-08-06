@@ -6,7 +6,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
     public class VentaDetalleLocal
     {
         [PrimaryKey]
-        public Guid IdDetalle { get; set; } = Guid.NewGuid();
+        public Guid IdVentaDetalle { get; set; } = Guid.NewGuid();
 
         [Column("IdVentaGeneral")]
         public Guid IdVentaGeneral { get; set; }

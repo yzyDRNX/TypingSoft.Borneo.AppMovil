@@ -94,7 +94,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             var detalles = await ViewModel._localDb.ObtenerDetallesAsync();
             foreach (var d in detalles)
             {
-                System.Diagnostics.Debug.WriteLine($"IdDetalle: {d.IdDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
+                System.Diagnostics.Debug.WriteLine($"IdDetalle: {d.IdVentaDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
             }
 
             await App.NavigationService.Navegar(nameof(UtileriasPage));

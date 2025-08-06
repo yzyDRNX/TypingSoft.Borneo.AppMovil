@@ -57,6 +57,7 @@ namespace TypingSoft.Borneo.AppMovil.BL
         {
             var dto = new Models.Custom.VentaDetalleRequestDTO
             {
+                IdVentaDetalle = detalle.IdVentaDetalle,
                 IdVentaGeneral = detalle.IdVentaGeneral,
                 IdProducto = detalle.IdProducto,
                 Cantidad = detalle.Cantidad,

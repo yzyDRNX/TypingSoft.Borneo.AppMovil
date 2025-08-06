@@ -5,7 +5,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
     public class Settings
     {
         private const string UrlBaseAPIKey = "UrlBaseAPI";
-        private const string DefaultUrlBaseAPI = "http://192.168.1.244:45455/API/";
+        private const string DefaultUrlBaseAPI = "http://192.168.1.155:45455/API/";
 
         public static string? UrlBaseAPI
         {
