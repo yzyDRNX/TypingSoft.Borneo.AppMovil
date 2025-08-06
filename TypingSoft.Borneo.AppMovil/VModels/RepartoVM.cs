@@ -228,6 +228,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             decimal importeTotal, 
             Guid idClienteAsociado)
         {
+            if (producto == null || producto.IdProducto == Guid.Empty || cantidad <= 0)
+                return;
+
             var ventaGeneral = await _localDb.ObtenerVentaGeneralActiva();
             if (ventaGeneral == null) return;
 

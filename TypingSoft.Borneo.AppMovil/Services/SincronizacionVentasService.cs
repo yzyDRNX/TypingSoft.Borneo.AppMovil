@@ -26,7 +26,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task SincronizarVentasYDetallesAsync()
         {
-            // Obtén las ventas no sincronizadas
             var ventas = await _localDb.ObtenerVentasNoSincronizadasAsync();
 
             foreach (var venta in ventas)
@@ -35,22 +34,20 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
                 if (exitoVenta)
                 {
-                    // Obtén los detalles de la venta
                     var detalles = await _localDb.ObtenerDetallesPorVentaGeneralAsync(venta.IdVentaGeneral);
 
-                    foreach (var detalle in detalles)
+                    // Filtra detalles válidos
+                    var detallesValidos = detalles
+                        .Where(d => d.IdProducto != Guid.Empty && d.Cantidad > 0)
+                        .ToList();
+
+                    foreach (var detalle in detallesValidos)
                     {
                         var (exitoDetalle, mensajeDetalle) = await _detalleVentaBL.ExportarDetalleVenta(detalle);
-                        // Aquí puedes manejar el resultado de cada detalle si lo necesitas
                     }
 
-                    // Marca la venta como sincronizada en la base local
                     venta.Sincronizado = true;
                     await _localDb.ActualizarVentaAsync(venta);
-                }
-                else
-                {
-                    // Maneja el error de exportación de la venta si es necesario
                 }
             }
         }
