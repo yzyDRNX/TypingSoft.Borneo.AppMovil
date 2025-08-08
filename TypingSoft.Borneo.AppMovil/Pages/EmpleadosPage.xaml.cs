@@ -128,7 +128,9 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
+            empleadosSeleccionadosStack.Opacity = 0;
+            await empleadosSeleccionadosStack.FadeTo(1, 600, Easing.CubicIn);
+            
             if (ViewModel != null)
             {
                 await ViewModel.CargarEmpleadosDesdeLocal();

@@ -94,13 +94,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            if (ViewModel != null)
-            {
-                await ViewModel.CargarClientesDesdeLocal();
-            }
-
-            clientesPicker.SelectedItem = null;
+            // Animación de fade-in para el frame principal
+            await Task.WhenAll(
+                clientesPicker.FadeTo(1, 500, Easing.CubicIn),
+                clientesPicker.ScaleTo(1, 500, Easing.CubicOut)
+            );
         }
 
 

@@ -43,4 +43,13 @@ public partial class UtileriasPage : ContentPage
         if (vm != null)
             await vm.SiguienteEntregaAsync();
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        // Animación de fade-in para la sección de utilerías
+        // Si agregas x:Name="UtileriasFrame" al Frame de utilerías, puedes animarlo así:
+        UtileriasFrame.Opacity = 0;
+        await UtileriasFrame.FadeTo(1, 600, Easing.CubicIn);
+    }
 }

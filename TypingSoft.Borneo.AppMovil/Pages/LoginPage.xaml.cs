@@ -14,9 +14,11 @@ public partial class LoginPage : ContentPage
             this.BindingContext = viewModel;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+        cameraBarcodeReaderView.Opacity = 0;
+        await cameraBarcodeReaderView.FadeTo(1, 600, Easing.CubicIn);
     }
 
     private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -96,6 +98,8 @@ public partial class LoginPage : ContentPage
             await Task.Delay(1500); // Mostrar resultado antes de cerrar
         });
     }
+
+
 
 
     private async Task MostrarModalCarga(Func<Task> accion)

@@ -104,11 +104,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            if (ViewModel != null)
-            {
-                var idClienteAsociado = Helpers.StaticSettings.ObtenerValor(Helpers.StaticSettings.IdClienteAsociado);
-                await ViewModel.CargarPreciosPorClienteAsync(idClienteAsociado);
-            }
+            productosSeleccionadosStack.Opacity = 0;
+            await productosSeleccionadosStack.FadeTo(1, 600, Easing.CubicIn);
         }
 
 
