@@ -104,6 +104,14 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            // Cargar clientes locales al aparecer la página
+            if (ViewModel != null)
+            {
+                await ViewModel.CargarProductosDesdeLocal();
+                await ViewModel.CargarPreciosDesdeLocal();
+            }
+               
+
             productosSeleccionadosStack.Opacity = 0;
             await productosSeleccionadosStack.FadeTo(1, 600, Easing.CubicIn);
         }

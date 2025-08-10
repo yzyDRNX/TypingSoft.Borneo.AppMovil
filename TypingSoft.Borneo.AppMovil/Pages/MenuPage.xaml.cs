@@ -14,11 +14,11 @@ public partial class MenuPage : ContentPage
     {
         base.OnAppearing();
 
-        // Animación de fade-in y escala para el layout principal
+        // Animación de fade-in y escala para el layout principal (más rápida)
         MainMenuLayout.Opacity = 0;
         MainMenuLayout.Scale = 0.97;
-        await MainMenuLayout.FadeTo(1, 400, Easing.CubicInOut);
-        await MainMenuLayout.ScaleTo(1, 300, Easing.CubicOut);
+        await MainMenuLayout.FadeTo(1, 150, Easing.CubicInOut);
+        await MainMenuLayout.ScaleTo(1, 120, Easing.CubicOut);
 
         // Animación secuencial para los frames de los botones
         var frames = new[] { FrameDescargarDatos, FrameSincronizarDatos, FrameIniciar, FrameCerrarSesion };

@@ -94,6 +94,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            // Cargar clientes locales al aparecer la página
+            if (ViewModel != null)
+                await ViewModel.CargarClientesDesdeLocal();
+
             // Animación de fade-in para el frame principal
             await Task.WhenAll(
                 clientesPicker.FadeTo(1, 500, Easing.CubicIn),

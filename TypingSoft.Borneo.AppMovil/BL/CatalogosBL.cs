@@ -55,6 +55,9 @@ namespace TypingSoft.Borneo.AppMovil.BL
             try
             {
                 var peticion = await this.CatalogosService.ObtenerClientes(idRuta);
+                System.Diagnostics.Debug.WriteLine($"StatusCode: {peticion.StatusCode}");
+                System.Diagnostics.Debug.WriteLine($"Mensaje: {peticion.Respuesta?.Mensaje}");
+                System.Diagnostics.Debug.WriteLine($"Data: {peticion.Respuesta?.Data}");
                 exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
                 if (exitoso)
                 {
