@@ -26,6 +26,11 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<TicketDetalleLocal>().Wait();
             _database.CreateTableAsync<FacturacionLocal>().Wait();
             _database.CreateTableAsync<ClientesAplicacionesLocal>().Wait();
+            _database.CreateTableAsync<ValoresAppVentaDetalleLocal>().Wait();
+        }
+        public async Task InsertarValoresAppVentaDetalleAsync(ValoresAppVentaDetalleLocal detalle)
+        {
+            await _database.InsertAsync(detalle);
         }
         public async Task<bool?> ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(Guid idClienteAsociado)
         {
@@ -270,6 +275,16 @@ namespace TypingSoft.Borneo.AppMovil.Services
         }
 
         #endregion
-
+        public async Task<List<ValoresAppVentaDetalleLocal>> ObtenerValoresAppVentaDetalleAsync()
+        {
+            return await _database.Table<ValoresAppVentaDetalleLocal>().ToListAsync();
+        }
+        public async Task<int> ObtenerUltimoValorFolioVentaAsync()
+        {
+            var ultimo = await _database.Table<ValoresAppVentaDetalleLocal>()
+                .OrderByDescending(x => x.ValorFolioVenta)
+                .FirstOrDefaultAsync();
+            return ultimo?.ValorFolioVenta ?? 0;
+        }
     }
 }

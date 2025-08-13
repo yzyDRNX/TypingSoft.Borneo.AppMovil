@@ -169,11 +169,11 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta activa.", "OK");
                 return;
             }
-            _numeroImpresiones = 1; // Reinicia el contador de impresiones
-            // Simplemente volvemos a la captura de productos
-            await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
 
-            // Una vez en RepartoPage solo limpiamos los campos de producto
+            await InsertarValoresAppVentaDetalleAsync(); // <-- Aquí
+
+            _numeroImpresiones = 1;
+            await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.RepartoPage page)
                 page.LimpiarCamposYListas(true);
         }
@@ -181,21 +181,32 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
-            VentaActual = null; // Limpia la venta actual
-            _numeroImpresiones = 1; // Reinicia el contador de impresiones
+            await InsertarValoresAppVentaDetalleAsync(); // <-- Aquí
 
-            Productos.Clear(); // Limpia los productos
+            VentaActual = null;
+            _numeroImpresiones = 1;
+            Productos.Clear();
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
-
-            // Navega a la pantalla de selección de cliente
             await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
-
-            // Espera a que la navegación termine y luego limpia la UI de ClientePage
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
                 page.LimpiarCamposYListas();
         }
 
+        private async Task InsertarValoresAppVentaDetalleAsync()
+        {
+            var idRuta = await _localDb.ObtenerIdRutaAsync() ?? Guid.Empty;
+            int ultimoFolio = await _localDb.ObtenerUltimoValorFolioVentaAsync();
+            var detalle = new ValoresAppVentaDetalleLocal
+            {
+                Id = Guid.NewGuid(),
+                IdRuta = idRuta,
+                ValorFolioVenta = ultimoFolio + 1,
+                SerieVentaDetalle = "S", // O la serie que corresponda
+                UltimaActualizacion = DateTime.Now
+            };
+            await _localDb.InsertarValoresAppVentaDetalleAsync(detalle);
+        }
     }
 
     public class ProductoVentaDTO

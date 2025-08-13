@@ -124,20 +124,20 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 idFormaPago = facturacionCliente.IdFormaPago;
             }
 
-            // 4. Crear el detalle de venta
-            var detalle = new Local.VentaDetalleLocal
-            {
-                IdVentaDetalle = Guid.NewGuid(),
-                IdVentaGeneral = ventaGeneral.IdVentaGeneral,
-                IdProducto = producto.Id,
-                Cantidad = 1,
-                ImporteTotal = 0,
-                IdClienteAsociado = cliente.IdClienteAsociado,
-                IdCondicionPago = condicion.IdCondicion,
-                IdFormaPago = idFormaPago
-            };
+            //// 4. Crear el detalle de venta
+            //var detalle = new Local.VentaDetalleLocal
+            //{
+            //    IdVentaDetalle = Guid.NewGuid(),
+            //    IdVentaGeneral = ventaGeneral.IdVentaGeneral,
+            //    IdProducto = producto.Id,
+            //    Cantidad = 1,
+            //    ImporteTotal = 0,
+            //    IdClienteAsociado = cliente.IdClienteAsociado,
+            //    IdCondicionPago = condicion.IdCondicion,
+            //    IdFormaPago = idFormaPago
+            //};
 
-            await _localDb.InsertarVentaDetalleAsync(detalle);
+            //await _localDb.InsertarVentaDetalleAsync(detalle);
 
             // 5. Añadir cliente a la lista visual si no está
             if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
