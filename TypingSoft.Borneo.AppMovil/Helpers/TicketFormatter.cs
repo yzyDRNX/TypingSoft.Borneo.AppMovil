@@ -57,6 +57,9 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
             sb.AppendLine("         NOMBRE Y FIRMA:");
             sb.AppendLine();
             sb.AppendLine();
@@ -75,8 +78,6 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
             sb.AppendLine();
-            sb.AppendLine("--------------------------------");
-            sb.AppendLine("      [ AREA PARA LOGO / INFO ] ");
             sb.AppendLine("--------------------------------");
 
             return sb.ToString();
