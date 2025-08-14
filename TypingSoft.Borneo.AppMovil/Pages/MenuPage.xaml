@@ -26,14 +26,18 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <HorizontalStackLayout Grid.Row="0" Grid.ColumnSpan="2" Spacing="10" Padding="20,18,20,0">
-                        <Image Source="app_logo.png" HeightRequest="32" WidthRequest="32"/>
-                        <Label Text="Borneo Soft" FontSize="22" FontAttributes="Bold" TextColor="White"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="15" Padding="20,0,20,10">
+                    <!-- "Borneo" alineado a la izquierda -->
+                    <Label Grid.Row="0" Grid.Column="0"
+           Text="Borneo"
+           FontSize="22"
+           FontAttributes="Bold"
+           TextColor="White"
+           VerticalOptions="Center"
+           Margin="20,18,0,0"/>
+                    <!-- Layout inferior igual que antes -->
+                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
                         <Label Text="📍 Unidad:" TextColor="White" FontSize="15" FontAttributes="Bold"/>
                         <Label Text="{Binding DescripcionRuta}" TextColor="#E0E0E0" FontSize="15"/>
                         <Label Text="📅 Fecha:" TextColor="White" FontSize="15" FontAttributes="Bold"/>

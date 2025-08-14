@@ -9,7 +9,7 @@
         <VerticalStackLayout Spacing="0">
 
             <!-- Encabezado con gradiente corporativo -->
-            <Grid HeightRequest="110">
+            <Grid HeightRequest="120">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="{StaticResource Primary}" Offset="0"/>
@@ -20,13 +20,23 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <HorizontalStackLayout Grid.Row="0" Spacing="5" Padding="15,10">
-                    <Label Text="Unidad:" Style="{StaticResource SectionTitle}" TextColor="White"/>
-                    <Label Text="{Binding DescripcionRuta}" TextColor="White" FontSize="16"/>
-                </HorizontalStackLayout>
-                <HorizontalStackLayout Grid.Row="1" Spacing="5" Padding="15,0,15,10">
-                    <Label Text="Fecha:" Style="{StaticResource SectionTitle}" TextColor="White"/>
-                    <Label Text="{Binding FechaActual}" TextColor="White" FontSize="16"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- "Borneo" alineado a la izquierda -->
+                <Label Grid.Row="0" Grid.Column="0"
+Text="Borneo"
+FontSize="22"
+FontAttributes="Bold"
+TextColor="White"
+VerticalOptions="Center"
+Margin="20,18,0,0"/>
+                <!-- Layout inferior igual que antes -->
+                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
+                    <Label Text="📍 Unidad:" TextColor="White" FontSize="15" FontAttributes="Bold"/>
+                    <Label Text="{Binding DescripcionRuta}" TextColor="#E0E0E0" FontSize="15"/>
+                    <Label Text="📅 Fecha:" TextColor="White" FontSize="15" FontAttributes="Bold"/>
+                    <Label Text="{Binding FechaActual}" TextColor="#E0E0E0" FontSize="15"/>
                 </HorizontalStackLayout>
             </Grid>
 
