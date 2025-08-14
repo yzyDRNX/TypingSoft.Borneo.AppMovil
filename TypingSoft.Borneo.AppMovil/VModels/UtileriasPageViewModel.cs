@@ -123,13 +123,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 }
                 else
                 {
-                    // Obtener el IdClienteAsociado (puede ser IdCliente en tu modelo)
                     var idClienteAsociado = ticket.IdCliente;
                     var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
-                    bool mostrarPrecio = aplicaMuestraPrecio ?? true; // Si es null, muestra el precio por defecto
+                    bool mostrarPrecio = aplicaMuestraPrecio ?? true;
 
+                    // Genera el ticket
                     string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones, mostrarPrecio);
+
+                    // Agrega saltos de línea extra para asegurar que el papel salga antes de cortar
+                    ticketOriginal += "\n\n\n\n\n"; // Puedes ajustar la cantidad según tu impresora
+
+                    // Imprime el ticket
                     await printer.PrintTextAsync(ticketOriginal);
+
+                    // Comando de corte de papel ESC/POS
+                    byte[] cutCommand = new byte[] { 0x1D, 0x56, 0x00 };
+                    await printer.PrintBytesAsync(cutCommand);
+
                     _numeroImpresiones++;
                 }
             }

@@ -66,8 +66,9 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine("AL PONER SU FIRMA ESTA DE ACUERDO CON LA INFORMACION");
-            sb.AppendLine("         5QUE CONTIENE LA NOTA.");
+            sb.AppendLine("   AL PONER SU FIRMA ESTA DE ");
+            sb.AppendLine("   ACUERDO CON LA INFORMACION");
+            sb.AppendLine("   QUE CONTIENE LA NOTA.");
             sb.AppendLine();
             sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
             sb.AppendLine();
