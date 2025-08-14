@@ -128,7 +128,21 @@
                            FontSize="18"
                            TextColor="{StaticResource Primary}"/>
 
-                    <!-- Grid de botones de utilerías -->
+                    <Label Text="Impresora Seleccionada: "
+       Style="{StaticResource SectionTitle}"
+       FontSize="14"
+       TextColor="Black"/>
+                    <!-- Picker para impresoras Bluetooth -->
+                    <Picker x:Name="impresorasPicker"
+                            Title="Selecciona impresora"
+                            ItemsSource="{Binding ImpresorasBluetooth}"
+                            SelectedItem="{Binding ImpresoraSeleccionada, Mode=TwoWay}"
+                            Margin="0,0,0,10"
+                            HeightRequest="50"
+                            TextColor="Black"/>
+
+
+                    <!-- Grid de botones de utilerías (lo que ya tienes) -->
                     <Grid ColumnSpacing="20" RowSpacing="15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

@@ -47,6 +47,8 @@ public partial class UtileriasPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        var vm = BindingContext as UtileriasPageViewModel;
+        vm?.CargarImpresorasBluetooth();
         // Animación de fade-in para la sección de utilerías
         // Si agregas x:Name="UtileriasFrame" al Frame de utilerías, puedes animarlo así:
         UtileriasFrame.Opacity = 0;

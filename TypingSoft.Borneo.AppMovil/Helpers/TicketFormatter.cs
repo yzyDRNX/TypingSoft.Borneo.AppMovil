@@ -60,10 +60,10 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
             sb.AppendLine("         NOMBRE Y FIRMA:");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado

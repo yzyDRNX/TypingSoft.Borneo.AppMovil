@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using TypingSoft.Borneo.AppMovil.Services;
 using TypingSoft.Borneo.AppMovil.Local;
 using System.Linq;
+using TypingSoft.Borneo.AppMovil.Helpers;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -53,6 +54,11 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         public string NombreCliente => VentaActual?.Cliente ?? string.Empty;
         public decimal Total => Productos.Sum(p => p.Precio * p.Cantidad);
 
+        public ObservableCollection<string> ImpresorasBluetooth { get; set; } = new();
+
+        [ObservableProperty]
+        private string impresoraSeleccionada;
+
         public UtileriasPageViewModel()
         {
             _localDb = new LocalDatabaseService();
@@ -67,6 +73,21 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             {
                 VentaActual = new TicketDetalleLocal { Cliente = nombreCliente };
             }
+        }
+
+        public void CargarImpresorasBluetooth()
+        {
+            var lista = RawBtPrinter.GetBondedPrinterNames();
+            ImpresorasBluetooth.Clear();
+            foreach (var nombre in lista)
+                ImpresorasBluetooth.Add(nombre);
+
+            // Recupera la impresora guardada y selecciónala en el Picker
+            var impresoraGuardada = Helpers.Settings.ObtenerValor<string>("ImpresoraBluetooth");
+            if (!string.IsNullOrEmpty(impresoraGuardada) && lista.Contains(impresoraGuardada))
+                ImpresoraSeleccionada = impresoraGuardada;
+            else if (lista.Count > 0)
+                ImpresoraSeleccionada = lista[0]; // Selecciona la primera por defecto
         }
 
         private async void CargarDescripcionRuta()
@@ -112,64 +133,50 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles)
-        {
-            var printer = App.ServiceProvider.GetService<IRawBtPrinter>();
-            if (printer != null)
-            {
-                if (_numeroImpresiones > 2)
-                {
-                    await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
-                }
-                else
-                {
-                    var idClienteAsociado = ticket.IdCliente;
-                    var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
-                    bool mostrarPrecio = aplicaMuestraPrecio ?? true;
-
-                    // Genera el ticket
-                    string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones, mostrarPrecio);
-
-                    // Agrega saltos de línea extra para asegurar que el papel salga antes de cortar
-                    ticketOriginal += "\n\n\n\n\n"; // Puedes ajustar la cantidad según tu impresora
-
-                    // Imprime el ticket
-                    await printer.PrintTextAsync(ticketOriginal);
-
-                    // Comando de corte de papel ESC/POS
-                    byte[] cutCommand = new byte[] { 0x1D, 0x56, 0x00 };
-                    await printer.PrintBytesAsync(cutCommand);
-
-                    _numeroImpresiones++;
-                }
-            }
-            else
-            {
-                await App.Current.MainPage.DisplayAlert("Error", "No se encontró el servicio de impresión.", "OK");
-            }
-        }
-
         // Comando de impresión
         [RelayCommand]
         public async Task ImprimirAsync()
         {
-            if (VentaActual == null)
+            if (string.IsNullOrEmpty(ImpresoraSeleccionada))
             {
-                await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta actual cargada.", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "Selecciona una impresora Bluetooth.", "OK");
                 return;
             }
 
             var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
-
             if (detalles == null || detalles.Count == 0)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
                 return;
             }
 
-            await ImprimirTicketAsync(VentaActual, detalles);
+            await ImprimirTicketAsync(VentaActual, detalles, ImpresoraSeleccionada);
         }
 
+        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        {
+            var printer = new RawBtPrinter(printerName);
+            if (_numeroImpresiones > 2)
+            {
+                await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
+            }
+            else
+            {
+                var idClienteAsociado = ticket.IdCliente;
+                var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
+                bool mirarPrecio = aplicaMuestraPrecio ?? true;
+
+                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones, mirarPrecio);
+                ticketOriginal += "\n\n\n\n\n";
+
+                await printer.PrintTextAsync(ticketOriginal);
+
+                byte[] cutCommand = new byte[] { 0x1D, 0x56, 0x00 };
+                await printer.PrintBytesAsync(cutCommand);
+
+                _numeroImpresiones++;
+            }
+        }
 
         [RelayCommand]
         public async Task OtraVentaMismoClienteAsync()
@@ -228,6 +235,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 UltimaActualizacion = DateTime.Now
             };
             await _localDb.InsertarValoresAppVentaDetalleAsync(detalle);
+        }
+
+        partial void OnImpresoraSeleccionadaChanged(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+                Helpers.Settings.FijarConfiguracion("ImpresoraBluetooth", value);
         }
     }
 
