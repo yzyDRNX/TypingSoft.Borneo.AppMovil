@@ -181,13 +181,25 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
-            await InsertarValoresAppVentaDetalleAsync(); // <-- Aquí
+            await InsertarValoresAppVentaDetalleAsync();
 
             VentaActual = null;
             _numeroImpresiones = 1;
             Productos.Clear();
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
+
+            // Limpia el ticket actual en la base local
+            await _localDb.BorrarVentaGeneralActiva();
+
+            // Limpia los valores de cliente en StaticSettings
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, string.Empty);
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, string.Empty);
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, string.Empty);
+
+            // Recarga los datos para asegurar que la UI se actualice
+            await CargarVentaActualYProductos();
+
             await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
             if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
                 page.LimpiarCamposYListas();

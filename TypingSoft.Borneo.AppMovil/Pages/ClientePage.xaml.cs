@@ -95,6 +95,9 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         {
             base.OnAppearing();
 
+            // Limpia la lista de clientes a surtir al entrar a la página
+            LimpiarCamposYListas();
+
             // Cargar clientes locales al aparecer la página
             if (ViewModel != null)
                 await ViewModel.CargarClientesDesdeLocal();
