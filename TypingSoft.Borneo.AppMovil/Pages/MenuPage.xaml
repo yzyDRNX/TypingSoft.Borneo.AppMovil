@@ -70,7 +70,7 @@
                             <!-- Descargar Datos -->
                             <Frame x:Name="FrameDescargarDatos" CornerRadius="14" Padding="0" HasShadow="True"
                                    BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnDescargarDatos" Text="⬇️ Descargar Datos"
+                                <Button x:Name="BtnDescargarDatos" Text="⬇️                      Descargar Datos                         "
                                         Style="{StaticResource PrimaryButton}"
                                         Command="{Binding SincronizarCatalogosCommand}"
                                         FontSize="18"
@@ -80,7 +80,7 @@
                             <!-- Sincronizar Datos -->
                             <Frame x:Name="FrameSincronizarDatos" CornerRadius="14" Padding="0" HasShadow="True"
                                    BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnSincronizarDatos" Text="🔄 Sincronizar Datos"
+                                <Button x:Name="BtnSincronizarDatos" Text="🔄                      Sincronizar Datos                       "
                                         Style="{StaticResource PrimaryButton}"
                                         Command="{Binding SincronizarVentasCommand}"
                                         FontSize="18"
@@ -89,9 +89,9 @@
 
                             <!-- Iniciar -->
                             <Frame x:Name="FrameIniciar" CornerRadius="14" Padding="0" HasShadow="True"
-                                   BackgroundColor="{StaticResource Secondary}">
-                                <Button x:Name="BtnIniciar" Text="💰 Iniciar"
-                                        Style="{StaticResource SecondaryButton}"
+                                   BackgroundColor="{StaticResource Primary}">
+                                <Button x:Name="BtnIniciar" Text="💰                      Iniciar                                            "
+                                        Style="{StaticResource PrimaryButton}"
                                         Command="{Binding NavegarInicioCommand}"
                                         FontSize="18"
                                         HorizontalOptions="FillAndExpand"/>
@@ -100,7 +100,7 @@
                             <!-- Cerrar Sesión -->
                             <Frame x:Name="FrameCerrarSesion" CornerRadius="14" Padding="0" HasShadow="True"
                                    BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnCerrarSesion" Text="🔒 Cerrar Sesión"
+                                <Button x:Name="BtnCerrarSesion" Text="🔒                     Cerrar Sesión                               "
                                         Style="{StaticResource PrimaryButton}"
                                         Command="{Binding CerrarSesionCommand}"
                                         FontSize="18"

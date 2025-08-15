@@ -145,6 +145,7 @@ Margin="20,18,0,0"/>
                     <!-- Picker para impresoras Bluetooth -->
                     <Picker x:Name="impresorasPicker"
                             Title="Selecciona impresora"
+                            TitleColor="Black"
                             ItemsSource="{Binding ImpresorasBluetooth}"
                             SelectedItem="{Binding ImpresoraSeleccionada, Mode=TwoWay}"
                             Margin="0,0,0,10"

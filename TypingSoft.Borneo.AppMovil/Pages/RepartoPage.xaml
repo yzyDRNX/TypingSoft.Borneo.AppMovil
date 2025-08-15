@@ -71,13 +71,20 @@ Margin="20,18,0,0"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Picker x:Name="productosPicker"
-                    ItemsSource="{Binding ListadoPreciosLocal}"
-                    ItemDisplayBinding="{Binding Producto}"
-                    Title="Seleccione un producto"
-                    Style="{StaticResource Picker}"
-                    HeightRequest="50"
-                    Grid.Column="0"/>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Seleccione un producto"
+       FontSize="16"
+       TextColor="{StaticResource Black}" />
+                            <Picker x:Name="productosPicker"
+ItemsSource="{Binding ListadoPreciosLocal}"
+ItemDisplayBinding="{Binding Producto}"
+Title="Seleccione un producto"
+TitleColor="Black"
+Style="{StaticResource Picker}"
+HeightRequest="50"
+Grid.Column="0"/>
+                        </VerticalStackLayout>
+                        
                         <Entry x:Name="cantidadEntry"
                    Placeholder="Cantidad"
                    Keyboard="Numeric"
@@ -118,7 +125,7 @@ Margin="20,18,0,0"/>
 
             <!-- Botón de concluir -->
             <Button Text="CONCLUIR"
-                    Style="{StaticResource SecondaryButton}"
+                    Style="{StaticResource PrimaryButton}"
                     Margin="20,0,20,20"
                     Clicked="OnConcluirClicked"/>
         </VerticalStackLayout>

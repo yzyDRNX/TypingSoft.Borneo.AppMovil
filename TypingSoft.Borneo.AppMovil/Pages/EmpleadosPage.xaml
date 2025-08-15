@@ -70,12 +70,19 @@ Margin="20,18,0,0"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Picker x:Name="empleadosPicker"
-                    ItemsSource="{Binding ListaEmpleados}"
-                    ItemDisplayBinding="{Binding Empleado}"
-                    Title="Seleccione un empleado"
-                    Style="{StaticResource Picker}"
-                    HeightRequest="50"/>
+                        <VerticalStackLayout Spacing ="4">
+                            <Label Text="Seleccione un empleado"
+       FontSize="16"
+       TextColor="{StaticResource Black}" />
+                            <Picker x:Name="empleadosPicker"
+ItemsSource="{Binding ListaEmpleados}"
+ItemDisplayBinding="{Binding Empleado}"
+Title="Seleccione un empleado"
+TitleColor="Black"
+Style="{StaticResource Picker}"
+HeightRequest="50"/>
+                        </VerticalStackLayout>
+                        
                         <Button Text="AÑADIR"
                     Style="{StaticResource PrimaryButton}"
                     Grid.Column="1"
@@ -116,12 +123,12 @@ Margin="20,18,0,0"/>
 
             <!-- Botón de acción principal -->
             <Button Text="EMPEZAR RUTA"
-                    Style="{StaticResource SecondaryButton}"
+                    Style="{StaticResource PrimaryButton}"
                     Margin="20,0,20,10"
                     Clicked="OnEmpezarRutaClicked"/>
 
             <Button Text="VOLVER AL MENÚ"
-                    Style="{StaticResource SecondaryButton}"
+                    Style="{StaticResource PrimaryButton}"
                     Margin="20,0,20,20"
                     Command="{Binding VolverMenuCommand}" />
         </VerticalStackLayout>
