@@ -83,71 +83,74 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             if (cliente == null)
                 return;
 
-            // 1. Verificar o crear venta general activa
-            var ventaGeneral = await _localDb.ObtenerVentaGeneralActiva();
-            if (ventaGeneral == null)
+            // 1. SIEMPRE crear nueva venta general
+            Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
+            var nuevaVenta = new VentaGeneralLocal
             {
-                Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
-                ventaGeneral = new Local.VentaGeneralLocal
-                {
-                    IdVentaGeneral = Guid.NewGuid(),
-                    IdRuta = idRuta ?? Guid.Empty,
-                    Vuelta = 1,
-                    Fecha = DateTime.Now,
-                    Sincronizado = false
-                };
-                await _localDb.GuardarVentaGeneral(ventaGeneral);
-            }
+                IdVentaGeneral = Guid.NewGuid(),
+                IdRuta = idRuta ?? Guid.Empty,
+                Vuelta = 1, // O calcula la vuelta según tus reglas
+                Fecha = DateTime.Now,
+                IdStatusVenta = Guid.NewGuid(),
+                Sincronizado = false
+            };
+            await _localDb.GuardarVentaAsync(nuevaVenta);
 
-            // 2. Obtener IDs relacionados
-            var productos = await _localDb.ObtenerProductosAsync();
-            var condiciones = await _localDb.ObtenerCondicionesAsync();
-            var formas = await _localDb.ObtenerFormasAsync();
-
-            var producto = productos.FirstOrDefault();
-            var condicion = condiciones.FirstOrDefault();
-            var forma = formas.FirstOrDefault();
-
-            if (producto == null || condicion == null)
+            // 2. Crear nuevo ticket cabecera
+            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
+            var nuevoTicket = new TicketDetalleLocal
             {
-                await MostrarAlertaAsync("Error", "No hay productos o condiciones disponibles.");
-                return;
-            }
+                Id = Guid.NewGuid(),
+                IdTicket = nuevaVenta.IdVentaGeneral,
+                IdCliente = cliente.IdClienteAsociado,
+                Cliente = cliente.Cliente ?? string.Empty,
+                Empleado = empleadoSeleccionado,
+                Fecha = DateTime.Now
+            };
+            await _localDb.InsertarTicketAsync(nuevoTicket);
 
-            // 3. Buscar facturación para el cliente
-            var facturaciones = await _localDb.ObtenerFacturacionesAsync();
-            var facturacionCliente = facturaciones.FirstOrDefault(f => f.IdAsociado == cliente.IdClienteAsociado);
-
-            Guid idFormaPago = forma != null ? forma.IdForma : Guid.Empty;
-            if (facturacionCliente != null)
-            {
-                idFormaPago = facturacionCliente.IdFormaPago;
-            }
-
-            //// 4. Crear el detalle de venta
-            //var detalle = new Local.VentaDetalleLocal
-            //{
-            //    IdVentaDetalle = Guid.NewGuid(),
-            //    IdVentaGeneral = ventaGeneral.IdVentaGeneral,
-            //    IdProducto = producto.Id,
-            //    Cantidad = 1,
-            //    ImporteTotal = 0,
-            //    IdClienteAsociado = cliente.IdClienteAsociado,
-            //    IdCondicionPago = condicion.IdCondicion,
-            //    IdFormaPago = idFormaPago
-            //};
-
-            //await _localDb.InsertarVentaDetalleAsync(detalle);
-
-            // 5. Añadir cliente a la lista visual si no está
+            // 3. Limpia la lista visual y el estado si es necesario
             if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
                 ClientesASurtir.Add(cliente);
 
-            // Guarda el IdClienteAsociado del cliente seleccionado
             Helpers.Settings.IdClienteAsociado = cliente.IdClienteAsociado;
-
-            // Mostrar la lista actual de clientes a surtir
             var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
+
+            // Aquí debes pasar el nuevo ticket al ViewModel de impresión
+            // Por ejemplo, si navegas a UtileriasPage, pásalo por parámetro o usa un servicio compartido
+        }
+
+        public async Task IniciarNuevaVenta(Models.Custom.ClientesLista cliente)
+        {
+            var ventaSession = App.ServiceProvider.GetService<VentaSessionServices>();
+
+            Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
+            var nuevaVenta = new VentaGeneralLocal
+            {
+                IdVentaGeneral = Guid.NewGuid(),
+                IdRuta = idRuta ?? Guid.Empty,
+                Vuelta = 1,
+                Fecha = DateTime.Now,
+                IdStatusVenta = Guid.NewGuid(),
+                Sincronizado = false
+            };
+            await _localDb.GuardarVentaAsync(nuevaVenta);
+
+            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
+            var nuevoTicket = new TicketDetalleLocal
+            {
+                Id = Guid.NewGuid(),
+                IdTicket = nuevaVenta.IdVentaGeneral,
+                IdCliente = cliente.IdClienteAsociado,
+                Cliente = cliente.Cliente ?? string.Empty,
+                Empleado = empleadoSeleccionado,
+                Fecha = DateTime.Now
+            };
+            await _localDb.InsertarTicketAsync(nuevoTicket);
+
+            // Guarda el ticket y venta actual en el servicio
+            ventaSession.TicketActual = nuevoTicket;
+            ventaSession.VentaGeneralActual = nuevaVenta;
         }
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)

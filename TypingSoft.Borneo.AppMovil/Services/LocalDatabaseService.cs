@@ -194,7 +194,15 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task GuardarVentaAsync(VentaGeneralLocal venta)
         {
-            await _database.InsertAsync(venta);
+            try
+            {
+                await _database.InsertAsync(venta);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al insertar VentaGeneral: {ex.Message}");
+                throw;
+            }
         }
         public async Task<List<VentaGeneralLocal>> ObtenerVentasAsync()
         {
@@ -285,6 +293,20 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 .OrderByDescending(x => x.ValorFolioVenta)
                 .FirstOrDefaultAsync();
             return ultimo?.ValorFolioVenta ?? 0;
+        }
+
+        public async Task ImprimirVentasDebugAsync()
+        {
+            var ventas = await _database.Table<VentaGeneralLocal>().ToListAsync();
+            System.Diagnostics.Debug.WriteLine("----- VENTAS EN BD -----");
+            foreach (var v in ventas)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"Id: {v.IdVentaGeneral}, Sincronizado: {v.Sincronizado}, Fecha: {v.Fecha:yyyy-MM-dd HH:mm:ss}, Ruta: {v.IdRuta}, Vuelta: {v.Vuelta}, IdStatusVenta: {v.IdStatusVenta}");
+            }
+            System.Diagnostics.Debug.WriteLine($"Total ventas: {ventas.Count}");
+            var ventasNoSync = ventas.Where(x => x.Sincronizado == false).ToList();
+            System.Diagnostics.Debug.WriteLine($"Ventas no sincronizadas: {ventasNoSync.Count}");
         }
     }
 }

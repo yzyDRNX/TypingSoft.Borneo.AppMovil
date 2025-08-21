@@ -54,6 +54,7 @@ namespace TypingSoft.Borneo.AppMovil
         private static void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton<Services.CatalogosService>();
+            services.AddSingleton<VentaSessionServices>();
             services.AddSingleton<Services.SeguridadService>();
             services.AddSingleton<Services.LocalDBService>();
             services.AddSingleton<Services.LocalDatabaseService>();

@@ -120,7 +120,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             this.Procesando = true;
             try
             {
+                // Imprime el estado antes de sincronizar
+                await _localDb.ImprimirVentasDebugAsync();
+
                 await _sincronizacionVentas.SincronizarVentasYDetallesAsync();
+
+                // Imprime el estado después de sincronizar
+                await _localDb.ImprimirVentasDebugAsync();
 
                 // Sincroniza los valores de app venta detalle
                 var valoresBL = new BL.ValoresAppVentaDetalleBL(_localDb, new Services.ValoresAppVentaDetalleService());

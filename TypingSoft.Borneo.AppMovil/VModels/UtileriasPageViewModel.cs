@@ -62,6 +62,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         public UtileriasPageViewModel()
         {
             _localDb = new LocalDatabaseService();
+            var ventaSession = App.ServiceProvider.GetService<VentaSessionServices>();
+            VentaActual = ventaSession.TicketActual;
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
           //  _ = CargarUltimoTicketAsync();
@@ -143,14 +145,21 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
 
-            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
+            var ticketActual = VentaActual;
+            if (ticketActual == null)
+            {
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta/ticket actual.", "OK");
+                return;
+            }
+
+            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ticketActual.Id);
             if (detalles == null || detalles.Count == 0)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
                 return;
             }
 
-            await ImprimirTicketAsync(VentaActual, detalles, ImpresoraSeleccionada);
+            await ImprimirTicketAsync(ticketActual, detalles, ImpresoraSeleccionada);
         }
 
         private async Task ImprimirTicketAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
@@ -207,7 +216,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             OnPropertyChanged(nameof(Total));
 
             // Limpia el ticket actual en la base local
-            await _localDb.BorrarVentaGeneralActiva();
+            //await _localDb.BorrarVentaGeneralActiva();
 
             // Limpia los valores de cliente en StaticSettings
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, string.Empty);

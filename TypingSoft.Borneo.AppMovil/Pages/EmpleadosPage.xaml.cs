@@ -107,17 +107,24 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
+            // Obtener el número de ventas previas para la ruta actual
+            var ventasPrevias = await ViewModel._localDb.ObtenerVentasAsync();
+            int vueltaActual = ventasPrevias.Count(v => v.IdRuta == ViewModel.IdRutaActual) + 1;
+
             var nuevaVenta = new VentaGeneralLocal
             {
                 IdVentaGeneral = Guid.NewGuid(),
                 IdRuta = ViewModel.IdRutaActual,
                 Fecha = DateTime.Now,
-                Vuelta = 1,
+                Vuelta = vueltaActual,
                 IdStatusVenta = Guid.NewGuid(),
                 Sincronizado = false // <-- ¡Esto es clave!
             };
 
             await ViewModel._localDb.GuardarVentaAsync(nuevaVenta);
+
+            // Imprime el estado después de insertar
+            await ViewModel._localDb.ImprimirVentasDebugAsync();
 
             var ventas = await ViewModel._localDb.ObtenerVentasAsync();
             System.Diagnostics.Debug.WriteLine($"Ventas totales registradas: {ventas.Count}");

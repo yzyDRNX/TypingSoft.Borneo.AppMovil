@@ -48,6 +48,9 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
                     venta.Sincronizado = true;
                     await _localDb.ActualizarVentaAsync(venta);
+
+                    // Imprime el estado después de actualizar
+                    await _localDb.ImprimirVentasDebugAsync();
                 }
             }
         }
