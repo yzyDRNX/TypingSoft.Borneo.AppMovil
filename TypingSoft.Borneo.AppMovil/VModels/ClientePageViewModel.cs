@@ -85,11 +85,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             // 1. SIEMPRE crear nueva venta general
             Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
+            var hoy = DateTime.Now.Date;
+            var mañana = hoy.AddDays(1);
+            var ventasDelDia = (await _localDb.ObtenerVentasAsync())
+                .Where(v => v.Fecha >= hoy && v.Fecha < mañana)
+                .ToList();
+            int vueltaActual = ventasDelDia.Count + 1;
+
             var nuevaVenta = new VentaGeneralLocal
             {
                 IdVentaGeneral = Guid.NewGuid(),
                 IdRuta = idRuta ?? Guid.Empty,
-                Vuelta = 1, // O calcula la vuelta según tus reglas
+                Vuelta = vueltaActual,
                 Fecha = DateTime.Now,
                 IdStatusVenta = Guid.NewGuid(),
                 Sincronizado = false

@@ -107,9 +107,15 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            // Obtener el número de ventas previas para la ruta actual
-            var ventasPrevias = await ViewModel._localDb.ObtenerVentasAsync();
-            int vueltaActual = ventasPrevias.Count(v => v.IdRuta == ViewModel.IdRutaActual) + 1;
+            var hoy = DateTime.Now.Date;
+            var mañana = hoy.AddDays(1);
+
+            // Obtén las ventas del día actual
+            var ventasDelDia = (await ViewModel._localDb.ObtenerVentasAsync())
+                .Where(v => v.Fecha >= hoy && v.Fecha < mañana)
+                .ToList();
+
+            int vueltaActual = ventasDelDia.Count + 1;
 
             var nuevaVenta = new VentaGeneralLocal
             {
