@@ -14,7 +14,14 @@ public partial class InicioPage : ContentPage
 
     private async void OnSendUrlClicked(object sender, EventArgs e)
     {
-        ViewModel?.GuardarUrlCommand.Execute(null);
+        // Validar que el campo no esté vacío ni solo espacios
+        if (string.IsNullOrWhiteSpace(ViewModel?.UrlInput))
+        {
+            await DisplayAlert("Aviso", "Por favor ingresa una URL válida.", "OK");
+            return;
+        }
+
+        ViewModel.GuardarUrlCommand.Execute(null);
         await App.NavigationService.Navegar(nameof(LoginPage));
     }
 

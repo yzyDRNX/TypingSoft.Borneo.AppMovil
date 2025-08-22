@@ -85,17 +85,21 @@ HeightRequest="50"
 Grid.Column="0"/>
                         </VerticalStackLayout>
                         
-                        <Entry x:Name="cantidadEntry"
+
+                    </Grid>
+                    <Label Text="Cantidad del producto"
+FontSize="16"
+TextColor="{StaticResource Black}" />
+                    <Entry x:Name="cantidadEntry"
                    Placeholder="Cantidad"
                    Keyboard="Numeric"
                    Style="{StaticResource Entry}"
                    HeightRequest="50"
                    Grid.Column="1"/>
-                        <Button Text="AÑADIR"
+                    <Button Text="AÑADIR"
                     Style="{StaticResource PrimaryButton}"
                     Grid.Column="2"
                     Clicked="OnAñadirProductoClicked"/>
-                    </Grid>
                 </VerticalStackLayout>
             </Frame>
 

@@ -57,12 +57,26 @@ public partial class LoginPage : ContentPage
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 ViewModel.Ruta = firstBarcode.Value;
-               // await DisplayAlert("Código QR leído", $"Valor: {firstBarcode.Value}", "OK");
 
+                bool autenticado = false;
                 await MostrarModalCarga(async () =>
                 {
                     await ViewModel.AutenticarRuta();
+                    // Verifica si la autenticación fue exitosa
+                    autenticado = ViewModel.Procesando == false && string.IsNullOrEmpty(ViewModel.MensajeError) && !ViewModel.ExisteError
+                        && (ViewModel.MensajeProcesando?.Contains("Sincronizando") == true || ViewModel.MensajeProcesando?.Contains("Ruta aceptada") == true);
                 });
+
+                if (autenticado)
+                {
+                    StopCamera();
+                }
+                else
+                {
+                    // Si no fue autenticado, la cámara sigue activa para reintentar
+                    await DisplayAlert("Error", "No se pudo autenticar la ruta. Intenta escanear nuevamente.", "OK");
+                    cameraBarcodeReaderView.IsVisible = true;
+                }
             });
 
             StopCamera();

@@ -1,3 +1,5 @@
+using Microsoft.Maui.ApplicationModel;
+
 namespace TypingSoft.Borneo.AppMovil.Pages;
 
 public partial class MenuPage : ContentPage
@@ -37,5 +39,9 @@ public partial class MenuPage : ContentPage
             );
             delay += 80; // efecto cascada
         }
+
+        // Solicita permiso de dispositivos cercanos (Bluetooth)
+        var nearbyStatus = await Permissions.RequestAsync<Permissions.Bluetooth>();
+
     }
 }
