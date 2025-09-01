@@ -71,20 +71,17 @@ Margin="20,18,0,0"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <VerticalStackLayout Spacing="4">
-    <Label Text="Seleccione un cliente"
-           FontSize="16"
-           TextColor="{StaticResource Black}" />
-    <Picker
-        x:Name="clientesPicker"
-        ItemsSource="{Binding ListadoClientes}"
-        ItemDisplayBinding="{Binding Cliente}"
-        Title="Seleccione un cliente"
-        TitleColor="Black"
-        Style="{StaticResource Picker}"
-        HeightRequest="50"/>
-</VerticalStackLayout>
+                            <Label Text="Seleccione un cliente"
+                                   FontSize="16"
+                                   TextColor="{StaticResource Black}" />
+                            <Button x:Name="btnSeleccionarCliente"
+                                    Text="Seleccionar cliente"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Clicked="OnSeleccionarClienteClicked" />
+                        </VerticalStackLayout>
+
                         <Button Text="AÑADIR"
                                 Style="{StaticResource PrimaryButton}"
                                 Grid.Column="1"

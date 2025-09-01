@@ -1,25 +1,28 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
-using TypingSoft.Borneo.AppMovil.Models.API;
+using System.Linq;
 using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Pages.Modals;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class EmpleadosPage : ContentPage
     {
         VModels.EmpleadosVM? ViewModel;
-        private readonly HashSet<Guid> _empleadosSeleccionados = new HashSet<Guid>();
-        private string? _primerEmpleadoSeleccionado; // Guarda el primer empleado
+        private readonly HashSet<Guid> _empleadosSeleccionados = new();
+        private string? _primerEmpleadoSeleccionado;
+        private Models.Custom.EmpleadosLista? _empleadoSeleccionado;
+
+        private bool _suspendRefresh;
+        private bool _initialized;
 
         public EmpleadosPage()
         {
             InitializeComponent();
             ViewModel = App.ServiceProvider.GetService<VModels.EmpleadosVM>();
             if (ViewModel != null)
-            {
                 this.BindingContext = ViewModel;
-            }
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
@@ -29,22 +32,41 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             switch (e.PropertyName)
             {
                 case "ListadoEmpleados":
-                    empleadosPicker.ItemsSource = ViewModel?.ListadoEmpleados;
-                    empleadosPicker.SelectedItem = null; // Resetear selección al cargar la lista
+                    if (_suspendRefresh) return;
+
+                    // No borres selección ni cambies el texto si ya hay selección
                     emptyStateLabel.IsVisible = ViewModel?.ListadoEmpleados.Count == 0;
-                    empleadosSeleccionadosStack.Children.Clear(); // Limpiar la lista de empleados seleccionados
-                    _empleadosSeleccionados.Clear(); // Limpiar el conjunto de IDs seleccionados
-                    _primerEmpleadoSeleccionado = null; // Reinicia al cargar lista nueva
-                    break;
-                default:
+                    if (_empleadoSeleccionado == null && _empleadosSeleccionados.Count == 0)
+                    {
+                        empleadosSeleccionadosStack.Children.Clear();
+                        btnSeleccionarEmpleado.Text = "Seleccionar empleado";
+                    }
                     break;
             }
         }
 
+        private async void OnSeleccionarEmpleadoClicked(object sender, EventArgs e)
+        {
+            if (ViewModel?.ListadoEmpleados == null || ViewModel.ListadoEmpleados.Count == 0)
+            {
+                await DisplayAlert("Aviso", "No hay empleados cargados.", "OK");
+                return;
+            }
+
+            _suspendRefresh = true;
+            var modal = new SelectEmpleadoModal(ViewModel.ListadoEmpleados);
+            var seleccionado = await modal.ShowAsync(Navigation);
+            if (seleccionado != null)
+            {
+                _empleadoSeleccionado = seleccionado;
+                btnSeleccionarEmpleado.Text = seleccionado.Empleado ?? "Empleado seleccionado";
+            }
+            _suspendRefresh = false;
+        }
+
         private async void OnAñadirEmpleadoClicked(object sender, EventArgs e)
         {
-            var empleadoSeleccionado = empleadosPicker.SelectedItem as Models.Custom.EmpleadosLista;
-
+            var empleadoSeleccionado = _empleadoSeleccionado;
             if (empleadoSeleccionado == null)
             {
                 await DisplayAlert("Advertencia", "Por favor, seleccione un empleado antes de añadirlo.", "OK");
@@ -60,37 +82,20 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             _empleadosSeleccionados.Add(empleadoSeleccionado.Id);
             emptyStateLabel.IsVisible = false;
 
-            var empleadoItem = new HorizontalStackLayout
-            {
-                Spacing = 10,
-                Padding = new Thickness(0, 5)
-            };
+            var item = new HorizontalStackLayout { Spacing = 10, Padding = new Thickness(0, 5) };
+            item.Children.Add(new Label { Text = "•", TextColor = Color.FromArgb("#2160AB"), FontSize = 14, VerticalOptions = LayoutOptions.Center });
+            item.Children.Add(new Label { Text = empleadoSeleccionado.Empleado, TextColor = Colors.Black, FontSize = 14, VerticalOptions = LayoutOptions.Center });
+            empleadosSeleccionadosStack.Children.Add(item);
 
-            empleadoItem.Children.Add(new Label
-            {
-                Text = "•",
-                TextColor = Color.FromArgb("#2160AB"),
-                FontSize = 14,
-                VerticalOptions = LayoutOptions.Center
-            });
-
-            empleadoItem.Children.Add(new Label
-            {
-                Text = empleadoSeleccionado.Empleado,
-                TextColor = Colors.Black,
-                FontSize = 14,
-                VerticalOptions = LayoutOptions.Center
-            });
-
-            empleadosSeleccionadosStack.Children.Add(empleadoItem);
-
-            // Solo guarda el primer empleado seleccionado en StaticSettings
             if (_primerEmpleadoSeleccionado == null)
             {
                 _primerEmpleadoSeleccionado = empleadoSeleccionado.Empleado ?? string.Empty;
                 Helpers.StaticSettings.FijarConfiguracion("Empleado", _primerEmpleadoSeleccionado);
-                // Ya NO insertes aquí un TicketDetalleLocal vacío
             }
+
+            // Reset solo tras añadir
+            _empleadoSeleccionado = null;
+            btnSeleccionarEmpleado.Text = "Seleccionar empleado";
         }
 
         private async void OnEmpezarRutaClicked(object sender, EventArgs e)
@@ -101,7 +106,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            if (ViewModel == null || ViewModel.IdRutaActual == null)
+            if (ViewModel == null || ViewModel.IdRutaActual == Guid.Empty)
             {
                 await DisplayAlert("Error", "No se encontró la ruta actual. Asegúrate de que esté cargada.", "OK");
                 return;
@@ -109,8 +114,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             var hoy = DateTime.Now.Date;
             var mañana = hoy.AddDays(1);
-
-            // Obtén las ventas del día actual
             var ventasDelDia = (await ViewModel._localDb.ObtenerVentasAsync())
                 .Where(v => v.Fecha >= hoy && v.Fecha < mañana)
                 .ToList();
@@ -124,16 +127,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 Fecha = DateTime.Now,
                 Vuelta = vueltaActual,
                 IdStatusVenta = Guid.NewGuid(),
-                Sincronizado = false // <-- ¡Esto es clave!
+                Sincronizado = false
             };
 
             await ViewModel._localDb.GuardarVentaAsync(nuevaVenta);
-
-            // Imprime el estado después de insertar
             await ViewModel._localDb.ImprimirVentasDebugAsync();
-
-            var ventas = await ViewModel._localDb.ObtenerVentasAsync();
-            System.Diagnostics.Debug.WriteLine($"Ventas totales registradas: {ventas.Count}");
 
             await Navigation.PushAsync(new ClientePage());
         }
@@ -141,16 +139,18 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             empleadosSeleccionadosStack.Opacity = 0;
             await empleadosSeleccionadosStack.FadeTo(1, 600, Easing.CubicIn);
-            
-            if (ViewModel != null)
+
+            if (_suspendRefresh) return;
+
+            // Cargar solo la primera vez
+            if (!_initialized && ViewModel != null)
             {
                 await ViewModel.CargarEmpleadosDesdeLocal();
+                _initialized = true;
             }
-
-            // Resetear selección al aparecer
-            empleadosPicker.SelectedItem = null;
         }
     }
 }

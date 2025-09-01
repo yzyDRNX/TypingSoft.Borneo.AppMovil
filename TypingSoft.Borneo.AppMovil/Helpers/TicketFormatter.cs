@@ -7,16 +7,25 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 {
     public static class TicketFormatter
     {
-        // Método existente (sincrónico) - deja el placeholder
+        // NO USAR: este método no puede resolver la condición desde BD.
+        // Dejado como obsoleto para detectar llamadas equivocadas en compilación.
+        [System.Obsolete("Usa FormatearTicketLocalAsync(LocalDatabaseService, ... ) para imprimir la condición real por cliente.")]
         public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
-            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, "Contado o Credito");
+            // Mostramos un encabezado neutro para no engañar
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, "CONDICION: SIN CONDICIÓN");
         }
 
-        // NUEVO: usa IdCliente del ticket (que en tu flujo guarda IdClienteAsociado) para resolver la condición
+        // Útil si YA tienes el texto de la condición resuelto por tu cuenta.
+        public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string condicionTexto)
+        {
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, $"CONDICION: {condicionTexto}");
+        }
+
+        // Método RECOMENDADO: resuelve la condición consultando por IdClienteAsociado (guardado en ticket.IdCliente)
         public static async Task<string> FormatearTicketLocalAsync(LocalDatabaseService localDb, TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
-            // Importante: en tu flujo, TicketDetalleLocal.IdCliente contiene el IdClienteAsociado
+            // ticket.IdCliente = IdClienteAsociado en tu flujo
             var condicionTexto = await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
             return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, $"CONDICION: {condicionTexto}");
         }
@@ -71,20 +80,18 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
-            sb.AppendLine("+---------------(FIRMA )------------+");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("|                                   |");
-            sb.AppendLine("+-----------------------------------+");
+            sb.AppendLine("+------------(FIRMA )----------+");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("+------------------------------+");
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine($"ATENDIO: {ticket.Empleado}");

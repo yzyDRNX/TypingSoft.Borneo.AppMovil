@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.Modals.SelectProductoModal"
+             Title="Seleccionar producto"
+             Background="{DynamicResource PageBackgroundBrush}">
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <SearchBar x:Name="searchBar" Placeholder="Buscar producto..." TextChanged="OnSearchTextChanged"/>
+        <CollectionView x:Name="itemsView" SelectionMode="Single" SelectionChanged="OnSelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding Producto}" TextColor="{AppThemeBinding Light=#111827, Dark=#F3F4F6}" />
+                        <Label Grid.Column="1" Text="{Binding Precio}" TextColor="{AppThemeBinding Light=#6E6E6E, Dark=#C8C8C8}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="Cancelar" Clicked="OnCancel" Style="{StaticResource PrimaryButton}" />
+    </VerticalStackLayout>
+</ContentPage>

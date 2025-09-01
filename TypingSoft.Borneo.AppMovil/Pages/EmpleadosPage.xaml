@@ -54,39 +54,36 @@ Margin="20,18,0,0"/>
 
             <!-- Sección de selección de empleados -->
             <Frame Margin="20,0,20,15"
-       CornerRadius="12"
+                   CornerRadius="12"
        BackgroundColor="White"
        BorderColor="{StaticResource Gray200}"
-       HasShadow="True"
-       Padding="20">
+                   HasShadow="True"
+                   Padding="20">
                 <VerticalStackLayout Spacing="18">
                     <Label Text="EMPLEADOS PARA RUTA"
-               Style="{StaticResource SectionTitle}"
-               FontSize="18"
-               TextColor="{StaticResource Primary}"/>
+                           Style="{StaticResource SectionTitle}"
+                           FontSize="18"
+                           TextColor="{StaticResource Primary}"/>
 
-                    <Grid ColumnSpacing="10">
+                    <Grid ColumnSpacing="10">   
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <VerticalStackLayout Spacing ="4">
                             <Label Text="Seleccione un empleado"
-       FontSize="16"
-       TextColor="{StaticResource Black}" />
-                            <Picker x:Name="empleadosPicker"
-ItemsSource="{Binding ListaEmpleados}"
-ItemDisplayBinding="{Binding Empleado}"
-Title="Seleccione un empleado"
-TitleColor="Black"
-Style="{StaticResource Picker}"
-HeightRequest="50"/>
+                                   FontSize="16"
+                                   TextColor="{StaticResource Black}" />
+                            <Button x:Name="btnSeleccionarEmpleado"
+                                    Text="Seleccionar empleado"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Clicked="OnSeleccionarEmpleadoClicked" />
                         </VerticalStackLayout>
                         
                         <Button Text="AÑADIR"
-                    Style="{StaticResource PrimaryButton}"
-                    Grid.Column="1"
-                    Clicked="OnAñadirEmpleadoClicked"/>
+                                Style="{StaticResource PrimaryButton}"
+                                Grid.Column="1"
+                                Clicked="OnAñadirEmpleadoClicked"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>

@@ -6,9 +6,9 @@ namespace TypingSoft.Borneo.AppMovil.Local
     public class CondicionLocal
     {
         [PrimaryKey]
-        [AutoIncrement]
         [Column("IdCondicion")]
         public Guid IdCondicion { get; set; }
+
         [Column("Condicion")]
         public string? Condicion { get; set; }
     }

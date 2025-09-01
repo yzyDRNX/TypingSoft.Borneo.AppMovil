@@ -31,6 +31,6 @@ namespace TypingSoft.Borneo.AppMovil.Local
         public string? Empleado { get; set; }
 
         [Column("Fecha")]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
     }
 }

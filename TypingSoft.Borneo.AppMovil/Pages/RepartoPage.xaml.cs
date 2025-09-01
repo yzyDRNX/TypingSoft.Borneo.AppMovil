@@ -1,54 +1,62 @@
 using Microsoft.Maui.Controls;
 using System;
-using TypingSoft.Borneo.AppMovil.Models.API; // Asegúrate de que esta referencia sea correcta
-using TypingSoft.Borneo.AppMovil.VModels;
+using System.Linq;
+using System.Diagnostics;
+using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Pages.Modals;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class RepartoPage : ContentPage
     {
         VModels.RepartoVM ViewModel;
+        private PreciosGeneralesLocal? _productoSeleccionado;
 
+        private bool _suspendRefresh;
+        private bool _initialized;
 
         public RepartoPage()
         {
             InitializeComponent();
             ViewModel = App.ServiceProvider.GetService<VModels.RepartoVM>();
             if (ViewModel != null)
-            {
                 this.BindingContext = ViewModel;
 
-            }
-
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
         }
-        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+
+        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) { }
+
+        private async void OnSeleccionarProductoClicked(object sender, EventArgs e)
         {
-            switch (e.PropertyName)
+            if (ViewModel?.ListadoPreciosLocal == null || ViewModel.ListadoPreciosLocal.Count == 0)
             {
-
+                await DisplayAlert("Aviso", "No hay productos cargados.", "OK");
+                return;
             }
-        }
 
-        private CatalogosVM CreateFallbackViewModel()
-        {
-            var catalogosService = new Services.CatalogosService();
-            var catalogosBL = new BL.CatalogosBL(catalogosService);
-            var localDb = new Services.LocalDatabaseService();
-            return new CatalogosVM(catalogosBL, localDb);
+            _suspendRefresh = true;
+            var modal = new SelectProductoModal(ViewModel.ListadoPreciosLocal);
+            var seleccionado = await modal.ShowAsync(Navigation);
+
+            if (seleccionado != null)
+            {
+                _productoSeleccionado = seleccionado;
+                btnSeleccionarProducto.Text = seleccionado.Producto ?? "Producto seleccionado";
+            }
+            _suspendRefresh = false;
         }
 
         private async void OnAñadirProductoClicked(object sender, EventArgs e)
         {
             if (ViewModel == null) return;
 
-            var productoSeleccionado = productosPicker.SelectedItem as TypingSoft.Borneo.AppMovil.Local.PreciosGeneralesLocal;
+            var productoSeleccionado = _productoSeleccionado;
             var cantidadTexto = cantidadEntry.Text;
 
             if (productoSeleccionado == null || string.IsNullOrEmpty(cantidadTexto) || !int.TryParse(cantidadTexto, out int cantidad) || cantidad <= 0)
             {
-                await DisplayAlert("Aviso", "Por favor seleccione un producto y una cantidad válida.", "OK");
+                await DisplayAlert("Aviso", "Seleccione un producto y una cantidad válida.", "OK");
                 return;
             }
 
@@ -60,7 +68,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             decimal importeTotal = cantidad * precioUnitario;
 
-            // --- CORREGIDO: Obtener el idClienteAsociado como string y convertir a Guid ---
             var idClienteAsociadoStr = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.IdClienteAsociado);
             if (!Guid.TryParse(idClienteAsociadoStr, out Guid idClienteAsociado))
             {
@@ -70,16 +77,16 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             await ViewModel.AgregarDetalleVentaAsync(productoSeleccionado, cantidad, importeTotal, idClienteAsociado);
 
-            // Mostrar en la UI
-            var productoLabel = new Label
+            productosSeleccionadosStack.Children.Add(new Label
             {
                 Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad} - Importe: {importeTotal:C}",
                 FontSize = 14,
                 TextColor = Color.FromArgb("#333333")
-            };
+            });
 
-            productosSeleccionadosStack.Children.Add(productoLabel);
-            productosPicker.SelectedItem = null;
+            // Reset tras añadir
+            _productoSeleccionado = null;
+            btnSeleccionarProducto.Text = "Seleccionar producto";
             cantidadEntry.Text = string.Empty;
         }
 
@@ -94,40 +101,35 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             var detalles = await ViewModel._localDb.ObtenerDetallesAsync();
             foreach (var d in detalles)
             {
-                System.Diagnostics.Debug.WriteLine($"IdDetalle: {d.IdVentaDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
+                Debug.WriteLine($"IdDetalle: {d.IdVentaDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
             }
 
-            await App.NavigationService.Navegar(nameof(UtileriasPage));
-            await Navigation.PopAsync();
+            await Navigation.PushAsync(new UtileriasPage());
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Cargar clientes locales al aparecer la página
-            if (ViewModel != null)
+
+            if (_suspendRefresh) return;
+
+            if (!_initialized && ViewModel != null)
             {
                 await ViewModel.CargarProductosDesdeLocal();
                 await ViewModel.CargarPreciosDesdeLocal();
+                _initialized = true;
             }
-               
 
             productosSeleccionadosStack.Opacity = 0;
             await productosSeleccionadosStack.FadeTo(1, 600, Easing.CubicIn);
         }
 
-
         public void LimpiarCamposYListas(bool limpiarSoloProductos = false)
         {
-            productosPicker.SelectedItem = null;
+            _productoSeleccionado = null;
+            btnSeleccionarProducto.Text = "Seleccionar producto";
             cantidadEntry.Text = string.Empty;
             productosSeleccionadosStack.Children.Clear();
-            // Si tienes una lista de productos en el ViewModel, límpiala aquí
-
-            if (!limpiarSoloProductos)
-            {
-                // Si tuvieras que limpiar el cliente, lo harías aquí
-            }
         }
     }
 }

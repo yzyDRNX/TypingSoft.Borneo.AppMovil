@@ -1,49 +1,57 @@
 ﻿using Microsoft.Maui.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq; // <-- Asegúrate de tener esto
-using TypingSoft.Borneo.AppMovil.Models.API;
-using TypingSoft.Borneo.AppMovil.VModels;
+using System.Linq;
+using TypingSoft.Borneo.AppMovil.Pages.Modals;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
 {
     public partial class ClientePage : ContentPage
     {
         VModels.ClientePageViewModel ViewModel;
+        private Models.Custom.ClientesLista? _clienteSeleccionado;
 
+        // Evita recargas/limpiezas cuando vienes de un modal y carga solo 1 vez
+        private bool _suspendRefresh;
+        private bool _initialized;
 
         public ClientePage()
         {
             InitializeComponent();
             ViewModel = App.ServiceProvider.GetService<VModels.ClientePageViewModel>();
             if (ViewModel != null)
-            {
                 this.BindingContext = ViewModel;
 
-            }
-
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
         }
+
         private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                
-            }
+            // Sin resetear selección ni texto del botón aquí
         }
 
-        private CatalogosVM CreateFallbackViewModel()
+        private async void OnSeleccionarClienteClicked(object sender, EventArgs e)
         {
-            var catalogosService = new Services.CatalogosService();
-            var catalogosBL = new BL.CatalogosBL(catalogosService);
-            var localDb = new Services.LocalDatabaseService();
-            return new CatalogosVM(catalogosBL, localDb);
+            if (ViewModel?.ListadoClientes == null || ViewModel.ListadoClientes.Count == 0)
+            {
+                await DisplayAlert("Aviso", "No hay clientes cargados.", "OK");
+                return;
+            }
+
+            _suspendRefresh = true;
+            var modal = new SelectClienteModal(ViewModel.ListadoClientes);
+            var seleccionado = await modal.ShowAsync(Navigation);
+            // Mantén suspendido hasta después de procesar selección
+            if (seleccionado != null)
+            {
+                _clienteSeleccionado = seleccionado;
+                btnSeleccionarCliente.Text = seleccionado.Cliente ?? "Cliente seleccionado";
+            }
+            _suspendRefresh = false;
         }
 
         private async void OnAñadirClienteClicked(object sender, EventArgs e)
         {
-            var clienteSeleccionado = clientesPicker.SelectedItem as Models.Custom.ClientesLista;
+            var clienteSeleccionado = _clienteSeleccionado;
             if (clienteSeleccionado == null)
             {
                 await DisplayAlert("Aviso", "Por favor seleccione un cliente.", "OK");
@@ -56,29 +64,28 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            // Guarda el IdClienteAsociado y el IdCliente del cliente seleccionado
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, clienteSeleccionado.IdCliente.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
 
-            // --- CREA UN NUEVO TICKET CABECERA ---
-            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado"); // Recupera el empleado guardado
+            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
 
             var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
             {
                 Id = Guid.NewGuid(),
                 IdCliente = clienteSeleccionado.IdClienteAsociado,
                 Cliente = clienteSeleccionado.Cliente ?? string.Empty,
-                Empleado = empleadoSeleccionado, // Aquí sí se asigna correctamente
+                Empleado = empleadoSeleccionado,
                 Fecha = DateTime.Now
             };
             await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
 
             await ViewModel.Surtir(clienteSeleccionado);
 
-            clientesPicker.SelectedItem = null;
+            // Reset tras añadir
+            _clienteSeleccionado = null;
+            btnSeleccionarCliente.Text = "Seleccionar cliente";
         }
-
 
         public async void OnRepartoClicked(object sender, EventArgs e)
         {
@@ -87,7 +94,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 await DisplayAlert("Advertencia", "Debe seleccionar al menos un cliente antes de continuar.", "OK");
                 return;
             }
-
             await Navigation.PushAsync(new RepartoPage());
         }
 
@@ -95,26 +101,22 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         {
             base.OnAppearing();
 
-            // Limpia la lista de clientes a surtir al entrar a la página
-            LimpiarCamposYListas();
+            // No limpies ni recargues cuando vienes de modal
+            if (_suspendRefresh) return;
 
-            // Cargar clientes locales al aparecer la página
-            if (ViewModel != null)
+            // Cargar datos solo la primera vez
+            if (!_initialized && ViewModel != null)
+            {
                 await ViewModel.CargarClientesDesdeLocal();
-
-            // Animación de fade-in para el frame principal
-            await Task.WhenAll(
-                clientesPicker.FadeTo(1, 500, Easing.CubicIn),
-                clientesPicker.ScaleTo(1, 500, Easing.CubicOut)
-            );
+                _initialized = true;
+            }
         }
-
 
         public void LimpiarCamposYListas()
         {
-            clientesPicker.SelectedItem = null;
+            _clienteSeleccionado = null;
+            btnSeleccionarCliente.Text = "Seleccionar cliente";
             ViewModel?.ClientesASurtir.Clear();
-            // Otros campos si es necesario
         }
     }
 }

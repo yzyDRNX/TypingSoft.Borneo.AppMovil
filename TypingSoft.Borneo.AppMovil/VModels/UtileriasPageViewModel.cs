@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using TypingSoft.Borneo.AppMovil.Services;
 using TypingSoft.Borneo.AppMovil.Local;
-using System.Linq;
+using System.Linq;      
 using TypingSoft.Borneo.AppMovil.Helpers;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
@@ -63,17 +63,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             _localDb = new LocalDatabaseService();
             var ventaSession = App.ServiceProvider.GetService<VentaSessionServices>();
-            VentaActual = ventaSession.TicketActual;
+            VentaActual = ventaSession.TicketActual; // mantiene IdCliente (IdClienteAsociado)
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
-          //  _ = CargarUltimoTicketAsync();
             _ = CargarVentaActualYProductos();
 
-            // Recupera el cliente seleccionado correctamente
+            // Solo actualiza el nombre visible, no remplaza el objeto (evita perder IdCliente)
             string nombreCliente = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.Cliente);
-            if (!string.IsNullOrEmpty(nombreCliente))
+            if (!string.IsNullOrEmpty(nombreCliente) && VentaActual != null)
             {
-                VentaActual = new TicketDetalleLocal { Cliente = nombreCliente };
+                VentaActual.Cliente = nombreCliente;
+                OnPropertyChanged(nameof(NombreCliente));
             }
         }
 
@@ -84,24 +84,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             foreach (var nombre in lista)
                 ImpresorasBluetooth.Add(nombre);
 
-            // Recupera la impresora guardada y selecciónala en el Picker
             var impresoraGuardada = Helpers.Settings.ObtenerValor<string>("ImpresoraBluetooth");
             if (!string.IsNullOrEmpty(impresoraGuardada) && lista.Contains(impresoraGuardada))
                 ImpresoraSeleccionada = impresoraGuardada;
             else if (lista.Count > 0)
-                ImpresoraSeleccionada = lista[0]; // Selecciona la primera por defecto
+                ImpresoraSeleccionada = lista[0];
         }
 
         private async void CargarDescripcionRuta()
         {
             DescripcionRuta = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
         }
-
-        //private async Task CargarUltimoTicketAsync()
-        //{
-        //    var tickets = await _localDb.ObtenerTicketsAsync();
-        //    _ultimoTicket = tickets?.OrderByDescending(t => t.IdCliente).FirstOrDefault();
-        //}
 
         public async Task CargarVentaActualYProductos()
         {
@@ -113,18 +106,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 OnPropertyChanged(nameof(NombreCliente));
 
                 var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
-                // Agrupar por descripción y precio unitario
                 var agrupados = detalles
-                .GroupBy(d => new {
-                    Descripcion = d.Descripcion,
-                    PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
-                })
-                .Select(g => new ProductoVentaDTO
-                {
-                Nombre = g.Key.Descripcion,
-                Cantidad = g.Sum(x => x.Cantidad),
-                Precio = g.Key.PrecioUnitario
-                });
+                    .GroupBy(d => new {
+                        Descripcion = d.Descripcion,
+                        PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
+                    })
+                    .Select(g => new ProductoVentaDTO
+                    {
+                        Nombre = g.Key.Descripcion,
+                        Cantidad = g.Sum(x => x.Cantidad),
+                        Precio = g.Key.PrecioUnitario
+                    });
 
                 Productos.Clear();
                 foreach (var p in agrupados)
@@ -171,14 +163,15 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
             else
             {
-                var idClienteAsociado = ticket.IdCliente;
+                var idClienteAsociado = ticket.IdCliente; // contiene el IdClienteAsociado
                 var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
-                bool mirarPrecio = aplicaMuestraPrecio ?? true;
+                bool mostrarPrecio = aplicaMuestraPrecio ?? true;
 
-                string ticketOriginal = TicketFormatter.FormatearTicketLocal(ticket, detalles, _numeroImpresiones, mirarPrecio);
-                ticketOriginal += "\n\n\n\n\n";
+                // Usa el formateador ASÍNCRONO para resolver la condición real
+                string ticketTexto = await TicketFormatter.FormatearTicketLocalAsync(_localDb, ticket, detalles, _numeroImpresiones, mostrarPrecio);
+                ticketTexto += "\n\n\n\n\n";
 
-                await printer.PrintTextAsync(ticketOriginal);
+                await printer.PrintTextAsync(ticketTexto);
 
                 byte[] cutCommand = new byte[] { 0x1D, 0x56, 0x00 };
                 await printer.PrintBytesAsync(cutCommand);
@@ -196,7 +189,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
 
-            await InsertarValoresAppVentaDetalleAsync(); // <-- Aquí
+            await InsertarValoresAppVentaDetalleAsync();
 
             _numeroImpresiones = 1;
             await App.Current.MainPage.Navigation.PushAsync(new Pages.RepartoPage());
@@ -215,15 +208,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
 
-            // Limpia el ticket actual en la base local
-            //await _localDb.BorrarVentaGeneralActiva();
-
-            // Limpia los valores de cliente en StaticSettings
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, string.Empty);
 
-            // Recarga los datos para asegurar que la UI se actualice
             await CargarVentaActualYProductos();
 
             await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
@@ -240,7 +228,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Id = Guid.NewGuid(),
                 IdRuta = idRuta,
                 ValorFolioVenta = ultimoFolio + 1,
-                SerieVentaDetalle = "S", // O la serie que corresponda
+                SerieVentaDetalle = "S",
                 UltimaActualizacion = DateTime.Now
             };
             await _localDb.InsertarValoresAppVentaDetalleAsync(detalle);
