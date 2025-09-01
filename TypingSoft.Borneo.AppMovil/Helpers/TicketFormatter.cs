@@ -1,17 +1,35 @@
 ﻿using System.Text;
-using TypingSoft.Borneo.AppMovil.Models.API;
 using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Services;
+using System.Threading.Tasks;
 
 namespace TypingSoft.Borneo.AppMovil.Helpers
 {
     public static class TicketFormatter
     {
-        // Llama a este método pasando el ticket y el número de impresiones previas
+        // Método existente (sincrónico) - deja el placeholder
         public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
+        {
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, "Contado o Credito");
+        }
+
+        // NUEVO: usa IdCliente del ticket (que en tu flujo guarda IdClienteAsociado) para resolver la condición
+        public static async Task<string> FormatearTicketLocalAsync(LocalDatabaseService localDb, TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
+        {
+            // Importante: en tu flujo, TicketDetalleLocal.IdCliente contiene el IdClienteAsociado
+            var condicionTexto = await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, $"CONDICION: {condicionTexto}");
+        }
+
+        private static string ConstruirTicket(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string encabezadoCondicion)
         {
             var sb = new StringBuilder();
             string tipoCopia = numeroImpresiones <= 1 ? "ORIGINAL" : "REIMPRESION";
 
+            sb.AppendLine("--------------------------------");
+            sb.AppendLine();
+            sb.AppendLine(encabezadoCondicion);
+            sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine("            BORNEO              ");
             sb.AppendLine("    Agua Purificada Borneo");
@@ -53,20 +71,23 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
+            sb.AppendLine("+---------------(FIRMA )------------+");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("|                                   |");
+            sb.AppendLine("+-----------------------------------+");
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine("         NOMBRE Y FIRMA:");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine($"ATENDIO: {ticket.Empleado}"); // falta agergar empleado
+            sb.AppendLine($"ATENDIO: {ticket.Empleado}");
             sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("   AL PONER SU FIRMA ESTA DE ");

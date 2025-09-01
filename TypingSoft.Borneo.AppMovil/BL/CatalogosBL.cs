@@ -319,5 +319,39 @@ namespace TypingSoft.Borneo.AppMovil.BL
             return (exitoso, mensaje, clientesAplicacionesLista);
 
         }
+
+        // NUEVO: Obtener Condiciones de Pago por Cliente (desde API ObtenerClientesCondiciones/)
+        public async Task<(bool Exitoso, string Mensaje, List<Models.Custom.CondicionesPagoLista> CondicionesPago)> ObtenerClientesCondiciones()
+        {
+            var exitoso = false;
+            var mensaje = "Ocurrió un error en la petición";
+            var condicionesPagoLista = new List<Models.Custom.CondicionesPagoLista>();
+
+            try
+            {
+                var peticion = await this.CatalogosService.ObtenerClientesCondiciones();
+                exitoso = peticion.StatusCode == System.Net.HttpStatusCode.OK;
+
+                if (exitoso && peticion.Respuesta?.Data != null)
+                {
+                    foreach (var item in peticion.Respuesta.Data)
+                    {
+                        condicionesPagoLista.Add(new Models.Custom.CondicionesPagoLista
+                        {
+                            Id = item.Id,
+                            IdClienteAsociado = item.IdClienteAsociado,
+                            IdCondicionPago = item.IdCondicionPago
+                        });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                mensaje = "Ocurrió un error en la petición";
+                condicionesPagoLista = new List<Models.Custom.CondicionesPagoLista>();
+            }
+
+            return (exitoso, mensaje, condicionesPagoLista);
+        }
     }
 }

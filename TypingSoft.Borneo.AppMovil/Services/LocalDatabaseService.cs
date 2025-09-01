@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Borneo.Local;
+using SQLite;
 using System.IO;
 using TypingSoft.Borneo.AppMovil.Local;
 using ZXing.Datamatrix;
@@ -27,6 +28,8 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<FacturacionLocal>().Wait();
             _database.CreateTableAsync<ClientesAplicacionesLocal>().Wait();
             _database.CreateTableAsync<ValoresAppVentaDetalleLocal>().Wait();
+            // NUEVO: tabla de Condiciones de Pago por Cliente
+            _database.CreateTableAsync<CondicionPagoLocal>().Wait();
         }
         public async Task InsertarValoresAppVentaDetalleAsync(ValoresAppVentaDetalleLocal detalle)
         {
@@ -307,6 +310,52 @@ namespace TypingSoft.Borneo.AppMovil.Services
             System.Diagnostics.Debug.WriteLine($"Total ventas: {ventas.Count}");
             var ventasNoSync = ventas.Where(x => x.Sincronizado == false).ToList();
             System.Diagnostics.Debug.WriteLine($"Ventas no sincronizadas: {ventasNoSync.Count}");
+        }
+
+        // NUEVO: persistencia de CondicionPagoLocal
+        public async Task GuardarCondicionesPagoAsync(List<CondicionPagoLocal> condicionesPago)
+        {
+            await _database.DeleteAllAsync<CondicionPagoLocal>();
+            await _database.InsertAllAsync(condicionesPago);
+        }
+
+        public async Task<List<CondicionPagoLocal>> ObtenerCondicionesPagoAsync()
+        {
+            return await _database.Table<CondicionPagoLocal>().ToListAsync();
+        }
+
+        public async Task<List<CondicionPagoLocal>> ObtenerCondicionesPagoPorClienteAsync(Guid idClienteAsociado)
+        {
+            return await _database.Table<CondicionPagoLocal>()
+                .Where(c => c.IdClienteAsociado == idClienteAsociado)
+                .ToListAsync();
+        }
+
+        // NUEVO: dado un IdClienteAsociado, obtener el IdCondicionPago
+        public async Task<Guid?> ObtenerIdCondicionPagoPorClienteAsociadoAsync(Guid idClienteAsociado)
+        {
+            var cond = await _database.Table<CondicionPagoLocal>()
+                                      .Where(c => c.IdClienteAsociado == idClienteAsociado)
+                                      .FirstOrDefaultAsync();
+            return cond?.IdCondicionPago;
+        }
+
+        // NUEVO: dado un IdClienteAsociado, obtener el texto de la condición (p.e. "CONTADO" o "CRÉDITO")
+        public async Task<string> ObtenerCondicionPagoTextoPorClienteAsociadoAsync(Guid idClienteAsociado)
+        {
+            var condPago = await _database.Table<CondicionPagoLocal>()
+                                          .Where(c => c.IdClienteAsociado == idClienteAsociado)
+                                          .FirstOrDefaultAsync();
+            if (condPago == null)
+                return "SIN CONDICIÓN";
+
+            var condicion = await _database.Table<CondicionLocal>()
+                                           .Where(c => c.IdCondicion == condPago.IdCondicionPago)
+                                           .FirstOrDefaultAsync();
+
+            return string.IsNullOrWhiteSpace(condicion?.Condicion)
+                ? "SIN CONDICIÓN"
+                : condicion!.Condicion!.ToUpperInvariant();
         }
     }
 }

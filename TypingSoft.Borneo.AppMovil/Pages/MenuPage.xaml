@@ -28,15 +28,30 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <!-- "Borneo" alineado a la izquierda -->
+
+                    <!-- Título -->
                     <Label Grid.Row="0" Grid.Column="0"
-           Text="Borneo"
-           FontSize="22"
-           FontAttributes="Bold"
-           TextColor="White"
-           VerticalOptions="Center"
-           Margin="20,18,0,0"/>
-                    <!-- Layout inferior igual que antes -->
+                           Text="Borneo"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Margin="20,18,0,0"/>
+
+                    <!-- Botón modo oscuro en esquina superior derecha -->
+                    <Button x:Name="ThemeToggleButton"
+                            Grid.Row="0" Grid.Column="0"
+                            Text="🌙"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="20"
+                            Padding="8,4"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            Margin="0,18,16,0"
+                            Clicked="OnToggleThemeClicked"/>
+
+                    <!-- Layout inferior -->
                     <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
                         <Label Text="📍 Unidad:" TextColor="White" FontSize="15" FontAttributes="Bold"/>
                         <Label Text="{Binding DescripcionRuta}" TextColor="#E0E0E0" FontSize="15"/>

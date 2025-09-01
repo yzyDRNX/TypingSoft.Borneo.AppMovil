@@ -1,4 +1,5 @@
 using Microsoft.Maui.ApplicationModel;
+using TypingSoft.Borneo.AppMovil.Helpers;
 
 namespace TypingSoft.Borneo.AppMovil.Pages;
 
@@ -16,13 +17,19 @@ public partial class MenuPage : ContentPage
     {
         base.OnAppearing();
 
-        // Animación de fade-in y escala para el layout principal (más rápida)
+        // Aplicar tema guardado (si existe) y actualizar icono
+        var savedTheme = Settings.ObtenerValor<string>("AppTheme");
+        if (!string.IsNullOrWhiteSpace(savedTheme))
+            ApplyTheme(savedTheme);
+
+        UpdateThemeIcon(Application.Current?.UserAppTheme ?? AppTheme.Light);
+
+        // Animaciones
         MainMenuLayout.Opacity = 0;
         MainMenuLayout.Scale = 0.97;
         await MainMenuLayout.FadeTo(1, 150, Easing.CubicInOut);
         await MainMenuLayout.ScaleTo(1, 120, Easing.CubicOut);
 
-        // Animación secuencial para los frames de los botones
         var frames = new[] { FrameDescargarDatos, FrameSincronizarDatos, FrameIniciar, FrameCerrarSesion };
         foreach (var frame in frames)
         {
@@ -37,11 +44,34 @@ public partial class MenuPage : ContentPage
                 frame.FadeTo(1, 350, Easing.CubicIn),
                 frame.TranslateTo(0, 0, 350, Easing.CubicOut)
             );
-            delay += 80; // efecto cascada
+            delay += 80;
         }
 
-        // Solicita permiso de dispositivos cercanos (Bluetooth)
+        // Solicitar permiso de dispositivos cercanos (Bluetooth)
         var nearbyStatus = await Permissions.RequestAsync<Permissions.Bluetooth>();
+    }
 
+    private void OnToggleThemeClicked(object sender, EventArgs e)
+    {
+        var current = Application.Current?.UserAppTheme ?? AppTheme.Light;
+        var next = current == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark;
+
+        Application.Current!.UserAppTheme = next;
+        Settings.FijarConfiguracion("AppTheme", next.ToString());
+
+        UpdateThemeIcon(next);
+    }
+
+    private void ApplyTheme(string theme)
+    {
+        if (Enum.TryParse<AppTheme>(theme, out var parsed))
+            Application.Current!.UserAppTheme = parsed;
+    }
+
+    private void UpdateThemeIcon(AppTheme theme)
+    {
+        if (ThemeToggleButton == null) return;
+        // ?? para activar oscuro, ?? para volver a claro
+        ThemeToggleButton.Text = theme == AppTheme.Dark ? "??" : "??";
     }
 }
