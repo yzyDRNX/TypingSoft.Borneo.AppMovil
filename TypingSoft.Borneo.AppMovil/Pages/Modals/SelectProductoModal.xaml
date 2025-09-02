@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.Modals.SelectProductoModal"
              Title="Seleccionar producto"
-             Background="{DynamicResource PageBackgroundBrush}">
+             Background="{StaticResource PageBackgroundBrush}">
     <VerticalStackLayout Padding="20" Spacing="12">
         <SearchBar x:Name="searchBar" Placeholder="Buscar producto..." TextChanged="OnSearchTextChanged"/>
         <CollectionView x:Name="itemsView" SelectionMode="Single" SelectionChanged="OnSelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,Auto">
-                        <Label Text="{Binding Producto}" TextColor="{AppThemeBinding Light=#111827, Dark=#F3F4F6}" />
-                        <Label Grid.Column="1" Text="{Binding Precio}" TextColor="{AppThemeBinding Light=#6E6E6E, Dark=#C8C8C8}" />
+                        <Label Text="{Binding Producto}" TextColor="{StaticResource TextPrimaryBrush}" />
+                        <Label Grid.Column="1" Text="{Binding Precio}" TextColor="{StaticResource TextPrimaryBrush}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

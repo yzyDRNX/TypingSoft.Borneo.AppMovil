@@ -81,7 +81,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad} - Importe: {importeTotal:C}",
                 FontSize = 14,
-                TextColor = Color.FromArgb("#333333")
+                TextColor = Colors.White
             });
 
             // Reset tras añadir

@@ -84,7 +84,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             var item = new HorizontalStackLayout { Spacing = 10, Padding = new Thickness(0, 5) };
             item.Children.Add(new Label { Text = "•", TextColor = Color.FromArgb("#2160AB"), FontSize = 14, VerticalOptions = LayoutOptions.Center });
-            item.Children.Add(new Label { Text = empleadoSeleccionado.Empleado, TextColor = Colors.Black, FontSize = 14, VerticalOptions = LayoutOptions.Center });
+            item.Children.Add(new Label { Text = empleadoSeleccionado.Empleado, TextColor = Colors.White, FontSize = 14, VerticalOptions = LayoutOptions.Center });
             empleadosSeleccionadosStack.Children.Add(item);
 
             if (_primerEmpleadoSeleccionado == null)
@@ -92,8 +92,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 _primerEmpleadoSeleccionado = empleadoSeleccionado.Empleado ?? string.Empty;
                 Helpers.StaticSettings.FijarConfiguracion("Empleado", _primerEmpleadoSeleccionado);
             }
-
-            // Reset solo tras añadir
             _empleadoSeleccionado = null;
             btnSeleccionarEmpleado.Text = "Seleccionar empleado";
         }

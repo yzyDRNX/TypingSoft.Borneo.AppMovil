@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.EmpleadosPage"
-             BackgroundColor="{StaticResource Gray100}"
+             Background="{StaticResource PageBackgroundBrush}"
              Title="Selección de Empleados">
 
     <ScrollView>
@@ -55,8 +55,8 @@ Margin="20,18,0,0"/>
             <!-- Sección de selección de empleados -->
             <Frame Margin="20,0,20,15"
                    CornerRadius="12"
-       BackgroundColor="White"
-       BorderColor="{StaticResource Gray200}"
+                   Background="{StaticResource CardBackgroundBrush}"
+                   BorderColor="{StaticResource CardBorderBrush}"
                    HasShadow="True"
                    Padding="20">
                 <VerticalStackLayout Spacing="18">
@@ -71,9 +71,6 @@ Margin="20,18,0,0"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <VerticalStackLayout Spacing ="4">
-                            <Label Text="Seleccione un empleado"
-                                   FontSize="16"
-                                   TextColor="{StaticResource Black}" />
                             <Button x:Name="btnSeleccionarEmpleado"
                                     Text="Seleccionar empleado"
                                     Style="{StaticResource PrimaryButton}"
@@ -91,8 +88,8 @@ Margin="20,18,0,0"/>
             <!-- Lista de empleados seleccionados -->
             <Frame Margin="20,0,20,10"
                    CornerRadius="12"
-                   BackgroundColor="White"
-                   BorderColor="{StaticResource Gray200}"
+                   Background="{StaticResource CardBackgroundBrush}"
+                   BorderColor="{StaticResource CardBorderBrush}"
                    HasShadow="True"
                    Padding="0">
                 <VerticalStackLayout>
@@ -100,18 +97,18 @@ Margin="20,18,0,0"/>
                            Style="{StaticResource SectionTitle}"
                            Margin="15,10"
                            FontSize="18"/>
-                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray100}"/>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}"/>
                     <StackLayout x:Name="empleadosSeleccionadosStack"
                                  Spacing="10"
                                  Padding="15,10">
                         <HorizontalStackLayout Spacing="10" Padding="0,5">
                             <Label Text="•" TextColor="{StaticResource Primary}" FontSize="18"/>
-                            <Label Text="{Binding Empleado}" FontSize="16" TextColor="{StaticResource Black}"/>
+                            <Label Text="{Binding Empleado}" FontSize="16" TextColor="{StaticResource TextPrimaryBrush}"/>
                         </HorizontalStackLayout>
                     </StackLayout>
                     <Label Text="No hay empleados seleccionados"
                            x:Name="emptyStateLabel"
-                           TextColor="{StaticResource Gray400}"
+                           TextColor="{StaticResource TextPrimaryBrush}"
                            HorizontalOptions="Center"
                            Margin="0,20"
                            IsVisible="True"/>

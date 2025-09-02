@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.MenuPage"
-             BackgroundColor="{StaticResource Gray100}"
+             Background="{StaticResource PageBackgroundBrush}"
              xmlns:VM="clr-namespace:TypingSoft.Borneo.AppMovil.VModels" 
              x:DataType="VM:MenuVM"
              NavigationPage.HasNavigationBar="False">
@@ -142,23 +142,15 @@
                         BackgroundColor="#80000000"
                         AbsoluteLayout.LayoutFlags="All"
                         AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame BackgroundColor="White"
+            <Frame Background="{StaticResource CardBackgroundBrush}"
                    CornerRadius="20"
                    Padding="30"
                    HasShadow="True"
                    AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
                    AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
-                    <ActivityIndicator x:Name="LoadingIndicator"
-                                       IsRunning="False"
-                                       Color="{StaticResource Primary}"
-                                       WidthRequest="40"
-                                       HeightRequest="40"/>
-                    <Label x:Name="LoadingLabel"
-                           Text="Procesando..."
-                           FontSize="16"
-                           TextColor="Black"
-                           HorizontalOptions="Center"/>
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="{StaticResource Primary}" WidthRequest="40" HeightRequest="40"/>
+                    <Label x:Name="LoadingLabel" Text="Procesando..." FontSize="16" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.LoginPage"
-             BackgroundColor="{StaticResource Gray100}"
+             Background="{StaticResource PageBackgroundBrush}"
              Appearing="OnPageAppearing"
              NavigationPage.HasNavigationBar="False">
 
@@ -52,7 +52,7 @@
                            Padding="0"
                            HasShadow="True"
                            BorderColor="{StaticResource Primary}"
-                           BackgroundColor="{StaticResource White}"
+                           Background="{StaticResource CardBackgroundBrush}"
                            HorizontalOptions="Center"
                            Margin="0,10"
                            WidthRequest="250">
@@ -92,7 +92,7 @@
                         BackgroundColor="#80000000"
                         AbsoluteLayout.LayoutFlags="All"
                         AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame BackgroundColor="White"
+            <Frame Background="{StaticResource CardBackgroundBrush}"
                    CornerRadius="20"
                    Padding="30"
                    HasShadow="True"
@@ -107,7 +107,7 @@
                     <Label x:Name="LoadingLabel"
                            Text="Verificando..."
                            FontSize="16"
-                           TextColor="Black"
+                           TextColor="{StaticResource TextPrimaryBrush}"
                            HorizontalOptions="Center"/>
                 </StackLayout>
             </Frame>

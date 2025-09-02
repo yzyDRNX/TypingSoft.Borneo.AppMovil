@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.InicioPage"
              Title="Configuración de URL"
-             BackgroundColor="{StaticResource Gray100}">
+             Background="{StaticResource PageBackgroundBrush}">
 
     <AbsoluteLayout>
         <!-- Fondo degradado corporativo -->
@@ -21,10 +21,10 @@
                     Padding="0,10">
             <VerticalStackLayout Spacing="0" Padding="0">
 
-                <!-- Header moderno -->
+                <!-- Header moderno --> 
                 <Grid HeightRequest="80" Margin="0,0,0,20">
-                    <BoxView BackgroundColor="White"/>
-                    <BoxView BackgroundColor="White" HeightRequest="30" VerticalOptions="End"/>
+                    <BoxView Background="{StaticResource CardBackgroundBrush}"/>
+                    <BoxView Background="{StaticResource CardBackgroundBrush}" HeightRequest="30" VerticalOptions="End"/>
                     <BoxView BackgroundColor="{StaticResource Primary}" HeightRequest="30" VerticalOptions="End"/>
                     <Label Text="Configuración de URL"
                            FontSize="22"
@@ -38,7 +38,7 @@
                 <VerticalStackLayout x:Name="MainContentStack" Spacing="30" Padding="20,0" VerticalOptions="Center">
 
                     <!-- Tarjeta de usuario -->
-                    <Frame BackgroundColor="White"
+                    <Frame Background="{StaticResource CardBackgroundBrush}"
                            CornerRadius="20"
                            Padding="25"
                            HasShadow="True"
@@ -66,7 +66,7 @@
                     </Frame>
 
                     <!-- Panel de configuración -->
-                    <Frame BackgroundColor="White"
+                    <Frame Background="{StaticResource CardBackgroundBrush}"
                            CornerRadius="20"
                            Padding="25"
                            HasShadow="True">
@@ -85,8 +85,8 @@
                             <Frame CornerRadius="15"
                                    Padding="0"
                                    HasShadow="False"
-                                   BorderColor="{StaticResource Gray200}"
-                                   BackgroundColor="{StaticResource Gray100}"
+                                   BorderColor="{StaticResource CardBorderBrush}"
+                                   Background="{StaticResource CardBackgroundBrush}"
                                    HeightRequest="55">
                                 <Grid ColumnDefinitions="auto,*,auto" Padding="10,0">
                                     <Image Source="url_icon.png"
@@ -150,7 +150,7 @@
                         BackgroundColor="#80000000"
                         AbsoluteLayout.LayoutFlags="All"
                         AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame BackgroundColor="White"
+            <Frame Background="{StaticResource CardBackgroundBrush}"
                    CornerRadius="25"
                    Padding="40"
                    HasShadow="True"

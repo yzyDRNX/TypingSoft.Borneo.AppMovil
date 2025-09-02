@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.Modals.SelectClienteModal"
              Title="Seleccionar cliente"
-             Background="{DynamicResource PageBackgroundBrush}">
+             Background="{StaticResource PageBackgroundBrush}">
     <VerticalStackLayout Padding="20" Spacing="12">
         <SearchBar x:Name="searchBar" Placeholder="Buscar cliente..." TextChanged="OnSearchTextChanged"/>
         <CollectionView x:Name="itemsView" SelectionMode="Single" SelectionChanged="OnSelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,Auto">
-                        <Label Text="{Binding Cliente}" TextColor="{AppThemeBinding Light=#111827, Dark=#F3F4F6}" />
+                        <Label Text="{Binding Cliente}" TextColor="{StaticResource TextPrimaryBrush}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
