@@ -22,7 +22,6 @@ public partial class MenuPage : ContentPage
         if (!string.IsNullOrWhiteSpace(savedTheme))
             ApplyTheme(savedTheme);
 
-        UpdateThemeIcon(Application.Current?.UserAppTheme ?? AppTheme.Light);
 
         // Animaciones
         MainMenuLayout.Opacity = 0;
@@ -51,27 +50,10 @@ public partial class MenuPage : ContentPage
         var nearbyStatus = await Permissions.RequestAsync<Permissions.Bluetooth>();
     }
 
-    private void OnToggleThemeClicked(object sender, EventArgs e)
-    {
-        var current = Application.Current?.UserAppTheme ?? AppTheme.Light;
-        var next = current == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark;
-
-        Application.Current!.UserAppTheme = next;
-        Settings.FijarConfiguracion("AppTheme", next.ToString());
-
-        UpdateThemeIcon(next);
-    }
-
     private void ApplyTheme(string theme)
     {
         if (Enum.TryParse<AppTheme>(theme, out var parsed))
             Application.Current!.UserAppTheme = parsed;
     }
 
-    private void UpdateThemeIcon(AppTheme theme)
-    {
-        if (ThemeToggleButton == null) return;
-        // ?? para activar oscuro, ?? para volver a claro
-        ThemeToggleButton.Text = theme == AppTheme.Dark ? "??" : "??";
-    }
 }

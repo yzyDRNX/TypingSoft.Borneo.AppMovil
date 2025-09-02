@@ -80,7 +80,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             productosSeleccionadosStack.Children.Add(new Label
             {
                 Text = $"{productoSeleccionado.Producto} - Cantidad: {cantidad} - Importe: {importeTotal:C}",
-                FontSize = 14,
+                FontSize = 16,
                 TextColor = Colors.White
             });
 

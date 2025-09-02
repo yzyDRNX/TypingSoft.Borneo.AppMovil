@@ -18,55 +18,60 @@
         <Setter Property="BackgroundColor" Value="{StaticResource Gray600}" />
     </Style>
 
+    <!-- Botones globales -->
     <Style TargetType="Button">
         <Setter Property="TextColor" Value="White" />
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="14,10"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="18,12"/>
+        <Setter Property="MinimumHeightRequest" Value="56"/>
+        <Setter Property="MinimumWidthRequest" Value="56"/>
     </Style>
 
+    <!-- Entradas -->
     <Style TargetType="DatePicker">
         <Setter Property="TextColor" Value="White" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="MinimumHeightRequest" Value="56"/>
     </Style>
 
     <Style TargetType="Editor">
         <Setter Property="TextColor" Value="White" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
+        <Setter Property="MinimumHeightRequest" Value="56"/>
     </Style>
 
     <Style x:Key="Entry" TargetType="Entry">
         <Setter Property="TextColor" Value="White" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
+        <Setter Property="MinimumHeightRequest" Value="56"/>
+        <Setter Property="MinimumWidthRequest" Value="56"/>
     </Style>
 
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
         <Setter Property="BorderColor" Value="{StaticResource CardBorderBrush}" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="12" />
         <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
     </Style>
 
+    <!-- Texto por defecto -->
     <Style TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="18" />
     </Style>
 
     <Style TargetType="Span">
@@ -82,10 +87,10 @@
         <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
         <Setter Property="TextColor" Value="White" />
         <Setter Property="TitleColor" Value="#B0B0B0" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
-        <Setter Property="HeightRequest" Value="50" />
-        <Setter Property="Margin" Value="0,0,0,0" />
+        <Setter Property="HeightRequest" Value="56" />
+        <Setter Property="Margin" Value="0" />
     </Style>
 
     <Style TargetType="ProgressBar">
@@ -96,7 +101,7 @@
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="18"/>
     </Style>
 
     <Style TargetType="SearchBar">
@@ -105,7 +110,8 @@
         <Setter Property="CancelButtonColor" Value="{StaticResource Gray500}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="MinimumHeightRequest" Value="56"/>
     </Style>
 
     <Style TargetType="Switch">
@@ -132,24 +138,26 @@
         <Setter Property="SelectedTabColor" Value="White" />
     </Style>
 
+    <!-- Botón primario -->
     <Style x:Key="PrimaryButton" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
         <Setter Property="TextColor" Value="White" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="HeightRequest" Value="56" />
         <Setter Property="Shadow">
             <Setter.Value>
                 <Shadow Brush="{StaticResource PrimaryBrush}" Opacity="0.3" Radius="10" Offset="2,2"/>
             </Setter.Value>
         </Setter>
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="Padding" Value="20,10" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Padding" Value="20,12" />
     </Style>
 
+    <!-- Títulos -->
     <Style x:Key="SectionTitle" TargetType="Label">
         <Setter Property="TextColor" Value="{StaticResource Primary}" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="FontAttributes" Value="Bold" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="Margin" Value="0,0,0,15" />
