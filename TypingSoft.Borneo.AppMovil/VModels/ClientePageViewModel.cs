@@ -83,7 +83,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             if (cliente == null)
                 return;
 
-            // 1. SIEMPRE crear nueva venta general
+            // 1) Crear nueva venta general
             Guid? idRuta = await _localDb.ObtenerIdRutaAsync();
             var hoy = DateTime.Now.Date;
             var mañana = hoy.AddDays(1);
@@ -103,7 +103,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             };
             await _localDb.GuardarVentaAsync(nuevaVenta);
 
-            // 2. Crear nuevo ticket cabecera
+            // 2) Resolver condición por IdClienteAsociado
+            var condicionTexto = await _localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(cliente.IdClienteAsociado);
+
+            // 3) Crear ticket cabecera con snapshot de condición
             var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
             var nuevoTicket = new TicketDetalleLocal
             {
@@ -112,19 +115,16 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 IdCliente = cliente.IdClienteAsociado,
                 Cliente = cliente.Cliente ?? string.Empty,
                 Empleado = empleadoSeleccionado,
-                Fecha = DateTime.Now
+                Fecha = DateTime.Now,
+                CondicionPago = condicionTexto
             };
             await _localDb.InsertarTicketAsync(nuevoTicket);
 
-            // 3. Limpia la lista visual y el estado si es necesario
+            // 4) Actualizar UI
             if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
                 ClientesASurtir.Add(cliente);
 
             Helpers.Settings.IdClienteAsociado = cliente.IdClienteAsociado;
-            var nombres = string.Join("\n", ClientesASurtir.Select(c => c.Cliente));
-
-            // Aquí debes pasar el nuevo ticket al ViewModel de impresión
-            // Por ejemplo, si navegas a UtileriasPage, pásalo por parámetro o usa un servicio compartido
         }
 
         public async Task IniciarNuevaVenta(Models.Custom.ClientesLista cliente)
@@ -143,6 +143,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             };
             await _localDb.GuardarVentaAsync(nuevaVenta);
 
+            var condicionTexto = await _localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(cliente.IdClienteAsociado);
+
             var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
             var nuevoTicket = new TicketDetalleLocal
             {
@@ -151,7 +153,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 IdCliente = cliente.IdClienteAsociado,
                 Cliente = cliente.Cliente ?? string.Empty,
                 Empleado = empleadoSeleccionado,
-                Fecha = DateTime.Now
+                Fecha = DateTime.Now,
+                CondicionPago = condicionTexto
             };
             await _localDb.InsertarTicketAsync(nuevoTicket);
 

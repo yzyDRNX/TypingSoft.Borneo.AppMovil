@@ -2,42 +2,44 @@
 using TypingSoft.Borneo.AppMovil.Local;
 using TypingSoft.Borneo.AppMovil.Services;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace TypingSoft.Borneo.AppMovil.Helpers
 {
     public static class TicketFormatter
     {
-        // NO USAR: este método no puede resolver la condición desde BD.
-        // Dejado como obsoleto para detectar llamadas equivocadas en compilación.
+        // Ancho de línea del ticket (coincide con "--------------------------------")
+        private const int TicketWidth = 32;
+
         [System.Obsolete("Usa FormatearTicketLocalAsync(LocalDatabaseService, ... ) para imprimir la condición real por cliente.")]
         public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
-            // Mostramos un encabezado neutro para no engañar
-            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, "CONDICION: SIN CONDICIÓN");
+            // Sin BD, no imprimimos condición
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, null);
         }
 
-        // Útil si YA tienes el texto de la condición resuelto por tu cuenta.
-        public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string condicionTexto)
-        {
-            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, $"CONDICION: {condicionTexto}");
-        }
-
-        // Método RECOMENDADO: resuelve la condición consultando por IdClienteAsociado (guardado en ticket.IdCliente)
+        // RECOMENDADO
         public static async Task<string> FormatearTicketLocalAsync(LocalDatabaseService localDb, TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
-            // ticket.IdCliente = IdClienteAsociado en tu flujo
-            var condicionTexto = await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
-            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, $"CONDICION: {condicionTexto}");
+            // Preferir snapshot guardado en el ticket; si no, consultar BD
+            var condicion = !string.IsNullOrWhiteSpace(ticket.CondicionPago)
+                ? ticket.CondicionPago
+                : await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
+
+            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, condicion);
         }
 
-        private static string ConstruirTicket(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string encabezadoCondicion)
+        private static string ConstruirTicket(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string? condicion)
         {
             var sb = new StringBuilder();
             string tipoCopia = numeroImpresiones <= 1 ? "ORIGINAL" : "REIMPRESION";
 
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
-            sb.AppendLine(encabezadoCondicion);
+            if (!string.IsNullOrWhiteSpace(condicion))
+                sb.AppendLine(CenterText(condicion, TicketWidth));
+            else
+                sb.AppendLine(); // mantiene el alto del encabezado
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine("            BORNEO              ");
@@ -80,7 +82,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
-            sb.AppendLine("+------------(FIRMA )----------+");
+            sb.AppendLine("+------------(FIRMA)-----------+");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
@@ -104,11 +106,26 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendLine($"FECHA: {ticket.Fecha:dd/MM/yyyy}");
+
+            // Formato 24h + cultura invariante (evita 'a. m.'/'p. m.' y NBSP)
+            var fechaTexto = ticket.Fecha.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            sb.AppendLine($"FECHA: {fechaTexto}");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
 
             return sb.ToString();
+        }
+
+        private static string CenterText(string text, int width)
+        {
+            text = (text ?? string.Empty).Trim();
+            if (text.Length > width)
+                text = text.Substring(0, width);
+
+            int left = (width - text.Length) / 2;
+            int right = width - text.Length - left;
+
+            return new string(' ', left) + text + new string(' ', right);
         }
     }
 }

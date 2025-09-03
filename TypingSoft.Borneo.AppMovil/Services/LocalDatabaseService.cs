@@ -1,5 +1,4 @@
-﻿using Borneo.Local;
-using SQLite;
+﻿using SQLite;
 using System.IO;
 using TypingSoft.Borneo.AppMovil.Local;
 using ZXing.Datamatrix;
@@ -28,7 +27,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<FacturacionLocal>().Wait();
             _database.CreateTableAsync<ClientesAplicacionesLocal>().Wait();
             _database.CreateTableAsync<ValoresAppVentaDetalleLocal>().Wait();
-            // NUEVO: tabla de Condiciones de Pago por Cliente
             _database.CreateTableAsync<CondicionPagoLocal>().Wait();
         }
         public async Task InsertarValoresAppVentaDetalleAsync(ValoresAppVentaDetalleLocal detalle)
@@ -316,7 +314,8 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public async Task GuardarCondicionesPagoAsync(List<CondicionPagoLocal> condicionesPago)
         {
             await _database.DeleteAllAsync<CondicionPagoLocal>();
-            await _database.InsertAllAsync(condicionesPago);
+            if (condicionesPago?.Count > 0)
+                await _database.InsertAllAsync(condicionesPago);
         }
 
         public async Task<List<CondicionPagoLocal>> ObtenerCondicionesPagoAsync()
@@ -327,35 +326,30 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public async Task<List<CondicionPagoLocal>> ObtenerCondicionesPagoPorClienteAsync(Guid idClienteAsociado)
         {
             return await _database.Table<CondicionPagoLocal>()
-                .Where(c => c.IdClienteAsociado == idClienteAsociado)
-                .ToListAsync();
+                                  .Where(x => x.IdClienteAsociado == idClienteAsociado)
+                                  .ToListAsync();
         }
 
-        // NUEVO: dado un IdClienteAsociado, obtener el IdCondicionPago
+        // Devuelve el Id de CondicionLocal asociado al IdClienteAsociado
         public async Task<Guid?> ObtenerIdCondicionPagoPorClienteAsociadoAsync(Guid idClienteAsociado)
         {
-            var cond = await _database.Table<CondicionPagoLocal>()
-                                      .Where(c => c.IdClienteAsociado == idClienteAsociado)
-                                      .FirstOrDefaultAsync();
-            return cond?.IdCondicionPago;
+            var reg = await _database.Table<CondicionPagoLocal>()
+                                     .FirstOrDefaultAsync(x => x.IdClienteAsociado == idClienteAsociado);
+            return reg?.IdCondicionPago;
         }
 
-        // NUEVO: dado un IdClienteAsociado, obtener el texto de la condición (p.e. "CONTADO" o "CRÉDITO")
-        public async Task<string> ObtenerCondicionPagoTextoPorClienteAsociadoAsync(Guid idClienteAsociado)
+        // Devuelve el texto de la condición por IdClienteAsociado, o null si no hay
+        public async Task<string?> ObtenerCondicionPagoTextoPorClienteAsociadoAsync(Guid idClienteAsociado)
         {
-            var condPago = await _database.Table<CondicionPagoLocal>()
-                                          .Where(c => c.IdClienteAsociado == idClienteAsociado)
-                                          .FirstOrDefaultAsync();
-            if (condPago == null)
-                return "SIN CONDICIÓN";
+            var idCond = await ObtenerIdCondicionPagoPorClienteAsociadoAsync(idClienteAsociado);
+            if (!idCond.HasValue || idCond.Value == Guid.Empty)
+                return null;
 
-            var condicion = await _database.Table<CondicionLocal>()
-                                           .Where(c => c.IdCondicion == condPago.IdCondicionPago)
-                                           .FirstOrDefaultAsync();
+            var cond = await _database.Table<CondicionLocal>()
+                                      .FirstOrDefaultAsync(c => c.IdCondicion == idCond.Value);
 
-            return string.IsNullOrWhiteSpace(condicion?.Condicion)
-                ? "SIN CONDICIÓN"
-                : condicion!.Condicion!.ToUpperInvariant();
+            var texto = cond?.Condicion?.Trim();
+            return string.IsNullOrWhiteSpace(texto) ? null : texto.ToUpperInvariant();
         }
     }
 }

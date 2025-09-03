@@ -221,6 +221,28 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 }
             }
 
+            // Condiciones de Pago por Cliente (mapeo IdClienteAsociado -> IdCondicionPago)
+            var (exitosoCondCli, mensajeCondCli, condicionesPago) = await _catalogos.ObtenerClientesCondiciones();
+            if (exitosoCondCli && condicionesPago != null)
+            {
+                var condicionesPagoLocales = condicionesPago.Select(c => new CondicionPagoLocal
+                {
+                    Id = c.Id,
+                    IdClienteAsociado = c.IdClienteAsociado,
+                    IdCondicionPago = c.IdCondicionPago
+                }).ToList();
+
+                try
+                {
+                    await _localDb.GuardarCondicionesPagoAsync(condicionesPagoLocales);
+                    System.Diagnostics.Debug.WriteLine($"[SQLite] Condiciones de pago por cliente guardadas: {condicionesPagoLocales.Count}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando condiciones de pago por cliente: {ex.Message}");
+                }
+            }
+
         }
 
 

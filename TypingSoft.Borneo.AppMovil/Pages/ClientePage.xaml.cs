@@ -68,7 +68,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
 
+            // NOTA: aquí ya se crea un ticket y luego ViewModel.Surtir también crea otro.
+            // Para evitar duplicados, lo ideal es eliminar este bloque de creación e insertar el ticket SOLO en Surtir().
+            // Si decides mantenerlo, al menos guarda la condición.
             var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
+            var condicionTexto = await ViewModel._localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(clienteSeleccionado.IdClienteAsociado);
 
             var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
             {
@@ -76,7 +80,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 IdCliente = clienteSeleccionado.IdClienteAsociado,
                 Cliente = clienteSeleccionado.Cliente ?? string.Empty,
                 Empleado = empleadoSeleccionado,
-                Fecha = DateTime.Now
+                Fecha = DateTime.Now,
+                CondicionPago = condicionTexto
             };
             await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
 

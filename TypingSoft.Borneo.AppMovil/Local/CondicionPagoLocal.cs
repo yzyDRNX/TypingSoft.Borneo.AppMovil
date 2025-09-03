@@ -1,7 +1,7 @@
 ﻿using SQLite;
 using System;
 
-namespace Borneo.Local
+namespace TypingSoft.Borneo.AppMovil.Local
 {
     [Table("CondicionesPago")]
     public class CondicionPagoLocal

@@ -202,21 +202,34 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             await InsertarValoresAppVentaDetalleAsync();
 
+            // 1) Limpiar estado del cliente y la lista ANTES de navegar
+            var clienteVm = App.ServiceProvider.GetService<TypingSoft.Borneo.AppMovil.VModels.ClientePageViewModel>();
+            clienteVm?.ClientesASurtir.Clear();
+
+            var clientePage = App.Current.MainPage?
+                .Navigation?
+                .NavigationStack?
+                .OfType<TypingSoft.Borneo.AppMovil.Pages.ClientePage>()
+                .LastOrDefault();
+
+            clientePage?.LimpiarCamposYListas();
+
+            // 2) Reset de venta y productos
             VentaActual = null;
             _numeroImpresiones = 1;
             Productos.Clear();
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
 
+            // 3) Limpiar settings del cliente actual
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, string.Empty);
 
             await CargarVentaActualYProductos();
 
+            // 4) Ahora sí, navegar
             await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
-            if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage page)
-                page.LimpiarCamposYListas();
         }
 
         private async Task InsertarValoresAppVentaDetalleAsync()

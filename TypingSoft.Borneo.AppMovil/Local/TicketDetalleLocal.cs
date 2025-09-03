@@ -12,17 +12,22 @@ namespace TypingSoft.Borneo.AppMovil.Local
         [Column("IdTicket")]
         public Guid IdTicket { get; set; } // Relación con el ticket principal
 
+        // En tu flujo, este es el IdClienteAsociado
         [Column("IdCliente")]
         public Guid IdCliente { get; set; }
 
         [Column("Cliente")]
-        public string Cliente { get; set; }
+        public string Cliente { get; set; } = string.Empty;
+
+        // NUEVO: snapshot del texto de la condición al crear el ticket
+        [Column("CondicionPago")]
+        public string? CondicionPago { get; set; }
 
         [Column("Cantidad")]
         public int Cantidad { get; set; }
 
         [Column("Descripcion")]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         [Column("ImporteTotal")]
         public decimal ImporteTotal { get; set; }
