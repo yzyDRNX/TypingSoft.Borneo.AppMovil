@@ -13,7 +13,7 @@
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                            <GradientStop Color="{StaticResource Gray900}" Offset="1"/>
+                                <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                         </LinearGradientBrush>
                     </Grid.Background>
                     <Label Text="Iniciar sesión" FontSize="24" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -26,7 +26,7 @@
 
                     <Frame CornerRadius="18" Padding="0" HasShadow="True" BorderColor="{StaticResource Primary}" Background="{StaticResource CardBackgroundBrush}" HorizontalOptions="Center" Margin="0,10" WidthRequest="250">
                         <VerticalStackLayout Spacing="8" Padding="0,10">
-                            <Label Text="Escanea tu código QR" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center"/>
+                            <Label Text="Escanea tu código QR" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
                             <BoxView HeightRequest="2" BackgroundColor="{StaticResource Primary}" Margin="40,0"/>
                             <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsVisible="True" BarcodesDetected="BarcodesDetected" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="Black" HeightRequest="220" WidthRequest="180" Margin="0,10"/>
                             <Label Text="Coloca el QR dentro del recuadro" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>

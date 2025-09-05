@@ -13,7 +13,7 @@
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                            <GradientStop Color="{StaticResource Gray900}" Offset="1"/>
+                            <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                         </LinearGradientBrush>
                     </Grid.Background>
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
@@ -21,9 +21,9 @@
                     <Label Grid.Row="0" Grid.Column="0" Text="Borneo" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" Margin="20,18,0,0"/>
                     <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
                         <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
-                        <Label Text="{Binding DescripcionRuta}" TextColor="#E0E0E0"/>
+                        <Label Text="{Binding DescripcionRuta}" TextColor="{StaticResource TextPrimaryBrush}"/>
                         <Label Text="📅 Fecha:" TextColor="White" FontAttributes="Bold"/>
-                        <Label Text="{Binding FechaActual}" TextColor="#E0E0E0"/>
+                        <Label Text="{Binding FechaActual}" TextColor="{StaticResource TextPrimaryBrush}"/>
                     </HorizontalStackLayout>
                 </Grid>
 

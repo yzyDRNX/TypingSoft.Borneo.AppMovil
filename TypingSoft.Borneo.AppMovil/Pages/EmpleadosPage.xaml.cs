@@ -34,12 +34,13 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 case "ListadoEmpleados":
                     if (_suspendRefresh) return;
 
-                    // No borres selección ni cambies el texto si ya hay selección
                     emptyStateLabel.IsVisible = ViewModel?.ListadoEmpleados.Count == 0;
                     if (_empleadoSeleccionado == null && _empleadosSeleccionados.Count == 0)
                     {
                         empleadosSeleccionadosStack.Children.Clear();
                         btnSeleccionarEmpleado.Text = "Seleccionar empleado";
+                        previewEmpleadoLabel.IsVisible = false;
+                        previewEmpleadoLabel.Text = string.Empty;
                     }
                     break;
             }
@@ -60,6 +61,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 _empleadoSeleccionado = seleccionado;
                 btnSeleccionarEmpleado.Text = seleccionado.Empleado ?? "Empleado seleccionado";
+                previewEmpleadoLabel.Text = $"Seleccionado: {seleccionado.Empleado}";
+                previewEmpleadoLabel.IsVisible = true;
             }
             _suspendRefresh = false;
         }
@@ -94,6 +97,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             }
             _empleadoSeleccionado = null;
             btnSeleccionarEmpleado.Text = "Seleccionar empleado";
+            previewEmpleadoLabel.IsVisible = false;
+            previewEmpleadoLabel.Text = string.Empty;
         }
 
         private async void OnEmpezarRutaClicked(object sender, EventArgs e)

@@ -10,7 +10,7 @@
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">   
                         <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                        <GradientStop Color="{StaticResource Gray900}" Offset="1"/>
+                        <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
                 <Grid.RowDefinitions>
@@ -27,9 +27,9 @@
                        Margin="20,18,0,0"/>
                 <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
                     <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding DescripcionRuta}" TextColor="#E0E0E0"/>
+                    <Label Text="{Binding DescripcionRuta}" TextColor="{StaticResource TextPrimaryBrush}"/>
                     <Label Text="📅 Fecha:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding FechaActual}" TextColor="#E0E0E0"/>
+                    <Label Text="{Binding FechaActual}" TextColor="{StaticResource TextPrimaryBrush}"/>
                 </HorizontalStackLayout>
             </Grid>
 
@@ -39,7 +39,7 @@
 
             <Frame Margin="20,0,20,15" CornerRadius="12" Background="{StaticResource CardBackgroundBrush}" BorderColor="{StaticResource CardBorderBrush}" HasShadow="True" Padding="20">
                 <VerticalStackLayout Spacing="18">
-                    <Label Text="CLIENTE A VISITAR" Style="{StaticResource SectionTitle}" TextColor="{StaticResource Primary}"/>
+                    <Label Text="CLIENTE A VISITAR" Style="{StaticResource SectionTitle}" TextColor="{StaticResource TextPrimaryBrush}"/>
                     <Grid ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -47,6 +47,11 @@
                         </Grid.ColumnDefinitions>
                         <VerticalStackLayout Spacing="4">
                             <Button x:Name="btnSeleccionarCliente" Text="Seleccionar cliente" Style="{StaticResource PrimaryButton}" Clicked="OnSeleccionarClienteClicked" />
+                            <Label x:Name="previewClienteLabel"
+                                   Text=""
+                                   IsVisible="False"
+                                   TextColor="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,6,0,0"/>
                         </VerticalStackLayout>
                         <Button Text="AÑADIR" Style="{StaticResource PrimaryButton}" Grid.Column="1" Clicked="OnAñadirClienteClicked"/>
                     </Grid>
@@ -56,12 +61,12 @@
             <Frame Margin="20,0,20,10" CornerRadius="12" Background="{StaticResource CardBackgroundBrush}" BorderColor="{StaticResource CardBorderBrush}" HasShadow="True" Padding="0">
                 <VerticalStackLayout>
                     <Label Text="CLIENTES A SURTIR" Style="{StaticResource SectionTitle}" Margin="15,10"/>
-                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource Gray200}"/>
+                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource CardBorderBrush}"/>
                     <CollectionView ItemsSource="{Binding ClientesASurtir}" EmptyView="No hay clientes seleccionados" Margin="15,10">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <HorizontalStackLayout Spacing="10" Padding="0,5">
-                                    <Label Text="•" TextColor="{StaticResource Primary}"/>
+                                    <Label Text="•" TextColor="{StaticResource TextPrimaryBrush}"/>
                                     <Label Text="{Binding Cliente}" TextColor="{StaticResource TextPrimaryBrush}" />
                                 </HorizontalStackLayout>
                             </DataTemplate>

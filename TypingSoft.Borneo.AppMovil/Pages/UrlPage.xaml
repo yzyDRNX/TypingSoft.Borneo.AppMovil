@@ -9,9 +9,9 @@
             <BoxView.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                    <GradientStop Color="{StaticResource Gray900}" Offset="1"/>
+                    <GradientStop Color="{StaticResource Primary}" Offset="1"/>
                 </LinearGradientBrush>
-            </BoxView.Background>
+            </BoxView.Background>   
         </BoxView>
 
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Padding="0,10">
@@ -20,7 +20,7 @@
                     <BoxView Background="{StaticResource CardBackgroundBrush}"/>
                     <BoxView Background="{StaticResource CardBackgroundBrush}" HeightRequest="30" VerticalOptions="End"/>
                     <BoxView BackgroundColor="{StaticResource Primary}" HeightRequest="30" VerticalOptions="End"/>
-                    <Label Text="Configuración de URL" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Text="Configuración de URL" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Grid>
 
                 <VerticalStackLayout x:Name="MainContentStack" Spacing="30" Padding="20,0" VerticalOptions="Center">
@@ -37,7 +37,7 @@
                         <VerticalStackLayout Spacing="25">
                             <HorizontalStackLayout Spacing="10">
                                 <Image Source="link_icon.png" HeightRequest="24" WidthRequest="24"/>
-                                <Label Text="Configuración de URL" FontAttributes="Bold" TextColor="{StaticResource Primary}"/>
+                                <Label Text="Configuración de URL" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
                             </HorizontalStackLayout>
 
                             <Frame CornerRadius="15" Padding="0" HasShadow="False" BorderColor="{StaticResource CardBorderBrush}" Background="{StaticResource CardBackgroundBrush}" HeightRequest="56">
@@ -48,14 +48,7 @@
                                 </Grid>
                             </Frame>
 
-                            <Button x:Name="SendUrlButton" Text="ENVIAR URL" Clicked="OnSendUrlClicked" Style="{StaticResource PrimaryButton}" CornerRadius="12" Padding="15,12" HeightRequest="56" Margin="0,10">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                                        <GradientStop Color="{StaticResource Gray900}" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Button.Background>
-                            </Button>
+                            <Button x:Name="SendUrlButton" Text="ENVIAR URL" Clicked="OnSendUrlClicked" Style="{StaticResource PrimaryButton}" CornerRadius="12" Padding="15,12" HeightRequest="56" Margin="0,10"/>
 
                             <Label x:Name="StatusLabel" Text="" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center" IsVisible="False" Margin="0,5"/>
                         </VerticalStackLayout>
@@ -68,7 +61,7 @@
             <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="25" Padding="40" HasShadow="True" WidthRequest="250" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
                     <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="{StaticResource Primary}" WidthRequest="50" HeightRequest="50"/>
-                    <Label x:Name="LoadingLabel" Text="Enviando URL..." FontAttributes="Bold" TextColor="{StaticResource Primary}" HorizontalOptions="Center"/>
+                    <Label x:Name="LoadingLabel" Text="Enviando URL..." FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
                     <ProgressBar Progress="0.5" ProgressColor="{StaticResource Primary}" BackgroundColor="{StaticResource Secondary}" HeightRequest="6" WidthRequest="180"/>
                 </VerticalStackLayout>
             </Frame>

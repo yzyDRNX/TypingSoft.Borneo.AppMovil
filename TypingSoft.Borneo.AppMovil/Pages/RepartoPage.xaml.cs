@@ -43,6 +43,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 _productoSeleccionado = seleccionado;
                 btnSeleccionarProducto.Text = seleccionado.Producto ?? "Producto seleccionado";
+                previewProductoLabel.Text = $"Seleccionado: {seleccionado.Producto}";
+                previewProductoLabel.IsVisible = true;
             }
             _suspendRefresh = false;
         }
@@ -87,6 +89,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             // Reset tras añadir
             _productoSeleccionado = null;
             btnSeleccionarProducto.Text = "Seleccionar producto";
+            previewProductoLabel.IsVisible = false;
+            previewProductoLabel.Text = string.Empty;
             cantidadEntry.Text = string.Empty;
         }
 
@@ -128,6 +132,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         {
             _productoSeleccionado = null;
             btnSeleccionarProducto.Text = "Seleccionar producto";
+            previewProductoLabel.IsVisible = false;
+            previewProductoLabel.Text = string.Empty;
             cantidadEntry.Text = string.Empty;
             productosSeleccionadosStack.Children.Clear();
         }

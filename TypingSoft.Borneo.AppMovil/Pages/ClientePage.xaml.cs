@@ -10,7 +10,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         VModels.ClientePageViewModel ViewModel;
         private Models.Custom.ClientesLista? _clienteSeleccionado;
 
-        // Evita recargas/limpiezas cuando vienes de un modal y carga solo 1 vez
         private bool _suspendRefresh;
         private bool _initialized;
 
@@ -26,7 +25,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
         private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            // Sin resetear selección ni texto del botón aquí
         }
 
         private async void OnSeleccionarClienteClicked(object sender, EventArgs e)
@@ -40,11 +38,12 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             _suspendRefresh = true;
             var modal = new SelectClienteModal(ViewModel.ListadoClientes);
             var seleccionado = await modal.ShowAsync(Navigation);
-            // Mantén suspendido hasta después de procesar selección
             if (seleccionado != null)
             {
                 _clienteSeleccionado = seleccionado;
                 btnSeleccionarCliente.Text = seleccionado.Cliente ?? "Cliente seleccionado";
+                previewClienteLabel.Text = $"Seleccionado: {seleccionado.Cliente}";
+                previewClienteLabel.IsVisible = true;
             }
             _suspendRefresh = false;
         }
@@ -68,9 +67,6 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
 
-            // NOTA: aquí ya se crea un ticket y luego ViewModel.Surtir también crea otro.
-            // Para evitar duplicados, lo ideal es eliminar este bloque de creación e insertar el ticket SOLO en Surtir().
-            // Si decides mantenerlo, al menos guarda la condición.
             var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
             var condicionTexto = await ViewModel._localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(clienteSeleccionado.IdClienteAsociado);
 
@@ -90,6 +86,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             // Reset tras añadir
             _clienteSeleccionado = null;
             btnSeleccionarCliente.Text = "Seleccionar cliente";
+            previewClienteLabel.IsVisible = false;
+            previewClienteLabel.Text = string.Empty;
         }
 
         public async void OnRepartoClicked(object sender, EventArgs e)
@@ -105,11 +103,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            // No limpies ni recargues cuando vienes de modal
             if (_suspendRefresh) return;
 
-            // Cargar datos solo la primera vez
             if (!_initialized && ViewModel != null)
             {
                 await ViewModel.CargarClientesDesdeLocal();
@@ -121,6 +116,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
         {
             _clienteSeleccionado = null;
             btnSeleccionarCliente.Text = "Seleccionar cliente";
+            previewClienteLabel.IsVisible = false;
+            previewClienteLabel.Text = string.Empty;
             ViewModel?.ClientesASurtir.Clear();
         }
     }
