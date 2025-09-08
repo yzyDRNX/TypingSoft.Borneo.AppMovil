@@ -66,6 +66,11 @@
                         </Grid.ColumnDefinitions>
 
                         <VerticalStackLayout Spacing="4">
+                            <Label x:Name="previewProductoLabel"
+                                Text=""
+                                   IsVisible="False"
+                                   TextColor="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,6,0,0"/>       
                             <Button x:Name="btnSeleccionarProducto"
                                     Text="Seleccionar producto"
                                     Style="{StaticResource PrimaryButton}"
@@ -73,11 +78,7 @@
                         </VerticalStackLayout>
                     </Grid>
 
-                    <Label x:Name="previewProductoLabel"
-                           Text=""
-                           IsVisible="False"
-                           TextColor="{StaticResource TextPrimaryBrush}"
-                           Margin="0,6,0,0"/>
+                    
 
                     <Label Text="Cantidad del producto"
                            TextColor="{StaticResource TextPrimaryBrush}" />

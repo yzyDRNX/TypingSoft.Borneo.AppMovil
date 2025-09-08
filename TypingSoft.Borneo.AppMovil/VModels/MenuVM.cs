@@ -1,10 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Media;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TypingSoft.Borneo.AppMovil.Services;
 
@@ -33,12 +29,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             _ = CargarDescripcionRutaAsync();
         }
 
-
         [ObservableProperty]
         string fechaActual;
 
         [ObservableProperty]
         string descripcionRuta;
+
+        // Propiedades para mostrar modales de éxito
+        [ObservableProperty]
+        bool mostrarExitoDescarga;
+
+        [ObservableProperty]
+        bool mostrarExitoSincronizacion;
 
         private async Task CargarDescripcionRutaAsync()
         {
@@ -50,11 +52,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SincronizarCatalogos()
         {
+            // Asegurar que los modales previos estén ocultos
+            MostrarExitoDescarga = false;
+            MostrarExitoSincronizacion = false;
+
             this.MensajeProcesando = "Sincronizando catálogos...";
             this.Procesando = true;
+            var exito = false;
             try
             {
                 await _sincronizacion.SincronizarCatalogosAsync();
+                exito = true;
                 this.MensajeProcesando = "Catálogos sincronizados correctamente.";
             }
             catch (Exception ex)
@@ -64,6 +72,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             finally
             {
                 this.Procesando = false;
+                if (exito)
+                    MostrarExitoDescarga = true;
             }
         }
 
@@ -94,10 +104,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             this.Procesando = true;
             try
             {
-                // Aquí puedes agregar la lógica para cerrar sesión, si es necesario.
                 await Navegacion.Navegar(nameof(Pages.LoginPage));
-                // Limpiar la ruta y otros datos si es necesario
-
                 Helpers.Settings.UltimaDescripcionRuta = string.Empty;
                 this.MensajeProcesando = "Sesión cerrada correctamente.";
                 Helpers.StaticSettings.LimpiarSesion();
@@ -116,22 +123,24 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SincronizarVentas()
         {
+            MostrarExitoDescarga = false;
+            MostrarExitoSincronizacion = false;
+
             this.MensajeProcesando = "Sincronizando ventas...";
             this.Procesando = true;
+            var exito = false;
             try
             {
-                // Imprime el estado antes de sincronizar
                 await _localDb.ImprimirVentasDebugAsync();
 
                 await _sincronizacionVentas.SincronizarVentasYDetallesAsync();
 
-                // Imprime el estado después de sincronizar
                 await _localDb.ImprimirVentasDebugAsync();
 
-                // Sincroniza los valores de app venta detalle
                 var valoresBL = new BL.ValoresAppVentaDetalleBL(_localDb, new Services.ValoresAppVentaDetalleService());
                 await valoresBL.SincronizarAsync();
 
+                exito = true;
                 this.MensajeProcesando = "Ventas y valores sincronizados correctamente.";
             }
             catch (Exception ex)
@@ -141,7 +150,15 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             finally
             {
                 this.Procesando = false;
+                if (exito)
+                    MostrarExitoSincronizacion = true;
             }
         }
+
+        [RelayCommand]
+        void CerrarExitoDescarga() => MostrarExitoDescarga = false;
+
+        [RelayCommand]
+        void CerrarExitoSincronizacion() => MostrarExitoSincronizacion = false;
     }
 }

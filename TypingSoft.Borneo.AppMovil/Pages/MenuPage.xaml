@@ -16,8 +16,13 @@
                             <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                         </LinearGradientBrush>
                     </Grid.Background>
-                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" Text="Borneo" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" Margin="20,18,0,0"/>
                     <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
                         <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
@@ -60,11 +65,46 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="False" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+        <!-- Overlay de carga -->
+        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="{Binding Procesando}" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
             <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="20" Padding="30" HasShadow="True" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
-                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="{StaticResource Primary}" WidthRequest="40" HeightRequest="40"/>
-                    <Label x:Name="LoadingLabel" Text="Procesando..." TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="{Binding Procesando}" Color="{StaticResource Primary}" WidthRequest="40" HeightRequest="40"/>
+                    <Label x:Name="LoadingLabel" Text="{Binding MensajeProcesando}" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+        </AbsoluteLayout>
+
+        <!-- Modal Éxito Descarga -->
+        <AbsoluteLayout IsVisible="{Binding MostrarExitoDescarga}" BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <Frame CornerRadius="22" Padding="28" HasShadow="True" Background="{StaticResource CardBackgroundBrush}"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label Text="✅" FontSize="40" HorizontalOptions="Center"/>
+                    <Label Text="Los datos se han descargado completamente." 
+                           TextColor="{StaticResource TextPrimaryBrush}" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="Aceptar" Command="{Binding CerrarExitoDescargaCommand}" />
+                </VerticalStackLayout>
+            </Frame>
+        </AbsoluteLayout>
+
+        <!-- Modal Éxito Sincronización -->
+        <AbsoluteLayout IsVisible="{Binding MostrarExitoSincronizacion}" BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <Frame CornerRadius="22" Padding="28" HasShadow="True" Background="{StaticResource CardBackgroundBrush}"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label Text="✅" FontSize="40" HorizontalOptions="Center"/>
+                    <Label Text="Los datos se han sincronizado correctamente." 
+                           TextColor="{StaticResource TextPrimaryBrush}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="Aceptar" Command="{Binding CerrarExitoSincronizacionCommand}" />
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>
