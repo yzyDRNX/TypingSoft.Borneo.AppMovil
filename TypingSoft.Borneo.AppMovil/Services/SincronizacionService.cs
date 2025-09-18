@@ -17,11 +17,12 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _catalogos = catalogos;
             _localDb = localDb;
         }
+
         public async Task SincronizarCatalogosAsync()
         {
             // Empleados
             var resultadoEmp = await _catalogos.ObtenerEmpleados();
-            if (resultadoEmp.Exitoso && resultadoEmp.Empleados != null)
+            if (resultadoEmp.Exitoso && resultadoEmp.Empleados != null && resultadoEmp.Empleados.Count > 0)
             {
                 var empleadosLocales = resultadoEmp.Empleados.Select(e => new EmpleadoLocal
                 {
@@ -38,31 +39,46 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando empleados: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Empleados] No se actualiza tabla (Exitoso={resultadoEmp.Exitoso}, Count={resultadoEmp.Empleados?.Count ?? 0}).");
+            }
 
             // Clientes
-            var resultadoCli = await _catalogos.ObtenerClientes(Settings.IdRuta);
-            if (resultadoCli.Exitoso && resultadoCli.Clientes != null)
+            if (Settings.IdRuta == Guid.Empty)
             {
-                var clientesLocales = resultadoCli.Clientes.Select(c => new ClienteLocal
+                System.Diagnostics.Debug.WriteLine("[SYNC][Clientes] Settings.IdRuta vacío. Se omite sincronización de clientes.");
+            }
+            else
+            {
+                var resultadoCli = await _catalogos.ObtenerClientes(Settings.IdRuta);
+                if (resultadoCli.Exitoso && resultadoCli.Clientes != null && resultadoCli.Clientes.Count > 0)
                 {
-                    IdCliente = c.IdCliente,
-                    IdClienteAsociado = c.IdClienteAsociado,
-                    Cliente = c.Cliente
-                }).ToList();
-                try
-                {
-                    await _localDb.GuardarClientesAsync(clientesLocales);
-                    System.Diagnostics.Debug.WriteLine($"[SQLite] Clientes guardados: {clientesLocales.Count}");
+                    var clientesLocales = resultadoCli.Clientes.Select(c => new ClienteLocal
+                    {
+                        IdCliente = c.IdCliente,
+                        IdClienteAsociado = c.IdClienteAsociado,
+                        Cliente = c.Cliente
+                    }).ToList();
+                    try
+                    {
+                        await _localDb.GuardarClientesAsync(clientesLocales);
+                        System.Diagnostics.Debug.WriteLine($"[SQLite] Clientes guardados: {clientesLocales.Count}");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando clientes: {ex.Message}");
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando clientes: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[SYNC][Clientes] No se sobreescribe tabla (Exitoso={resultadoCli.Exitoso}, Count={resultadoCli.Clientes?.Count ?? 0}). Se conservan clientes locales.");
                 }
             }
 
             // Productos
             var (exitosoProd, mensajeProd, productos) = await _catalogos.ObtenerProductos();
-            if (exitosoProd && productos != null)
+            if (exitosoProd && productos != null && productos.Count > 0)
             {
                 var productosLocales = productos.Select(p => new ProductoLocal
                 {
@@ -79,10 +95,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando productos: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Productos] No se actualiza tabla (Exitoso={exitosoProd}, Count={productos?.Count ?? 0}).");
+            }
 
             // Formas
             var (exitosoForm, mensajeForm, formas) = await _catalogos.ObtenerFormas();
-            if (exitosoForm && formas != null)
+            if (exitosoForm && formas != null && formas.Count > 0)
             {
                 var formasLocales = formas.Select(f => new FormaLocal
                 {
@@ -99,10 +119,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando formas: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Formas] No se actualiza tabla (Exitoso={exitosoForm}, Count={formas?.Count ?? 0}).");
+            }
 
             // Condiciones
             var (exitosoCond, mensajeCond, condiciones) = await _catalogos.ObtenerCondiciones();
-            if (exitosoCond && condiciones != null)
+            if (exitosoCond && condiciones != null && condiciones.Count > 0)
             {
                 var condicionesLocales = condiciones.Select(c => new CondicionLocal
                 {
@@ -119,10 +143,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando condiciones: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Condiciones] No se actualiza tabla (Exitoso={exitosoCond}, Count={condiciones?.Count ?? 0}).");
+            }
 
             // Precios Generales
             var (exitosoPrec, mensajePrec, precios) = await _catalogos.ObtenerPreciosGenerales();
-            if (exitosoPrec && precios != null)
+            if (exitosoPrec && precios != null && precios.Count > 0)
             {
                 var preciosLocales = precios.Select(p => new PreciosGeneralesLocal
                 {
@@ -140,11 +168,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][PreciosGenerales] No se actualiza tabla (Exitoso={exitosoPrec}, Count={precios?.Count ?? 0}).");
+            }
 
-
-
+            // Precios Preferenciales
             var (exitosoPrecPref, mensajePrecPref, preciosPref) = await _catalogos.ObtenerPreciosPreferenciales();
-            if (exitosoPrecPref && preciosPref != null)
+            if (exitosoPrecPref && preciosPref != null && preciosPref.Count > 0)
             {
                 var preciosLocales = preciosPref.Select(p => new PreciosPreferencialesLocal
                 {
@@ -152,7 +183,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     Producto = p.Producto,
                     Precio = p.Precio.ToString(),
                     IdClienteAsociado = p.IdClienteAsociado
-
                 }).ToList();
                 try
                 {
@@ -161,11 +191,17 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando precios preferenciales: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][PreciosPref] No se actualiza tabla (Exitoso={exitosoPrecPref}, Count={preciosPref?.Count ?? 0}).");
+            }
+
+            // Facturación
             var (exitosoFact, mensajeFact, facturacion) = await _catalogos.ObtenerFacturacion();
-            if (exitosoFact && facturacion != null)
+            if (exitosoFact && facturacion != null && facturacion.Count > 0)
             {
                 var facturacionLocales = facturacion.Select(f => new FacturacionLocal
                 {
@@ -182,7 +218,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     IdFormaPago = f.IdFormapago,
                     IdMetodoPago = f.IdMetodoPago,
                     IdUsoCFDI = f.IdUsoCFDI
-
                 }).ToList();
                 try
                 {
@@ -194,8 +229,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando facturación: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Facturación] No se actualiza tabla (Exitoso={exitosoFact}, Count={facturacion?.Count ?? 0}).");
+            }
+
+            // Clientes Aplicaciones
             var (exitosoCliApp, mensajeCliApp, clientesAplicaciones) = await _catalogos.ObtenerClientesAplicaciones();
-            if (exitosoCliApp && clientesAplicaciones != null)
+            if (exitosoCliApp && clientesAplicaciones != null && clientesAplicaciones.Count > 0)
             {
                 var clientesAplicacionesLocales = clientesAplicaciones.Select(c => new ClientesAplicacionesLocal
                 {
@@ -220,10 +261,14 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando clientes aplicaciones: {ex.Message}");
                 }
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][ClientesAplicaciones] No se actualiza tabla (Exitoso={exitosoCliApp}, Count={clientesAplicaciones?.Count ?? 0}).");
+            }
 
-            // Condiciones de Pago por Cliente (mapeo IdClienteAsociado -> IdCondicionPago)
+            // Condiciones de Pago por Cliente
             var (exitosoCondCli, mensajeCondCli, condicionesPago) = await _catalogos.ObtenerClientesCondiciones();
-            if (exitosoCondCli && condicionesPago != null)
+            if (exitosoCondCli && condicionesPago != null && condicionesPago.Count > 0)
             {
                 var condicionesPagoLocales = condicionesPago.Select(c => new CondicionPagoLocal
                 {
@@ -242,9 +287,10 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     System.Diagnostics.Debug.WriteLine($"[SQLite][Error] Guardando condiciones de pago por cliente: {ex.Message}");
                 }
             }
-
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][CondicionesPagoCliente] No se actualiza tabla (Exitoso={exitosoCondCli}, Count={condicionesPago?.Count ?? 0}).");
+            }
         }
-
-
     }
 }

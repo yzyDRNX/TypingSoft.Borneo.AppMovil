@@ -120,6 +120,15 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
         public async Task GuardarClientesAsync(List<ClienteLocal> clientes)
         {
+            if (clientes == null)
+                return;
+
+            if (clientes.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("[SQLite] GuardarClientesAsync: lista vacía, NO se altera la tabla de clientes.");
+                return;
+            }
+
             await _database.DeleteAllAsync<ClienteLocal>();
             await _database.InsertAllAsync(clientes);
         }
@@ -283,6 +292,23 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.UpdateAsync(venta);
         }
 
+        // NUEVO: actualizar un detalle (reasignar IdVentaGeneral)
+        public async Task ActualizarVentaDetalleAsync(VentaDetalleLocal detalle)
+        {
+            await _database.UpdateAsync(detalle);
+        }
+
+        // NUEVO: eliminar una VentaGeneral por Id (usar tras mover sus detalles)
+        public async Task EliminarVentaGeneralAsync(Guid idVentaGeneral)
+        {
+            var venta = await _database.Table<VentaGeneralLocal>()
+                                       .FirstOrDefaultAsync(v => v.IdVentaGeneral == idVentaGeneral);
+            if (venta != null)
+            {
+                await _database.DeleteAsync(venta);
+            }
+        }
+
         #endregion
         public async Task<List<ValoresAppVentaDetalleLocal>> ObtenerValoresAppVentaDetalleAsync()
         {
@@ -350,6 +376,51 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
             var texto = cond?.Condicion?.Trim();
             return string.IsNullOrWhiteSpace(texto) ? null : texto.ToUpperInvariant();
+        }
+
+        public async Task<int> ObtenerSiguienteVueltaDelDiaAsync()
+        {
+            var hoy = DateTime.Today;
+            var mañana = hoy.AddDays(1);
+
+            var ultima = await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.Fecha >= hoy && v.Fecha < mañana)
+                .OrderByDescending(v => v.Vuelta)
+                .FirstOrDefaultAsync();
+
+            return (ultima?.Vuelta ?? 0) + 1;
+        }
+
+        // NUEVO: siguiente vuelta para una fecha específica y ruta (reinicia por día y por ruta)
+        public async Task<int> ObtenerSiguienteVueltaPorFechaYRutaAsync(DateTime dia, Guid idRuta)
+        {
+            var inicio = dia.Date;
+            var fin = inicio.AddDays(1);
+
+            // Sólo considerar ventas ya sincronizadas para calcular la siguiente vuelta
+            var ultimaSincronizada = await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.IdRuta == idRuta
+                            && v.Sincronizado == true
+                            && v.Fecha >= inicio && v.Fecha < fin)
+                .OrderByDescending(v => v.Vuelta)
+                .FirstOrDefaultAsync();
+
+            var siguiente = (ultimaSincronizada?.Vuelta ?? 0) + 1;
+            return siguiente < 1 ? 1 : siguiente; // garantiza que arranca en 1
+        }
+
+        // Conservado: siguiente vuelta solo por fecha (si te sigue haciendo falta en otro lado)
+        public async Task<int> ObtenerSiguienteVueltaPorFechaAsync(DateTime dia)
+        {
+            var inicio = dia.Date;
+            var fin = inicio.AddDays(1);
+
+            var ultima = await _database.Table<VentaGeneralLocal>()
+                .Where(v => v.Fecha >= inicio && v.Fecha < fin)
+                .OrderByDescending(v => v.Vuelta)
+                .FirstOrDefaultAsync();
+
+            return (ultima?.Vuelta ?? 0) + 1;
         }
     }
 }

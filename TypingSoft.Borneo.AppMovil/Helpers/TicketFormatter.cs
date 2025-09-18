@@ -11,6 +11,14 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         // Ancho de línea del ticket (coincide con "--------------------------------")
         private const int TicketWidth = 32;
 
+        // Comandos ESC/POS básicos para cambiar tamaño/alineación/negrita
+        private const string ESC_ALIGN_LEFT = "\x1B\x61\x00";
+        private const string ESC_ALIGN_CENTER = "\x1B\x61\x01";
+        private const string ESC_BOLD_ON = "\x1B\x45\x01";
+        private const string ESC_BOLD_OFF = "\x1B\x45\x00";
+        private const string GS_SIZE_NORMAL = "\x1D\x21\x00"; // Tamaño normal
+        private const string GS_SIZE_2X = "\x1D\x21\x11";     // Doble ancho y doble alto
+
         [System.Obsolete("Usa FormatearTicketLocalAsync(LocalDatabaseService, ... ) para imprimir la condición real por cliente.")]
         public static string FormatearTicketLocal(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
         {
@@ -36,10 +44,23 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
+
+            // Hacer grande la condición
             if (!string.IsNullOrWhiteSpace(condicion))
-                sb.AppendLine(CenterText(condicion, TicketWidth));
+            {
+                sb.Append(ESC_ALIGN_CENTER);
+                sb.Append(ESC_BOLD_ON);
+                sb.Append(GS_SIZE_2X);
+                sb.AppendLine(condicion.ToUpperInvariant());
+                sb.Append(GS_SIZE_NORMAL);
+                sb.Append(ESC_BOLD_OFF);
+                sb.Append(ESC_ALIGN_LEFT);
+            }
             else
+            {
                 sb.AppendLine(); // mantiene el alto del encabezado
+            }
+
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine("            BORNEO              ");
@@ -48,10 +69,19 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("      RFC: APB080318M65         ");
             sb.AppendLine("    Telefono: 961 614 05 47     ");
             sb.AppendLine("--------------------------------");
-            sb.AppendLine($"         *** {tipoCopia} ***         ");
+
+            // Hacer grande *** ORIGINAL/REIMPRESION ***
+            sb.Append(ESC_ALIGN_CENTER);
+            sb.Append(ESC_BOLD_ON);
+            sb.Append(GS_SIZE_2X);
+            sb.AppendLine($"   {tipoCopia}   ");
+            sb.Append(GS_SIZE_NORMAL);
+            sb.Append(ESC_BOLD_OFF);
+            sb.Append(ESC_ALIGN_LEFT);
+
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
-            sb.AppendLine($"CLIENTE: {ticket.Cliente}");
+            sb.AppendLine($" {ticket.Cliente}");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
@@ -82,9 +112,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
-            sb.AppendLine("+------------(FIRMA)-----------+");
-            sb.AppendLine("|                              |");
-            sb.AppendLine("|                              |");
+            sb.AppendLine("+-------(NOMBRE Y FIRMA)-------+");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
