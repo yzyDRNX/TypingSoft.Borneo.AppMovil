@@ -42,7 +42,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             if (seleccionado != null)
             {
                 _productoSeleccionado = seleccionado;
-                btnSeleccionarProducto.Text = seleccionado.Producto ?? "Producto seleccionado";
+                // Mantener el texto del botón. Solo actualizar el label de preview.
                 previewProductoLabel.Text = $"Seleccionado: {seleccionado.Producto}";
                 previewProductoLabel.IsVisible = true;
             }

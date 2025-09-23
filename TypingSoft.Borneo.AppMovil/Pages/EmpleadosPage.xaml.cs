@@ -60,7 +60,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             if (seleccionado != null)
             {
                 _empleadoSeleccionado = seleccionado;
-                btnSeleccionarEmpleado.Text = seleccionado.Empleado ?? "Empleado seleccionado";
+                // Mantener el texto del botón. Solo actualizar el label de preview.
                 previewEmpleadoLabel.Text = $"Seleccionado: {seleccionado.Empleado}";
                 previewEmpleadoLabel.IsVisible = true;
             }

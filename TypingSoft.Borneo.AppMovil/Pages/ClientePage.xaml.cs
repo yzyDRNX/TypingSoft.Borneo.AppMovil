@@ -41,7 +41,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             if (seleccionado != null)
             {
                 _clienteSeleccionado = seleccionado;
-                btnSeleccionarCliente.Text = seleccionado.Cliente ?? "Cliente seleccionado";
+                // Mantener el texto del botón. Solo actualizar el label de preview.
                 previewClienteLabel.Text = $"Seleccionado: {seleccionado.Cliente}";
                 previewClienteLabel.IsVisible = true;
             }
