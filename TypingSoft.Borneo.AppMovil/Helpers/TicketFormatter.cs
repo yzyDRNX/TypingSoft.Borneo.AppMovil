@@ -27,24 +27,24 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         }
 
         // RECOMENDADO
-        public static async Task<string> FormatearTicketLocalAsync(LocalDatabaseService localDb, TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio)
+        public static async Task<string> FormatearTicketLocalAsync(
+            LocalDatabaseService localDb,
+            TicketDetalleLocal ticket,
+            List<TicketDetalleLocal> detalles,
+            int numeroImpresiones,
+            bool mostrarPrecio,
+            int folio)
         {
-            // Preferir snapshot guardado en el ticket; si no, consultar BD
             var condicion = !string.IsNullOrWhiteSpace(ticket.CondicionPago)
                 ? ticket.CondicionPago
                 : await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
 
-            // Construye el texto base del ticket
             var raw = ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, condicion);
 
-            // Obtener IdRuta y último folio local (ajusta si ya tienes el folio del ticket)
             var idRuta = await localDb.ObtenerIdRutaAsync() ?? Guid.Empty;
-            var folio = await localDb.ObtenerUltimoValorFolioVentaAsync(); // usa tu folio actual aquí si lo tienes
 
-            // Armar payload compacto para el código de barras
             var barcodePayload = BuildBarcodePayload(idRuta, folio);
 
-            // Anexar el código de barras ESC/POS (CODE128)
             var sb = new StringBuilder(raw);
             AppendBarcodeCode128(sb, barcodePayload);
 
@@ -127,6 +127,8 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
             sb.AppendLine("+-------(NOMBRE Y FIRMA)-------+");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");

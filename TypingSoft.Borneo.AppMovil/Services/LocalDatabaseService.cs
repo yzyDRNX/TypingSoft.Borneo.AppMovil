@@ -422,5 +422,30 @@ namespace TypingSoft.Borneo.AppMovil.Services
 
             return (ultima?.Vuelta ?? 0) + 1;
         }
+
+        //public async Task GuardarValorFolioVentaAsync(int nuevoFolio)
+        //{
+        //    // Supongamos que tienes una tabla single-row o por ruta.
+        //    // Ejemplo simple (ajusta a tu modelo real):
+        //    var lista = await _database.Table<ValoresAppVentaDetalleLocal>().ToListAsync();
+        //    ValoresAppVentaDetalleLocal registro;
+        //    if (lista.Count == 0)
+        //    {
+        //        registro = new ValoresAppVentaDetalleLocal
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            IdRuta = await ObtenerIdRutaAsync() ?? Guid.Empty,
+        //            ValorFolioVenta = nuevoFolio,
+        //            SerieVentaDetalle = "A"
+        //        };
+        //        await _database.InsertAsync(registro);
+        //    }
+        //    else
+        //    {
+        //        registro = lista[0];
+        //        registro.ValorFolioVenta = nuevoFolio;
+        //        await _database.UpdateAsync(registro);
+        //    }
+        //}
     }
 }
