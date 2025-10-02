@@ -34,7 +34,21 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
                 ? ticket.CondicionPago
                 : await localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(ticket.IdCliente);
 
-            return ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, condicion);
+            // Construye el texto base del ticket
+            var raw = ConstruirTicket(ticket, detalles, numeroImpresiones, mostrarPrecio, condicion);
+
+            // Obtener IdRuta y último folio local (ajusta si ya tienes el folio del ticket)
+            var idRuta = await localDb.ObtenerIdRutaAsync() ?? Guid.Empty;
+            var folio = await localDb.ObtenerUltimoValorFolioVentaAsync(); // usa tu folio actual aquí si lo tienes
+
+            // Armar payload compacto para el código de barras
+            var barcodePayload = BuildBarcodePayload(idRuta, folio);
+
+            // Anexar el código de barras ESC/POS (CODE128)
+            var sb = new StringBuilder(raw);
+            AppendBarcodeCode128(sb, barcodePayload);
+
+            return sb.ToString();
         }
 
         private static string ConstruirTicket(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, int numeroImpresiones, bool mostrarPrecio, string? condicion)
@@ -142,6 +156,44 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("--------------------------------");
 
             return sb.ToString();
+        }
+
+        // Construye un payload corto: R{8hex IdRuta}F{folio 6 dígitos}, ej: R12AB34C5F000123
+        private static string BuildBarcodePayload(Guid idRuta, int folio)
+        {
+            var ruta8 = idRuta == Guid.Empty ? "00000000" : idRuta.ToString("N").Substring(0, 8).ToUpperInvariant();
+            return $"R{ruta8}F{folio:D6}";
+        }
+
+        // Agrega a sb el bloque ESC/POS para imprimir un CODE128 con HRI
+        private static void AppendBarcodeCode128(StringBuilder sb, string data)
+        {
+            // Título (opcional)
+            sb.Append(ESC_ALIGN_CENTER);
+            sb.Append(ESC_BOLD_ON);
+            sb.AppendLine("ESCANEA PARA VINCULAR");
+            sb.Append(ESC_BOLD_OFF);
+
+            // HRI (texto legible) debajo, fuente A
+            sb.Append("\x1D\x48\x02"); // GS H n (2 = debajo)
+            sb.Append("\x1D\x66\x00"); // GS f n (0 = fuente A)
+
+            // Ancho y alto del código de barras
+            sb.Append("\x1D\x77\x03"); // GS w n (2..6) - módulo
+            sb.Append("\x1D\x68\x50"); // GS h n (altura, ~80 dots)
+
+            // CODE128 (m=73) con longitud 'n'. Prefijo {B para subset B
+            var payload = "{B" + data;
+            if (payload.Length > 255)
+                payload = payload.Substring(0, 255);
+
+            sb.Append("\x1D\x6B\x49");        // GS k m (m=73 = CODE128)
+            sb.Append((char)payload.Length);  // n = longitud
+            sb.Append(payload);               // datos
+
+            sb.AppendLine();
+            sb.AppendLine("--------------------------------");
+            sb.Append(ESC_ALIGN_LEFT);
         }
 
         private static string CenterText(string text, int width)
