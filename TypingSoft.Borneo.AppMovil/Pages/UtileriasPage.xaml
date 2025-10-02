@@ -5,6 +5,18 @@
              Background="{StaticResource PageBackgroundBrush}"
              Title="Utilerías">
 
+    <ContentPage.Resources>
+        <Style x:Key="PrimaryIconButton"
+               TargetType="Button"
+               BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="FontSize" Value="34"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="TextTransform" Value="None"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+    </ContentPage.Resources>
+
     <ScrollView>
         <VerticalStackLayout Spacing="0">
 
@@ -128,18 +140,39 @@
                         </Grid.RowDefinitions>
 
                         <VerticalStackLayout Grid.Column="0" Spacing="8">
-                            <Button Text="🖨️" Style="{StaticResource PrimaryButton}" HeightRequest="80" WidthRequest="80" HorizontalOptions="Center" Clicked="Impresion"/>
-                            <Label Text="" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Button Text="🖨️"
+                                    Style="{StaticResource PrimaryIconButton}"
+                                    HeightRequest="70"
+                                    WidthRequest="70"
+                                    Clicked="Impresion"
+                                    SemanticProperties.Description="Imprimir"/>
+                            <Label Text=""
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="8">
-                            <Button Text="+" Style="{StaticResource PrimaryButton}" HeightRequest="80" WidthRequest="80" HorizontalOptions="Center" Clicked="OtraVentaMismoCliente"/>
-                            <Label Text="" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Button Text="+"
+                                    Style="{StaticResource PrimaryIconButton}"
+                                    HeightRequest="70"
+                                    WidthRequest="70"
+                                    Clicked="OtraVentaMismoCliente"
+                                    SemanticProperties.Description="Otra venta mismo cliente"/>
+                            <Label Text=""
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="2" Spacing="8">
-                            <Button Text="▶▶" Style="{StaticResource PrimaryButton}" HeightRequest="80" WidthRequest="80" HorizontalOptions="Center" Clicked="SiguienteEntrega"/>
-                            <Label Text="" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Button Text="▶▶"
+                                    Style="{StaticResource PrimaryIconButton}"
+                                    HeightRequest="70"
+                                    WidthRequest="70"
+                                    Clicked="SiguienteEntrega"
+                                    SemanticProperties.Description="Siguiente entrega"/>
+                            <Label Text=""
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}"/>
                         </VerticalStackLayout>
                     </Grid>
 

@@ -135,6 +135,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
             sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
             sb.AppendLine("+------------------------------+");
             sb.AppendLine();
             sb.AppendLine();
@@ -161,35 +162,33 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         // Construye un payload corto: R{8hex IdRuta}F{folio 6 dígitos}, ej: R12AB34C5F000123
         private static string BuildBarcodePayload(Guid idRuta, int folio)
         {
-            var ruta8 = idRuta == Guid.Empty ? "00000000" : idRuta.ToString("N").Substring(0, 8).ToUpperInvariant();
-            return $"R{ruta8}F{folio:D6}";
+            // Acortamos a 6 hex para reducir ancho
+            var ruta6 = idRuta == Guid.Empty ? "000000" : idRuta.ToString("N").Substring(0, 6).ToUpperInvariant();
+            return $"R{ruta6}F{folio:D6}";
         }
 
-        // Agrega a sb el bloque ESC/POS para imprimir un CODE128 con HRI
         private static void AppendBarcodeCode128(StringBuilder sb, string data)
         {
-            // Título (opcional)
             sb.Append(ESC_ALIGN_CENTER);
             sb.Append(ESC_BOLD_ON);
-            sb.AppendLine("ESCANEA PARA VINCULAR");
             sb.Append(ESC_BOLD_OFF);
 
-            // HRI (texto legible) debajo, fuente A
-            sb.Append("\x1D\x48\x02"); // GS H n (2 = debajo)
-            sb.Append("\x1D\x66\x00"); // GS f n (0 = fuente A)
+            // HRI debajo
+            sb.Append("\x1D\x48\x02");
+            sb.Append("\x1D\x66\x00");
 
-            // Ancho y alto del código de barras
-            sb.Append("\x1D\x77\x03"); // GS w n (2..6) - módulo
-            sb.Append("\x1D\x68\x50"); // GS h n (altura, ~80 dots)
+            // Módulo reducido a 1 (antes 03). Altura igual.
+            sb.Append("\x1D\x77\x01");
+            sb.Append("\x1D\x68\x50");
 
-            // CODE128 (m=73) con longitud 'n'. Prefijo {B para subset B
+            // Subset B
             var payload = "{B" + data;
             if (payload.Length > 255)
-                payload = payload.Substring(0, 255);
+                payload = payload[..255];
 
-            sb.Append("\x1D\x6B\x49");        // GS k m (m=73 = CODE128)
-            sb.Append((char)payload.Length);  // n = longitud
-            sb.Append(payload);               // datos
+            sb.Append("\x1D\x6B\x49");
+            sb.Append((char)payload.Length);
+            sb.Append(payload);
 
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
