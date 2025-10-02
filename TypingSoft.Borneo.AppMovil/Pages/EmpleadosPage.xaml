@@ -50,17 +50,17 @@
                                MaxLines="3"
                                Margin="0,0,0,0"/>
 
-                        <HorizontalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="10">
                             <Button x:Name="btnSeleccionarEmpleado"
                                     Text="Seleccionar empleado"
                                     Style="{StaticResource PrimaryButton}"
                                     Clicked="OnSeleccionarEmpleadoClicked"
-                                    HorizontalOptions="StartAndExpand"/>
+                                    VerticalOptions="StartAndExpand"/>
 
                             <Button Text="AÑADIR"
                                     Style="{StaticResource PrimaryButton}"
                                     Clicked="OnAñadirEmpleadoClicked"/>
-                        </HorizontalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Frame>
@@ -79,8 +79,10 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Button Text="EMPEZAR RUTA" Style="{StaticResource PrimaryButton}" Margin="20,0,20,10" Clicked="OnEmpezarRutaClicked"/>
-            <Button Text="VOLVER AL MENÚ" Style="{StaticResource PrimaryButton}" Margin="20,0,20,20" Command="{Binding VolverMenuCommand}" />
+            <Button Text="EMPEZAR RUTA"
+                    Style="{StaticResource PrimaryButton}"
+                    Margin="20,0,20,10"
+                    Clicked="OnEmpezarRutaClicked"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -252,6 +252,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             await _localDb.InsertarValoresAppVentaDetalleAsync(detalle);
         }
 
+        // NUEVO comando para volver al menú
+        [RelayCommand]
+        public async Task VolverMenu()
+        {
+            await Navegacion.Navegar(nameof(Pages.MenuPage));
+        }
+
         partial void OnImpresoraSeleccionadaChanged(string value)
         {
             if (!string.IsNullOrEmpty(value))

@@ -58,17 +58,17 @@
                                MaxLines="3"
                                Margin="0,0,0,0"/>
 
-                        <HorizontalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="10">
                             <Button x:Name="btnSeleccionarCliente"
                                     Text="Seleccionar cliente"
                                     Style="{StaticResource PrimaryButton}"
                                     Clicked="OnSeleccionarClienteClicked"
-                                    HorizontalOptions="StartAndExpand"/>
+                                    VerticalOptions="StartAndExpand"/>
 
                             <Button Text="AÑADIR"
                                     Style="{StaticResource PrimaryButton}"
                                     Clicked="OnAñadirClienteClicked"/>
-                        </HorizontalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Frame>
