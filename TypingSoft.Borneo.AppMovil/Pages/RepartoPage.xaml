@@ -58,35 +58,34 @@
                            Style="{StaticResource SectionTitle}"
                            TextColor="{StaticResource TextPrimaryBrush}"/>
 
-                    <Grid ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <!-- Preview + botón seleccionar en filas -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label x:Name="previewProductoLabel"
+                               Text=""
+                               IsVisible="False"
+                               TextColor="{StaticResource TextPrimaryBrush}"
+                               LineBreakMode="WordWrap"
+                               Margin="0,0,0,0"/>
 
-                        <VerticalStackLayout Spacing="4">
-                            <Label x:Name="previewProductoLabel"
-                                Text=""
-                                   IsVisible="False"
-                                   TextColor="{StaticResource TextPrimaryBrush}"
-                                   Margin="0,6,0,0"/>       
-                            <Button x:Name="btnSeleccionarProducto"
-                                    Text="Seleccionar producto"
-                                    Style="{StaticResource PrimaryButton}"
-                                    Clicked="OnSeleccionarProductoClicked" />
-                        </VerticalStackLayout>
-                    </Grid>
+                        <Button x:Name="btnSeleccionarProducto"
+                                Text="Seleccionar producto"
+                                Style="{StaticResource PrimaryButton}"
+                                Clicked="OnSeleccionarProductoClicked" />
+                    </VerticalStackLayout>
 
-                    
+                    <!-- Cantidad en bloque separado -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Cantidad del producto"
+                               TextColor="{StaticResource TextPrimaryBrush}"
+                               FontAttributes="Bold"/>
+                        <Entry x:Name="cantidadEntry"
+                               Placeholder="Cantidad"
+                               Keyboard="Numeric"
+                               Style="{StaticResource Entry}"
+                               HeightRequest="56" />
+                    </VerticalStackLayout>
 
-                    <Label Text="Cantidad del producto"
-                           TextColor="{StaticResource TextPrimaryBrush}" />
-                    <Entry x:Name="cantidadEntry"
-                           Placeholder="Cantidad"
-                           Keyboard="Numeric"
-                           Style="{StaticResource Entry}"
-                           HeightRequest="56" />
+                    <!-- Botón añadir en su propia fila -->
                     <Button Text="AÑADIR"
                             Style="{StaticResource PrimaryButton}"
                             Clicked="OnAñadirProductoClicked"/>

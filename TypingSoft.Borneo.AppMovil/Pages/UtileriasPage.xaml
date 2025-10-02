@@ -117,29 +117,56 @@
                             TextColor="White"
                             Background="{StaticResource CardBackgroundBrush}"/>
 
-                    <Grid ColumnSpacing="20" RowSpacing="15">
+                    <Grid ColumnSpacing="16">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
 
-                        <VerticalStackLayout Grid.Column="0" Spacing="8">
-                            <Button Text="🖨️" Style="{StaticResource PrimaryButton}" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" Clicked="Impresion"/>
-                            <Label Text="Imprimir comprobante" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                        <!-- Botón 1 -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="6" HorizontalOptions="Fill">
+                            <Button Text="🖨️"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="80"
+                                    HorizontalOptions="Fill"
+                                    Clicked="Impresion"
+                                    FontSize="34" />
+                            <Label Text="Imprimir comprobante"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}" />
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Column="1" Spacing="8">
-                            <Button Text="+" Style="{StaticResource PrimaryButton}" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" Clicked="OtraVentaMismoCliente"/>
-                            <Label Text="Otra venta Mismo Cliente" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                        <!-- Botón 2 -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Fill">
+                            <Button Text="+"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="80"
+                                    HorizontalOptions="Fill"
+                                    Clicked="OtraVentaMismoCliente"
+                                    FontSize="34" />
+                            <Label Text="Otra venta Mismo Cliente"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}" />
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Column="2" Spacing="8">
-                            <Button Text="▶▶" Style="{StaticResource PrimaryButton}" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" Clicked="SiguienteEntrega"/>
-                            <Label Text="Siguiente Entrega" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="{StaticResource TextPrimaryBrush}"/>
+                        <!-- Botón 3 -->
+                        <VerticalStackLayout Grid.Column="2" Spacing="6" HorizontalOptions="Fill">
+                            <Button Text="▶▶"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="80"
+                                    HorizontalOptions="Fill"
+                                    Clicked="SiguienteEntrega"
+                                    FontSize="28" />
+                            <Label Text="Siguiente Entrega"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{StaticResource TextPrimaryBrush}" />
                         </VerticalStackLayout>
                     </Grid>
                 </VerticalStackLayout>

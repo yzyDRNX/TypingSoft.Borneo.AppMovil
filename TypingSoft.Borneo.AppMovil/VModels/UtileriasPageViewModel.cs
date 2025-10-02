@@ -8,8 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using TypingSoft.Borneo.AppMovil.Services;
 using TypingSoft.Borneo.AppMovil.Local;
-using System.Linq;      
-using TypingSoft.Borneo.AppMovil.Helpers;
+using System.Linq;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -63,7 +62,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         {
             _localDb = new LocalDatabaseService();
             var ventaSession = App.ServiceProvider.GetService<VentaSessionServices>();
-            VentaActual = ventaSession.TicketActual; // mantiene IdCliente (IdClienteAsociado)
+            VentaActual = ventaSession?.TicketActual; // mantiene IdCliente (IdClienteAsociado)
             FechaActual = DateTime.Now.ToString("dd-MM-yyyy");
             CargarDescripcionRuta();
             _ = CargarVentaActualYProductos();
@@ -107,7 +106,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
                 var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
                 var agrupados = detalles
-                    .GroupBy(d => new {
+                    .GroupBy(d => new
+                    {
                         Descripcion = d.Descripcion,
                         PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
                     })
@@ -167,14 +167,13 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(idClienteAsociado);
                 bool mostrarPrecio = aplicaMuestraPrecio ?? true;
 
-                // Usa el formateador ASÍNCRONO para resolver la condición real
                 string ticketTexto = await TicketFormatter.FormatearTicketLocalAsync(_localDb, ticket, detalles, _numeroImpresiones, mostrarPrecio);
                 ticketTexto += "\n\n\n\n\n";
 
                 await printer.PrintTextAsync(ticketTexto);
 
                 byte[] cutCommand = new byte[] { 0x1D, 0x56, 0x00 };
-                await printer.PrintBytesAsync(cutCommand);
+                await printer.PrintBytesAsync(cutCommand);      
 
                 _numeroImpresiones++;
             }
@@ -200,36 +199,42 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
+            // Genera el siguiente folio (manteniendo la lógica existente)
             await InsertarValoresAppVentaDetalleAsync();
 
-            // 1) Limpiar estado del cliente y la lista ANTES de navegar
+            // 1) Limpiar estado de cliente (pero conservar el empleado)
             var clienteVm = App.ServiceProvider.GetService<TypingSoft.Borneo.AppMovil.VModels.ClientePageViewModel>();
             clienteVm?.ClientesASurtir.Clear();
 
-            var clientePage = App.Current.MainPage?
-                .Navigation?
-                .NavigationStack?
-                .OfType<TypingSoft.Borneo.AppMovil.Pages.ClientePage>()
-                .LastOrDefault();
+            // 2) Reset de venta actual y productos
+            var ventaSession = App.ServiceProvider.GetService<VentaSessionServices>();
+            if (ventaSession != null)
+            {
+                ventaSession.TicketActual = null;
+                ventaSession.VentaGeneralActual = null;
+            }
 
-            clientePage?.LimpiarCamposYListas();
-
-            // 2) Reset de venta y productos
             VentaActual = null;
-            _numeroImpresiones = 1;
             Productos.Clear();
+            _numeroImpresiones = 1;
+            OnPropertyChanged(nameof(NombreCliente));
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
 
-            // 3) Limpiar settings del cliente actual
+            // 3) Limpiar settings SOLO del cliente (empleado se conserva)
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, string.Empty);
             Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, string.Empty);
 
-            await CargarVentaActualYProductos();
+            // IMPORTANTE: No volver a cargar último ticket (antes lo hacía y revertía el estado)
+            // await CargarVentaActualYProductos();  // <-- Eliminado a propósito
 
-            // 4) Ahora sí, navegar
-            await App.Current.MainPage.Navigation.PushAsync(new Pages.EmpleadosPage());
+            // 4) Navegar directamente a la página de selección de cliente
+            await App.Current.MainPage.Navigation.PushAsync(new Pages.ClientePage());
+
+            // 5) Limpiar visual del nuevo ClientePage (por si arrastra algo del binding inicial)
+            if (App.Current.MainPage.Navigation.NavigationStack.LastOrDefault() is Pages.ClientePage clientePageInstance)
+                clientePageInstance.LimpiarCamposYListas();
         }
 
         private async Task InsertarValoresAppVentaDetalleAsync()
