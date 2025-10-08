@@ -132,7 +132,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
             if (detalles == null || detalles.Count == 0)
             {
-                await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK"); 
+
                 return;
             }
 
@@ -151,9 +152,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(ticket.IdCliente);
             bool mostrarPrecio = aplicaMuestraPrecio ?? true;
 
-            // NUEVO: controlar mostrar producto (descripcion) con AplicaAPP
-            var aplicaApp = await _localDb.ObtenerAplicaAppPorClienteAsociadoAsync(ticket.IdCliente);
-            bool mostrarProducto = aplicaApp ?? true;
+            // AplicaAPP ya no controla la visibilidad en ticket: siempre mostramos producto
+            bool mostrarProducto = true;
 
             if (_numeroImpresiones == 1 || _folioImpresion == null)
             {
@@ -181,7 +181,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
 
-            // Aquí ya NO generamos folio: se genera en la primera impresión.
             _folioImpresion = null;
             _numeroImpresiones = 1;
 
@@ -193,7 +192,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
-            // No generamos folio, sólo reiniciamos estado.
             _folioImpresion = null;
             _numeroImpresiones = 1;
 

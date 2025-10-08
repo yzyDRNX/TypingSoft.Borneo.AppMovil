@@ -9,6 +9,7 @@ using TypingSoft.Borneo.AppMovil.Services;
 using TypingSoft.Borneo.AppMovil.Local;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TypingSoft.Borneo.AppMovil.VModels
 {
@@ -61,15 +62,30 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var clientesLocales = await _localDb.ObtenerClientesAsync(idRutaLocal.Value);
             if (clientesLocales != null && clientesLocales.Any())
             {
+                // Estricto: solo mostrar clientes con AplicaAPP = true. Si no hay registro o es false, no aparece.
+                var clientesAplicaciones = await _localDb.ObtenerClientesAplicacionesAsync();
+                IEnumerable<ClienteLocal> visibles = Enumerable.Empty<ClienteLocal>();
+
+                if (clientesAplicaciones != null && clientesAplicaciones.Any())
+                {
+                    var permitidos = new HashSet<Guid>(
+                        clientesAplicaciones
+                            .Where(ca => ca.AplicaAPP)
+                            .Select(ca => ca.IdClienteAsociado)
+                    );
+
+                    visibles = clientesLocales.Where(c => permitidos.Contains(c.IdClienteAsociado));
+                }
+                // Si no hay datos en ClientesAplicaciones, no mostramos ninguno (requisito estricto).
+
                 ListadoClientes = new ObservableCollection<Models.Custom.ClientesLista>(
-                    clientesLocales.Select(c => new Models.Custom.ClientesLista
+                    visibles.Select(c => new Models.Custom.ClientesLista
                     {
                         IdCliente = c.IdCliente,
                         IdClienteAsociado = c.IdClienteAsociado,
                         Cliente = c.Cliente
                     })
                 );
-                await MostrarAlertaAsync("Modo sin conexión", "Mostrando clientes locales.");
             }
             else
             {
@@ -165,7 +181,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)
         {
-            // Puedes implementar tu lógica de alerta aquí si lo deseas
+            // Implementa tu lógica de alerta si es necesario
             return Task.CompletedTask;
         }
     }
