@@ -4,9 +4,18 @@
              x:Class="TypingSoft.Borneo.AppMovil.Pages.Modals.SelectEmpleadoModal"
              Title="Seleccionar empleado"
              Background="{StaticResource PageBackgroundBrush}">
-    <VerticalStackLayout Padding="20" Spacing="12">
-        <SearchBar x:Name="searchBar" Placeholder="Buscar empleado..." TextChanged="OnSearchTextChanged"/>
-        <CollectionView x:Name="itemsView" SelectionMode="Single" SelectionChanged="OnSelectionChanged">
+    <Grid Padding="20" RowSpacing="12" RowDefinitions="Auto,*,Auto">
+        <SearchBar Grid.Row="0"
+                   x:Name="searchBar"
+                   Placeholder="Buscar empleado..."
+                   TextChanged="OnSearchTextChanged"/>
+        <CollectionView Grid.Row="1"
+                        x:Name="itemsView"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelectionChanged"
+                        ItemsLayout="VerticalList"
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
@@ -15,6 +24,9 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Text="Cancelar" Clicked="OnCancel" Style="{StaticResource PrimaryButton}" />
-    </VerticalStackLayout>
+        <Button Grid.Row="2"
+                Text="Cancelar"
+                Clicked="OnCancel"
+                Style="{StaticResource PrimaryButton}" />
+    </Grid>
 </ContentPage>

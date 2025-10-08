@@ -151,13 +151,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(ticket.IdCliente);
             bool mostrarPrecio = aplicaMuestraPrecio ?? true;
 
+            // NUEVO: controlar mostrar producto (descripcion) con AplicaAPP
+            var aplicaApp = await _localDb.ObtenerAplicaAppPorClienteAsociadoAsync(ticket.IdCliente);
+            bool mostrarProducto = aplicaApp ?? true;
+
             if (_numeroImpresiones == 1 || _folioImpresion == null)
             {
                 _folioImpresion = await ReservarSiguienteFolioAsync();
             }
 
             string ticketTexto = await TicketFormatter.FormatearTicketLocalAsync(
-                _localDb, ticket, detalles, _numeroImpresiones, mostrarPrecio, _folioImpresion.Value);
+                _localDb, ticket, detalles, _numeroImpresiones, mostrarPrecio, mostrarProducto, _folioImpresion.Value);
 
             ticketTexto += "\n\n\n\n\n";
 
