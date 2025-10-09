@@ -69,6 +69,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\logo.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="ESC-POS-USB-NET" Version="1.1.3" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.60" />
@@ -111,6 +115,16 @@
 	  <Folder Include="CustomViews\" />
 	  <Folder Include="MopUps\" />
 	  <Folder Include="CustomControls\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Include="Resources\Images\logo.jpg">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	  </MauiAsset>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Raw\logo.jpg" />
 	</ItemGroup>
 
 	<ItemGroup>

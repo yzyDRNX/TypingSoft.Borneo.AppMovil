@@ -5,7 +5,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
     [Table("PreciosPreferenciales")]
     public class PreciosPreferencialesLocal
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
         [Column("IdProducto")]
         public Guid IdProducto { get; set; }

@@ -41,16 +41,64 @@
                     <VerticalStackLayout Padding="20" Spacing="25">
                         <VerticalStackLayout x:Name="MenuButtonFrames" Spacing="18">
                             <Frame x:Name="FrameDescargarDatos" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnDescargarDatos" Text="   ⬇️                   Descargar Datos                         " Style="{StaticResource PrimaryButton}" Command="{Binding SincronizarCatalogosCommand}" HorizontalOptions="FillAndExpand"/>
+                                <Grid Padding="16,12" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36" />  <!-- ancho fijo para alinear -->
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="⬇️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Descargar Datos" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SincronizarCatalogosCommand}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
                             </Frame>
                             <Frame x:Name="FrameSincronizarDatos" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnSincronizarDatos" Text="   🔄                   Sincronizar Datos                       " Style="{StaticResource PrimaryButton}" Command="{Binding SincronizarVentasCommand}" HorizontalOptions="FillAndExpand"/>
+                                <Grid Padding="16,12" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="🔄" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Sincronizar Datos" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SincronizarVentasCommand}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
                             </Frame>
                             <Frame x:Name="FrameIniciar" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnIniciar" Text="   💰                   Iniciar                                            " Style="{StaticResource PrimaryButton}" Command="{Binding NavegarInicioCommand}" HorizontalOptions="FillAndExpand"/>
+                                <Grid Padding="16,12" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="💰" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Iniciar" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding NavegarInicioCommand}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
                             </Frame>
                             <Frame x:Name="FrameCerrarSesion" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
-                                <Button x:Name="BtnCerrarSesion" Text="   🔒                  Cerrar Sesión                               " Style="{StaticResource PrimaryButton}" Command="{Binding CerrarSesionCommand}" HorizontalOptions="FillAndExpand"/>
+                                <Grid Padding="16,12" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Text="🔒" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="Cerrar Sesión" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CerrarSesionCommand}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
                             </Frame>
                         </VerticalStackLayout>
 

@@ -17,7 +17,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         private const string GS_SIZE_NORMAL = "\x1D\x21\x00";
         private const string GS_SIZE_2X = "\x1D\x21\x11";
 
-        
+
 
         // Nuevo con mostrarProducto y folio visible
         public static async Task<string> FormatearTicketLocalAsync(
@@ -62,7 +62,6 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             string tipoCopia = numeroImpresiones <= 1 ? "ORIGINAL" : "REIMPRESION";
 
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
 
             if (!string.IsNullOrWhiteSpace(condicion))
             {
@@ -78,10 +77,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             {
                 sb.AppendLine();
             }
-
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
-            sb.AppendLine("            BORNEO              ");
             sb.AppendLine("    Agua Purificada Borneo");
             sb.AppendLine("   Tuxtla Gutierrez, Chiapas    ");
             sb.AppendLine("      RFC: APB080318M65         ");
@@ -102,55 +98,39 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             // NUEVO: Folio antes del nombre del cliente
             if (folio.HasValue)
             {
-                // Formato D6 (relleno con ceros). Ajusta si quieres más/menos dígitos.
                 sb.AppendLine($" FOLIO: {folio.Value:D6}");
             }
-
-            sb.AppendLine($" {ticket.Cliente}");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine();
-
-            // Encabezado dinámico
-            if (mostrarPrecio && mostrarProducto)
-                sb.AppendLine("CANT  PRODUCTO       IMPORTE");
-            else if (mostrarPrecio && !mostrarProducto)
-                sb.AppendLine("CANT                IMPORTE");
-            else if (!mostrarPrecio && mostrarProducto)
-                sb.AppendLine("CANT  PRODUCTO");
-            else
-                sb.AppendLine("CANT");
-
+            sb.AppendLine($"CLIENTE: {ticket.Cliente}");
+            sb.AppendLine();
+            sb.AppendLine("--------------------------------");
+            sb.AppendLine();
+            sb.AppendLine($"ATENDIO: {ticket.Empleado}");
+            sb.AppendLine();
+            sb.AppendLine("--------------------------------");
+            sb.AppendLine(mostrarPrecio ? "CANT  DESCRIPCION       IMPORTE" : "CANT  DESCRIPCION");
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
 
             decimal total = 0;
             foreach (var d in detalles)
             {
-                string cantidad = d.Cantidad.ToString().PadRight(anchoCantidad);
-                string descripcionReal = d.Descripcion ?? string.Empty;
-                if (descripcionReal.Length > anchoDescripcion)
-                    descripcionReal = descripcionReal[..anchoDescripcion];
-                else
-                    descripcionReal = descripcionReal.PadRight(anchoDescripcion);
-
-                string descripcionCol = mostrarProducto ? descripcionReal : new string(' ', anchoDescripcion);
+                string cantidad = d.Cantidad.ToString().PadRight(4);
+                string descripcion = (d.Descripcion ?? "").Length > 17
+                    ? d.Descripcion.Substring(0, 17)
+                    : (d.Descripcion ?? "").PadRight(17);
 
                 if (mostrarPrecio)
                 {
-                    string importe = d.ImporteTotal.ToString("N2").PadLeft(anchoImporte);
-                    if (mostrarProducto)
-                        sb.AppendLine($"{cantidad} {descripcionCol} {importe}");
-                    else
-                        sb.AppendLine($"{cantidad} {descripcionCol} {importe}".TrimEnd());
+                    string importe = d.ImporteTotal.ToString("N2").PadLeft(8);
+                    sb.AppendLine($"{cantidad} {descripcion} {importe}");
                     total += d.ImporteTotal;
                 }
                 else
                 {
-                    if (mostrarProducto)
-                        sb.AppendLine($"{cantidad} {descripcionCol}");
-                    else
-                        sb.AppendLine($"{cantidad}");
+                    sb.AppendLine($"{cantidad} {descripcion}");
                 }
             }
 
@@ -158,20 +138,17 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             if (mostrarPrecio)
                 sb.AppendLine($"TOTAL:                ${total:N2}".PadLeft(31));
             sb.AppendLine("+-------(NOMBRE Y FIRMA)-------+");
-            for (int i = 0; i < 11; i++)
-                sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
+            sb.AppendLine("|                              |");
             sb.AppendLine("+------------------------------+");
             sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine($"ATENDIO: {ticket.Empleado}");
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine("   AL PONER SU FIRMA ESTA DE ");
-            sb.AppendLine("   ACUERDO CON LA INFORMACION");
-            sb.AppendLine("   QUE CONTIENE LA NOTA.");
-            sb.AppendLine();
-            sb.AppendLine("   ***GRACIAS POR SU COMPRA***  ");
-            sb.AppendLine();
+            sb.AppendLine("   RECIBI GARRAFONES ");
+            sb.AppendLine("   COMPLETOS Y EN BUEN ESTADO");
             sb.AppendLine();
 
             var fechaTexto = ticket.Fecha.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
@@ -209,6 +186,8 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 
             sb.AppendLine();
             sb.AppendLine("--------------------------------");
+            sb.AppendLine();
+            sb.AppendLine("***GRACIAS POR SU PREFERENCIA***");
             sb.Append(ESC_ALIGN_LEFT);
         }
 
