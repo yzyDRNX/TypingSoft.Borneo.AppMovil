@@ -447,20 +447,5 @@ namespace TypingSoft.Borneo.AppMovil.Services
         //        await _database.UpdateAsync(registro);
         //    }
         //}
-        // RESTAURADO: indica si aplica APP (mostrar producto/descripcion) para el IdClienteAsociado dado.
-        public async Task<bool?> ObtenerAplicaAppPorClienteAsociadoAsync(Guid idClienteAsociado)
-        {
-            // Verifica que exista el cliente con ese IdClienteAsociado
-            var existeCliente = await _database.Table<ClienteLocal>()
-                                               .FirstOrDefaultAsync(c => c.IdClienteAsociado == idClienteAsociado);
-            if (existeCliente == null)
-                return null; // sin referencia válida, deja que el llamador decida el valor por defecto
-
-            // Busca el registro de aplicaciones del cliente y devuelve AplicaAPP
-            var clienteApp = await _database.Table<ClientesAplicacionesLocal>()
-                                            .FirstOrDefaultAsync(ca => ca.IdClienteAsociado == idClienteAsociado);
-            return clienteApp?.AplicaAPP;
-        }
-
     }
 }

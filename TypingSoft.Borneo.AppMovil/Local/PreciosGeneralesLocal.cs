@@ -6,6 +6,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
     public class PreciosGeneralesLocal
     {
         [PrimaryKey]
+        [AutoIncrement]
         [Column("IdProducto")]
         public Guid IdProducto { get; set; }
 

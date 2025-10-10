@@ -190,35 +190,90 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         public async Task CargarPreciosPorClienteAsync(Guid idClienteAsociado)
         {
-            // 1. Intenta obtener precios preferenciales para el cliente
+            // Intentar leer preferenciales desde SQLite
             var preciosPreferenciales = await _localDb.ObtenerPreciosPreferencialesPorClienteAsync(idClienteAsociado);
+
+            // Si no hay, intenta traerlos del backend, guardarlos y reintentar
+            if (preciosPreferenciales == null || !preciosPreferenciales.Any())
+            {
+                try
+                {
+                    MensajeProcesando = "Cargando precios preferenciales";
+                    Procesando = true;
+
+                    var (exitoso, mensaje, listaPref) = await _catalogos.ObtenerPreciosPreferenciales();
+                    if (exitoso && listaPref != null && listaPref.Any())
+                    {
+                        // Mapear a entidad local y persistir
+                        var prefLocales = listaPref.Select(p => new Local.PreciosPreferencialesLocal
+                        {
+                            IdProducto = p.IdProducto,
+                            Producto = p.Producto,
+                            // Nota: si p.Precio es decimal, ToString() mantiene la coherencia con los generales
+                            Precio = p.Precio.ToString() ,
+                            IdClienteAsociado = p.IdClienteAsociado
+                        }).ToList();
+
+                        await _localDb.GuardarPreciosPreferencialesAsync(prefLocales);
+
+                        // Reintentar leer los del cliente
+                        preciosPreferenciales = await _localDb.ObtenerPreciosPreferencialesPorClienteAsync(idClienteAsociado);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(mensaje))
+                    {
+                        await MostrarAlertaAsync("Info", mensaje);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await MostrarAlertaAsync("Excepción", ex.Message);
+                }
+                finally
+                {
+                    Procesando = false;
+                }
+            }
 
             if (preciosPreferenciales != null && preciosPreferenciales.Any())
             {
-                // Si hay precios preferenciales, los mostramos
-                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(
-                    preciosPreferenciales.Select(p => new PreciosGeneralesLocal
+                // Merge: preferencial cuando exista, general de fallback
+                var preciosGenerales = await _localDb.ObtenerPreciosGeneralesAsync();
+
+                var merged =
+                    from g in (preciosGenerales ?? Enumerable.Empty<PreciosGeneralesLocal>())
+                    join pref in preciosPreferenciales on g.IdProducto equals pref.IdProducto into gj
+                    from pref in gj.DefaultIfEmpty()
+                    select new PreciosGeneralesLocal
                     {
-                        IdProducto = p.IdProducto,
-                        Producto = p.Producto,
-                        Precio = p.Precio
-                    })
-                );
+                        IdProducto = g.IdProducto,
+                        Producto = g.Producto,
+                        Precio = pref?.Precio ?? g.Precio
+                    };
+
+                // Extras: preferenciales que no existen en generales
+                var extras =
+                    from pref in preciosPreferenciales
+                    where !(preciosGenerales ?? Enumerable.Empty<PreciosGeneralesLocal>())
+                            .Any(g => g.IdProducto == pref.IdProducto)
+                    select new PreciosGeneralesLocal
+                    {
+                        IdProducto = pref.IdProducto,
+                        Producto = pref.Producto,
+                        Precio = pref.Precio
+                    };
+
+                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(merged.Concat(extras).ToList());
             }
             else
             {
-                // Si no hay, mostramos los precios generales
+                // Fallback a generales si definitivamente no hay preferenciales
                 var preciosGenerales = await _localDb.ObtenerPreciosGeneralesAsync();
-                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(preciosGenerales);
+                ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>(preciosGenerales ?? Enumerable.Empty<PreciosGeneralesLocal>());
 
                 if (preciosGenerales == null || !preciosGenerales.Any())
-                {
                     await MostrarAlertaAsync("Sin datos", "No hay precios generales en la base local.");
-                }
                 else
-                {
                     await MostrarAlertaAsync("OK", $"Se cargaron {preciosGenerales.Count} precios generales.");
-                }
             }
         }
 

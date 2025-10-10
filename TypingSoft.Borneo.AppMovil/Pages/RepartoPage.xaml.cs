@@ -70,8 +70,9 @@ namespace TypingSoft.Borneo.AppMovil.Pages
 
             decimal importeTotal = cantidad * precioUnitario;
 
-            var idClienteAsociadoStr = Helpers.StaticSettings.ObtenerValor<string>(Helpers.StaticSettings.IdClienteAsociado);
-            if (!Guid.TryParse(idClienteAsociadoStr, out Guid idClienteAsociado))
+            // Leer SIEMPRE desde Helpers.Settings
+            var idClienteAsociado = Helpers.Settings.IdClienteAsociado;
+            if (idClienteAsociado == Guid.Empty)
             {
                 await DisplayAlert("Error", "No se pudo obtener el cliente asociado.", "OK");
                 return;
@@ -121,6 +122,14 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             {
                 await ViewModel.CargarProductosDesdeLocal();
                 await ViewModel.CargarPreciosDesdeLocal();
+
+                // Intentar cargar precios por cliente leyendo desde Helpers.Settings
+                var idClienteAsociado = Helpers.Settings.IdClienteAsociado;
+                if (idClienteAsociado != Guid.Empty)
+                {
+                    await ViewModel.CargarPreciosPorClienteAsync(idClienteAsociado);
+                }
+
                 _initialized = true;
             }
 

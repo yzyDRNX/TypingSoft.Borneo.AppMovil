@@ -124,6 +124,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
                 ClientesASurtir.Add(cliente);
 
+            // Persistir el cliente seleccionado para Reparto
             Helpers.Settings.IdClienteAsociado = cliente.IdClienteAsociado;
         }
 
@@ -161,6 +162,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             // Guarda el ticket y venta actual en el servicio
             ventaSession.TicketActual = nuevoTicket;
             ventaSession.VentaGeneralActual = nuevaVenta;
+
+            // Persistir también aquí el cliente asociado
+            Helpers.Settings.IdClienteAsociado = cliente.IdClienteAsociado;
         }
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)
