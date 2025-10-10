@@ -93,22 +93,16 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.Append(ESC_ALIGN_LEFT);
 
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
 
             // NUEVO: Folio antes del nombre del cliente
             if (folio.HasValue)
             {
                 sb.AppendLine($" FOLIO: {folio.Value:D6}");
             }
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
             sb.AppendLine($"CLIENTE: {ticket.Cliente}");
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
             sb.AppendLine($"ATENDIO: {ticket.Empleado}");
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
             sb.AppendLine(mostrarPrecio ? "CANT  DESCRIPCION       IMPORTE" : "CANT  DESCRIPCION");
             sb.AppendLine();
@@ -149,11 +143,8 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine();
             sb.AppendLine("   RECIBI GARRAFONES ");
             sb.AppendLine("   COMPLETOS Y EN BUEN ESTADO");
-            sb.AppendLine();
-
             var fechaTexto = ticket.Fecha.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             sb.AppendLine($"FECHA: {fechaTexto}");
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
 
             return sb.ToString();
@@ -184,9 +175,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.Append((char)payload.Length);
             sb.Append(payload);
 
-            sb.AppendLine();
             sb.AppendLine("--------------------------------");
-            sb.AppendLine();
             sb.AppendLine("***GRACIAS POR SU PREFERENCIA***");
             sb.Append(ESC_ALIGN_LEFT);
         }
