@@ -1,124 +1,137 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TypingSoft.Borneo.AppMovil.Pages.MenuPage"
-             Background="{StaticResource PageBackgroundBrush}"
              xmlns:VM="clr-namespace:TypingSoft.Borneo.AppMovil.VModels" 
+             x:Class="TypingSoft.Borneo.AppMovil.Pages.MenuPage"
              x:DataType="VM:MenuVM"
+             BackgroundColor="#FFFFFF"
              NavigationPage.HasNavigationBar="False">
     <AbsoluteLayout>
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <VerticalStackLayout Spacing="0">
+                <!-- Encabezado -->
                 <Grid HeightRequest="120">
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                            <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
+                            <GradientStop Color="#2F2F2F" Offset="0"/>
+                            <GradientStop Color="#2F2F2F" Offset="1"/>
                         </LinearGradientBrush>
                     </Grid.Background>
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Text="Borneo" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center" Margin="20,18,0,0"/>
-                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
-                        <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
-                        <Label Text="{Binding DescripcionRuta}" TextColor="{StaticResource TextPrimaryBrush}"/>
-                        <Label Text="📅 Fecha:" TextColor="White" FontAttributes="Bold"/>
-                        <Label Text="{Binding FechaActual}" TextColor="{StaticResource TextPrimaryBrush}"/>
+
+                    <Label Grid.Row="0" Text="Borneo"
+                           FontSize="24" FontAttributes="Bold"
+                           TextColor="#FFFFFF" VerticalOptions="Center"
+                           Margin="20,18,0,0"/>
+
+                    <HorizontalStackLayout Grid.Row="1" Spacing="15" Padding="20,0,20,10">
+                        <Label Text="📍 Unidad:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                        <Label Text="{Binding DescripcionRuta}" TextColor="#FFFFFF"/>
+                        <Label Text="📅 Fecha:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                        <Label Text="{Binding FechaActual}" TextColor="#FFFFFF"/>
                     </HorizontalStackLayout>
                 </Grid>
 
-                <Frame BackgroundColor="{StaticResource Primary}" Padding="18" HasShadow="True" CornerRadius="14" Margin="20,10,20,10">
-                    <Label Text="MENÚ PRINCIPAL" TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <!-- Título sección (card) -->
+                <Frame BackgroundColor="#F3F4F6" BorderColor="#D1D5DB"
+                       Padding="18" HasShadow="True" CornerRadius="14" Margin="20,10,20,10">
+                    <Label Text="MENÚ PRINCIPAL"
+                           TextColor="#FFFFFF"
+                           FontSize="24" FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
                 </Frame>
 
+                <!-- Cards de acciones -->
                 <VerticalStackLayout x:Name="MainMenuLayout" Spacing="0">
                     <BoxView HeightRequest="10" BackgroundColor="Transparent"/>
                     <VerticalStackLayout Padding="20" Spacing="25">
                         <VerticalStackLayout x:Name="MenuButtonFrames" Spacing="18">
-                            <Frame x:Name="FrameDescargarDatos" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+
+                            <Frame x:Name="FrameDescargarDatos" CornerRadius="14" Padding="0" HasShadow="True"
+                                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
                                 <Grid Padding="16,12" ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />  <!-- ancho fijo para alinear -->
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="36"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <Label Text="⬇️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Descargar Datos" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
-
+                                    <Label Text="⬇️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Descargar Datos" TextColor="#FFFFFF" FontAttributes="Bold" VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding SincronizarCatalogosCommand}" />
+                                        <TapGestureRecognizer Command="{Binding SincronizarCatalogosCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
                             </Frame>
-                            <Frame x:Name="FrameSincronizarDatos" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+
+                            <Frame x:Name="FrameSincronizarDatos" CornerRadius="14" Padding="0" HasShadow="True"
+                                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
                                 <Grid Padding="16,12" ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="36"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <Label Text="🔄" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Sincronizar Datos" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
-
+                                    <Label Text="🔄" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Sincronizar Datos" TextColor="#FFFFFF" FontAttributes="Bold" VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding SincronizarVentasCommand}" />
+                                        <TapGestureRecognizer Command="{Binding SincronizarVentasCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
                             </Frame>
-                            <Frame x:Name="FrameIniciar" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+
+                            <Frame x:Name="FrameIniciar" CornerRadius="14" Padding="0" HasShadow="True"
+                                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
                                 <Grid Padding="16,12" ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="36"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <Label Text="💰" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Iniciar" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
-
+                                    <Label Text="💰" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Iniciar" TextColor="#FFFFFF" FontAttributes="Bold" VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding NavegarInicioCommand}" />
+                                        <TapGestureRecognizer Command="{Binding NavegarInicioCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
                             </Frame>
-                            <Frame x:Name="FrameCerrarSesion" CornerRadius="14" Padding="0" HasShadow="True" BackgroundColor="{StaticResource Primary}">
+
+                            <Frame x:Name="FrameCerrarSesion" CornerRadius="14" Padding="0" HasShadow="True"
+                                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
                                 <Grid Padding="16,12" ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="36"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <Label Text="🔒" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="Cerrar Sesión" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" />
-
+                                    <Label Text="🔒" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="Cerrar Sesión" TextColor="#FFFFFF" FontAttributes="Bold" VerticalOptions="Center"/>
                                     <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding CerrarSesionCommand}" />
+                                        <TapGestureRecognizer Command="{Binding CerrarSesionCommand}"/>
                                     </Grid.GestureRecognizers>
                                 </Grid>
                             </Frame>
+
                         </VerticalStackLayout>
 
                         <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
 
                         <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Label Text="Versión 1.0.0" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
-                            <Label Text="© 2025 Borneo Soft" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                            <Label Text="Versión 1.0.0" TextColor="#2F2F2F"/>
+                            <Label Text="© 2025 Borneo Soft" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Overlay de carga -->
-        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="{Binding Procesando}" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="20" Padding="30" HasShadow="True" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <!-- Overlay -->
+        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="{Binding Procesando}" BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <Frame BackgroundColor="#F3F4F6" CornerRadius="20" Padding="30" HasShadow="True"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="15" HorizontalOptions="Center">
-                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="{Binding Procesando}" Color="{StaticResource Primary}" WidthRequest="40" HeightRequest="40"/>
-                    <Label x:Name="LoadingLabel" Text="{Binding MensajeProcesando}" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="{Binding Procesando}" Color="#2F2F2F" WidthRequest="40" HeightRequest="40"/>
+                    <Label x:Name="LoadingLabel" Text="{Binding MensajeProcesando}" TextColor="#2F2F2F" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>
@@ -126,16 +139,16 @@
         <!-- Modal Éxito Descarga -->
         <AbsoluteLayout IsVisible="{Binding MostrarExitoDescarga}" BackgroundColor="#80000000"
                         AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame CornerRadius="22" Padding="28" HasShadow="True" Background="{StaticResource CardBackgroundBrush}"
+            <Frame CornerRadius="22" Padding="28" HasShadow="True" BackgroundColor="#F3F4F6"
                    AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="16" WidthRequest="260">
                     <Label Text="✅" FontSize="40" HorizontalOptions="Center"/>
-                    <Label Text="Los datos se han descargado completamente." 
-                           TextColor="{StaticResource TextPrimaryBrush}" 
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
-                    <Button Text="Aceptar" Command="{Binding CerrarExitoDescargaCommand}" />
+                    <Label Text="Los datos se han descargado completamente."
+                           TextColor="#2F2F2F" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    <Button Text="Aceptar"
+                            Command="{Binding CerrarExitoDescargaCommand}"
+                            BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                            CornerRadius="12" HeightRequest="48"/>
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>
@@ -143,16 +156,16 @@
         <!-- Modal Éxito Sincronización -->
         <AbsoluteLayout IsVisible="{Binding MostrarExitoSincronizacion}" BackgroundColor="#80000000"
                         AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame CornerRadius="22" Padding="28" HasShadow="True" Background="{StaticResource CardBackgroundBrush}"
+            <Frame CornerRadius="22" Padding="28" HasShadow="True" BackgroundColor="#F3F4F6"
                    AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="16" WidthRequest="260">
                     <Label Text="✅" FontSize="40" HorizontalOptions="Center"/>
-                    <Label Text="Los datos se han sincronizado correctamente." 
-                           TextColor="{StaticResource TextPrimaryBrush}"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
-                    <Button Text="Aceptar" Command="{Binding CerrarExitoSincronizacionCommand}" />
+                    <Label Text="Los datos se han sincronizado correctamente."
+                           TextColor="#2F2F2F" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    <Button Text="Aceptar"
+                            Command="{Binding CerrarExitoSincronizacionCommand}"
+                            BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                            CornerRadius="12" HeightRequest="48"/>
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>

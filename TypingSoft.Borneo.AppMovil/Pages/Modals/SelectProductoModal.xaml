@@ -19,8 +19,8 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*,Auto">
-                        <Label Text="{Binding Producto}" TextColor="{StaticResource TextPrimaryBrush}" />
-                        <Label Grid.Column="1" Text="{Binding Precio}" TextColor="{StaticResource TextPrimaryBrush}" />
+                        <Label Text="{Binding Producto}" TextColor="#2F2F2F" />
+                        <Label Grid.Column="1" Text="{Binding Precio}" TextColor="#2F2F2F" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

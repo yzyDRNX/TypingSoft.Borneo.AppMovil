@@ -19,7 +19,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10">
-                        <Label Text="{Binding Empleado}" TextColor="{StaticResource TextPrimaryBrush}" />
+                        <Label Text="{Binding Empleado}" TextColor="#2F2F2F" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -2,83 +2,57 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.UtileriasPage"
-             Background="{StaticResource PageBackgroundBrush}"
+             BackgroundColor="#FFFFFF"
              Title="Utilerías">
-
-    <ContentPage.Resources>
-        <Style x:Key="PrimaryIconButton"
-               TargetType="Button"
-               BasedOn="{StaticResource PrimaryButton}">
-            <Setter Property="FontSize" Value="34"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="TextTransform" Value="None"/>
-            <Setter Property="HorizontalOptions" Value="Center"/>
-            <Setter Property="VerticalOptions" Value="Center"/>
-        </Style>
-    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Spacing="0">
-
+            <!-- Encabezado -->
             <Grid HeightRequest="120">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                        <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
+                        <GradientStop Color="#2F2F2F" Offset="0"/>
+                        <GradientStop Color="#2F2F2F" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0"
-                       Text="Borneo"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       VerticalOptions="Center"
-                       Margin="20,18,0,0"/>
-                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
-                    <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding DescripcionRuta}" TextColor="{StaticResource TextPrimaryBrush}"/>
-                    <Label Text="📅 Fecha:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding FechaActual}" TextColor="{StaticResource TextPrimaryBrush}"/>
+                <Label Grid.Row="0" Text="Borneo" FontSize="24" FontAttributes="Bold"
+                       TextColor="#FFFFFF" VerticalOptions="Center" Margin="20,18,0,0"/>
+                <HorizontalStackLayout Grid.Row="1" Spacing="15" Padding="20,0,20,10">
+                    <Label Text="📍 Unidad:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                    <Label Text="{Binding DescripcionRuta}" TextColor="#FFFFFF"/>
+                    <Label Text="📅 Fecha:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                    <Label Text="{Binding FechaActual}" TextColor="#FFFFFF"/>
                 </HorizontalStackLayout>
             </Grid>
 
-            <Frame Padding="15"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Margin="20,10,20,10"
-                   BackgroundColor="{StaticResource Primary}">
-                <Label Text="INFORMACIÓN DE VENTA"
-                       Style="{StaticResource SectionTitle}"
-                       TextColor="White"/>
+            <!-- Título -->
+            <Frame Padding="15" CornerRadius="12" HasShadow="True" Margin="20,10,20,10"
+                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
+                <Label Text="INFORMACIÓN DE VENTA" TextColor="#FFFFFF"
+                       FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
             </Frame>
 
-            <Frame Margin="20,0,20,15"
-                   CornerRadius="12"
-                   Background="{StaticResource CardBackgroundBrush}"
-                   BorderColor="{StaticResource CardBorderBrush}"
-                   HasShadow="True"
-                   Padding="20">
+            <!-- Detalles -->
+            <Frame Margin="20,0,20,15" CornerRadius="12"
+                   BackgroundColor="#F3F4F6" BorderColor="#FFFFFF"
+                   HasShadow="True" Padding="20">
                 <VerticalStackLayout Spacing="18">
-                    <Label Text="DETALLES DE LA VENTA"
-                           Style="{StaticResource SectionTitle}"
-                           TextColor="{StaticResource TextPrimaryBrush}"/>
+                    <Label Text="DETALLES DE LA VENTA" TextColor="#FFFFFF"
+                           FontAttributes="Bold" FontSize="22"/>
 
                     <VerticalStackLayout Spacing="8">
                         <HorizontalStackLayout Spacing="5">
-                            <Label Text="Cliente:" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
-                            <Label Text="{Binding NombreCliente}" TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Label Text="Cliente:" FontAttributes="Bold" TextColor="#FFFFFF"/>
+                            <Label Text="{Binding NombreCliente}" TextColor="#FFFFFF"/>
                         </HorizontalStackLayout>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource CardBorderBrush}" Margin="0,5"/>
+                        <BoxView HeightRequest="1" BackgroundColor="#D1D5DB" Margin="0,5"/>
 
-                        <Label Text="Productos:" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
+                        <Label Text="Productos:" FontAttributes="Bold" TextColor="#FFFFFF"/>
 
                         <CollectionView ItemsSource="{Binding Productos}" BackgroundColor="Transparent">
                             <CollectionView.ItemTemplate>
@@ -89,45 +63,40 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding Nombre}" Grid.Column="0" TextColor="{StaticResource TextPrimaryBrush}"/>
-                                        <Label Text="{Binding Cantidad, StringFormat='x {0}'}" Grid.Column="1" TextColor="{StaticResource TextPrimaryBrush}"/>
-                                        <Label Text="{Binding Precio, StringFormat='${0:F2}'}" Grid.Column="2" TextColor="{StaticResource TextPrimaryBrush}"/>
+                                        <Label Text="{Binding Nombre}" Grid.Column="0" TextColor="#FFFFFF"/>
+                                        <Label Text="{Binding Cantidad, StringFormat='x {0}'}" Grid.Column="1" TextColor="#FFFFFF"/>
+                                        <Label Text="{Binding Precio, StringFormat='${0:F2}'}" Grid.Column="2" TextColor="#FFFFFF"/>
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
 
-                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource CardBorderBrush}" Margin="0,5"/>
+                        <BoxView HeightRequest="1" BackgroundColor="#D1D5DB" Margin="0,5"/>
 
                         <HorizontalStackLayout Spacing="5" HorizontalOptions="End">
-                            <Label Text="Total:" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
-                            <Label Text="{Binding Total, StringFormat='${0:F2}'}" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Label Text="Total:" FontAttributes="Bold" TextColor="#FFFFFF"/>
+                            <Label Text="{Binding Total, StringFormat='${0:F2}'}" FontAttributes="Bold" TextColor="#FFFFFF"/>
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame x:Name="UtileriasFrame"
-                   Margin="20,0,20,15"
-                   CornerRadius="12"
-                   Background="{StaticResource CardBackgroundBrush}"
-                   BorderColor="{StaticResource CardBorderBrush}"   
-                   HasShadow="True"
-                   Padding="20">
+            <!-- Utilerías -->
+            <Frame x:Name="UtileriasFrame" Margin="20,0,20,15" CornerRadius="12"
+                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB"
+                   HasShadow="True" Padding="20">
                 <VerticalStackLayout Spacing="20">
-                    <Label Text="UTILERÍAS" Style="{StaticResource SectionTitle}" TextColor="{StaticResource TextPrimaryBrush}"/>
+                    <Label Text="UTILERÍAS" TextColor="#FFFFFF"
+                           FontAttributes="Bold" FontSize="22"/>
 
-                    <Label Text="Impresora Seleccionada: " TextColor="{StaticResource TextPrimaryBrush}"/>
+                    <Label Text="Impresora Seleccionada: " TextColor="#FFFFFF"/>
 
                     <Picker x:Name="impresorasPicker"
-                            Title="Selecciona impresora"
-                            TitleColor="#B0B0B0"
+                            Title="Selecciona impresora" TitleColor="#9CA3AF"
                             ItemsSource="{Binding ImpresorasBluetooth}"
                             SelectedItem="{Binding ImpresoraSeleccionada, Mode=TwoWay}"
-                            Margin="0,0,0,10"
-                            HeightRequest="56"
-                            TextColor="White"
-                            Background="{StaticResource CardBackgroundBrush}"/>
+                            Margin="0,0,0,10" HeightRequest="56"
+                            TextColor="#FFFFFF" BackgroundColor="#2F2F2F"/>
 
                     <Grid ColumnSpacing="20" RowSpacing="15">
                         <Grid.ColumnDefinitions>
@@ -135,50 +104,44 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
 
-                        <VerticalStackLayout Grid.Column="0" Spacing="8">
+                        <!-- Icono 1 -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="8" HorizontalOptions="Center">
                             <Button Text="🖨️"
-                                    Style="{StaticResource PrimaryIconButton}"
-                                    HeightRequest="70"
-                                    WidthRequest="70"
+                                    HeightRequest="70" WidthRequest="70"
+                                    BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                                    CornerRadius="35"
                                     Clicked="Impresion"
                                     SemanticProperties.Description="Imprimir"/>
-                            <Label Text=""
-                                   HorizontalOptions="Center"
-                                   TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Label Text="" HorizontalOptions="Center" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                        <!-- Icono 2 -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
                             <Button Text="+"
-                                    Style="{StaticResource PrimaryIconButton}"
-                                    HeightRequest="70"
-                                    WidthRequest="70"
+                                    HeightRequest="70" WidthRequest="70"
+                                    BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                                    CornerRadius="35"
                                     Clicked="OtraVentaMismoCliente"
                                     SemanticProperties.Description="Otra venta mismo cliente"/>
-                            <Label Text=""
-                                   HorizontalOptions="Center"
-                                   TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Label Text="" HorizontalOptions="Center" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Grid.Column="2" Spacing="8">
+                        <!-- Icono 3 -->
+                        <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
                             <Button Text="▶▶"
-                                    Style="{StaticResource PrimaryIconButton}"
-                                    HeightRequest="70"
-                                    WidthRequest="70"
+                                    HeightRequest="70" WidthRequest="70"
+                                    BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                                    CornerRadius="35"
                                     Clicked="SiguienteEntrega"
                                     SemanticProperties.Description="Siguiente entrega"/>
-                            <Label Text=""
-                                   HorizontalOptions="Center"
-                                   TextColor="{StaticResource TextPrimaryBrush}"/>
+                            <Label Text="" HorizontalOptions="Center" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
                     </Grid>
 
-                    <!-- NUEVO botón para volver al menú -->
                     <Button Text="VOLVER AL MENÚ"
-                            Style="{StaticResource PrimaryButton}"
+                            BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                            CornerRadius="12" HeightRequest="56"
                             Margin="0,10,0,0"
                             Command="{Binding VolverMenuCommand}"/>
                 </VerticalStackLayout>

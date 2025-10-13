@@ -2,117 +2,88 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.RepartoPage"
-             Background="{StaticResource PageBackgroundBrush}"
+             BackgroundColor="#FFFFFF"
              Title="Reparto">
-
     <ScrollView>
         <VerticalStackLayout Spacing="0">
-
+            <!-- Encabezado -->
             <Grid HeightRequest="120">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                        <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
+                        <GradientStop Color="#2F2F2F" Offset="0"/>
+                        <GradientStop Color="#2F2F2F" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0"
-                       Text="Borneo"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       VerticalOptions="Center"
-                       Margin="20,18,0,0"/>
-                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="15" Padding="20,0,20,10">
-                    <Label Text="📍 Unidad:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding DescripcionRuta}" TextColor="{StaticResource TextPrimaryBrush}"/>
-                    <Label Text="📅 Fecha:" TextColor="White" FontAttributes="Bold"/>
-                    <Label Text="{Binding FechaActual}" TextColor="{StaticResource TextPrimaryBrush}"/>
+                <Label Grid.Row="0" Text="Borneo" FontSize="24" FontAttributes="Bold"
+                       TextColor="#FFFFFF" VerticalOptions="Center" Margin="20,18,0,0"/>
+                <HorizontalStackLayout Grid.Row="1" Spacing="15" Padding="20,0,20,10">
+                    <Label Text="📍 Unidad:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                    <Label Text="{Binding DescripcionRuta}" TextColor="#FFFFFF"/>
+                    <Label Text="📅 Fecha:" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                    <Label Text="{Binding FechaActual}" TextColor="#FFFFFF"/>
                 </HorizontalStackLayout>
             </Grid>
 
-            <Frame Padding="15"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Margin="20,10,20,10"
-                   BackgroundColor="{StaticResource Primary}">
-                <Label Text="INFORMACIÓN DE VENTA"
-                       Style="{StaticResource SectionTitle}"
-                       TextColor="White"/>
+            <!-- Título -->
+            <Frame Padding="15" CornerRadius="12" HasShadow="True" Margin="20,10,20,10"
+                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
+                <Label Text="INFORMACIÓN DE VENTA" TextColor="#FFFFFF"
+                       FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
             </Frame>
 
-            <Frame Margin="20,0,20,15"
-                   CornerRadius="12"
-                   Background="{StaticResource CardBackgroundBrush}"
-                   BorderColor="{StaticResource CardBorderBrush}"
-                   HasShadow="True"
-                   Padding="20">
+            <!-- Sección productos -->
+            <Frame Margin="20,0,20,15" CornerRadius="12"
+                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB"
+                   HasShadow="True" Padding="20">
                 <VerticalStackLayout Spacing="18">
-                    <Label Text="PRODUCTOS PARA ENTREGA"
-                           Style="{StaticResource SectionTitle}"
-                           TextColor="{StaticResource TextPrimaryBrush}"/>
+                    <Label Text="PRODUCTOS PARA ENTREGA" TextColor="#FFFFFF"
+                           FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
 
-                    <!-- Preview + botón seleccionar en filas -->
                     <VerticalStackLayout Spacing="8">
-                        <Label x:Name="previewProductoLabel"
-                               Text=""
-                               IsVisible="False"
-                               TextColor="{StaticResource TextPrimaryBrush}"
-                               LineBreakMode="WordWrap"
-                               Margin="0,0,0,0"/>
-
+                        <Label x:Name="previewProductoLabel" Text="" IsVisible="False"
+                               TextColor="#FFFFFF" LineBreakMode="WordWrap"/>
                         <Button x:Name="btnSeleccionarProducto"
                                 Text="Seleccionar producto"
-                                Style="{StaticResource PrimaryButton}"
-                                Clicked="OnSeleccionarProductoClicked" />
+                                Clicked="OnSeleccionarProductoClicked"
+                                BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                                CornerRadius="12" HeightRequest="56"/>
                     </VerticalStackLayout>
 
-                    <!-- Cantidad en bloque separado -->
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Cantidad del producto"
-                               TextColor="{StaticResource TextPrimaryBrush}"
-                               FontAttributes="Bold"/>
-                        <Entry x:Name="cantidadEntry"
-                               Placeholder="Cantidad"
-                               Keyboard="Numeric"
-                               Style="{StaticResource Entry}"
-                               HeightRequest="56" />
+                        <Label Text="Cantidad del producto" TextColor="#FFFFFF" FontAttributes="Bold"/>
+                        <Entry x:Name="cantidadEntry" Placeholder="Cantidad" Keyboard="Numeric"
+                               TextColor="#FFFFFF" PlaceholderColor="#9CA3AF"
+                               BackgroundColor="Transparent" HeightRequest="56"/>
                     </VerticalStackLayout>
 
-                    <!-- Botón añadir en su propia fila -->
                     <Button Text="AÑADIR"
-                            Style="{StaticResource PrimaryButton}"
-                            Clicked="OnAñadirProductoClicked"/>
+                            Clicked="OnAñadirProductoClicked"
+                            BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                            CornerRadius="12" HeightRequest="56"/>
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Margin="20,0,20,10"
-                   CornerRadius="12"
-                   Background="{StaticResource CardBackgroundBrush}"
-                   BorderColor="{StaticResource CardBorderBrush}"
-                   HasShadow="True"
-                   Padding="0">
+            <!-- Lista -->
+            <Frame Margin="20,0,20,10" CornerRadius="12"
+                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB"
+                   HasShadow="True" Padding="0">
                 <VerticalStackLayout>
-                    <Label Text="PRODUCTOS SELECCIONADOS"
-                           Style="{StaticResource SectionTitle}"
-                           Margin="15,10"/>
-                    <BoxView HeightRequest="1" BackgroundColor="{StaticResource CardBorderBrush}"/>
-                    <StackLayout x:Name="productosSeleccionadosStack"
-                                 Spacing="8"
-                                 Margin="15,10" />
+                    <Label Text="PRODUCTOS SELECCIONADOS" TextColor="#FFFFFF"
+                           FontAttributes="Bold" FontSize="22" Margin="15,10"/>
+                    <BoxView HeightRequest="1" BackgroundColor="#D1D5DB"/>
+                    <StackLayout x:Name="productosSeleccionadosStack" Spacing="8" Margin="15,10"/>
                 </VerticalStackLayout>
             </Frame>
 
             <Button Text="CONCLUIR"
-                    Style="{StaticResource PrimaryButton}"
                     Margin="20,0,20,20"
-                    Clicked="OnConcluirClicked"/>
+                    Clicked="OnConcluirClicked"
+                    BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                    CornerRadius="12" HeightRequest="56"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -3,68 +3,91 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TypingSoft.Borneo.AppMovil.Pages.InicioPage"
              Title="Configuración de URL"
-             Background="{StaticResource PageBackgroundBrush}">
-    <AbsoluteLayout>
-        <BoxView AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <BoxView.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                    <GradientStop Color="{StaticResource Primary}" Offset="1"/>
-                </LinearGradientBrush>
-            </BoxView.Background>   
-        </BoxView>
+             BackgroundColor="#FFFFFF">
 
-        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" Padding="0,10">
+    <!-- ÚNICO hijo del ContentPage -->
+    <AbsoluteLayout>
+
+        <!-- Contenido scrollable -->
+        <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    Padding="0,10">
             <VerticalStackLayout Spacing="0" Padding="0">
-                <Grid HeightRequest="80" Margin="0,0,0,20">
-                    <BoxView Background="{StaticResource CardBackgroundBrush}"/>
-                    <BoxView Background="{StaticResource CardBackgroundBrush}" HeightRequest="30" VerticalOptions="End"/>
-                    <BoxView BackgroundColor="{StaticResource Primary}" HeightRequest="30" VerticalOptions="End"/>
-                    <Label Text="Configuración de URL" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <!-- Encabezado simple -->
+                <Grid HeightRequest="80" Margin="0,0,0,20" BackgroundColor="#FFFFFF">
+                    <BoxView BackgroundColor="#F3F4F6"/>
+                    <BoxView BackgroundColor="#F3F4F6" HeightRequest="30" VerticalOptions="End"/>
+                    <BoxView BackgroundColor="#2F2F2F" HeightRequest="4" VerticalOptions="End"/>
+                    <Label Text="Configuración de URL" FontSize="24" FontAttributes="Bold"
+                           TextColor="#2F2F2F" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Grid>
 
                 <VerticalStackLayout x:Name="MainContentStack" Spacing="30" Padding="20,0" VerticalOptions="Center">
-                    <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="20" Padding="25" HasShadow="True" HorizontalOptions="Center" Margin="0,0,0,10">
+                    <!-- Card Foto -->
+                    <Frame BackgroundColor="#F3F4F6" CornerRadius="20" Padding="25" HasShadow="True"
+                           HorizontalOptions="Center" Margin="0,0,0,10" BorderColor="#D1D5DB">
                         <VerticalStackLayout Spacing="15">
-                            <Frame BackgroundColor="{StaticResource Secondary}" CornerRadius="100" Padding="0" HeightRequest="120" WidthRequest="120" HorizontalOptions="Center" HasShadow="False">
-                                <Image Source="camera_icon.png" HeightRequest="50" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            <Frame BackgroundColor="#2F2F2F" CornerRadius="100" Padding="0"
+                                   HeightRequest="120" WidthRequest="120" HorizontalOptions="Center" HasShadow="False">
+                                <Image Source="camera_icon.png" HeightRequest="50" Aspect="AspectFit"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
-                            <Label Text="Foto" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                            <Label Text="Foto" TextColor="#FFFFFF" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Frame>
 
-                    <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="20" Padding="25" HasShadow="True">
+                    <!-- Card URL -->
+                    <Frame BackgroundColor="#F3F4F6" CornerRadius="20" Padding="25" HasShadow="True" BorderColor="#D1D5DB">
                         <VerticalStackLayout Spacing="25">
                             <HorizontalStackLayout Spacing="10">
                                 <Image Source="link_icon.png" HeightRequest="24" WidthRequest="24"/>
-                                <Label Text="Configuración de URL" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}"/>
+                                <Label Text="Configuración de URL" FontAttributes="Bold" TextColor="#FFFFFF"/>
                             </HorizontalStackLayout>
 
-                            <Frame CornerRadius="15" Padding="0" HasShadow="False" BorderColor="{StaticResource CardBorderBrush}" Background="{StaticResource CardBackgroundBrush}" HeightRequest="56">
+                            <Frame CornerRadius="15" Padding="0" HasShadow="False"
+                                   BorderColor="#D1D5DB" BackgroundColor="#F3F4F6" HeightRequest="56">
                                 <Grid ColumnDefinitions="auto,*,auto" Padding="10,0">
                                     <Image Source="url_icon.png" Grid.Column="0" HeightRequest="20" WidthRequest="20" VerticalOptions="Center" Margin="10,0"/>
-                                    <Entry x:Name="UrlEntry" Grid.Column="1" Text="{Binding UrlInput}" Style="{StaticResource Entry}" Placeholder="https://ejemplo.com" VerticalOptions="Center"/>
+                                    <Entry x:Name="UrlEntry" Grid.Column="1" Text="{Binding UrlInput}"
+                                           Placeholder="https://ejemplo.com"
+                                           TextColor="#D1D5DB" PlaceholderColor="#9CA3AF"
+                                           BackgroundColor="Transparent" VerticalOptions="Center"/>
                                     <Image Source="edit_icon.png" Grid.Column="2" HeightRequest="16" WidthRequest="16" VerticalOptions="Center" Margin="10,0"/>
                                 </Grid>
                             </Frame>
 
-                            <Button x:Name="SendUrlButton" Text="ENVIAR URL" Clicked="OnSendUrlClicked" Style="{StaticResource PrimaryButton}" CornerRadius="12" Padding="15,12" HeightRequest="56" Margin="0,10"/>
+                            <Button x:Name="SendUrlButton" Text="ENVIAR URL" Clicked="OnSendUrlClicked"
+                                    BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                                    CornerRadius="12" Padding="15,12" HeightRequest="56" Margin="0,10"/>
 
-                            <Label x:Name="StatusLabel" Text="" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center" IsVisible="False" Margin="0,5"/>
+                            <Label x:Name="StatusLabel" Text="" TextColor="#D1D5DB"
+                                   HorizontalOptions="Center" IsVisible="False" Margin="0,5"/>
                         </VerticalStackLayout>
                     </Frame>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="False" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="25" Padding="40" HasShadow="True" WidthRequest="250" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <!-- Overlay (mismo AbsoluteLayout) -->
+        <AbsoluteLayout x:Name="LoadingOverlay"
+                        IsVisible="False"
+                        BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <Frame BackgroundColor="#F3F4F6"
+                   CornerRadius="25"
+                   Padding="40"
+                   HasShadow="True"
+                   WidthRequest="250"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                   AbsoluteLayout.LayoutFlags="PositionProportional">
                 <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
-                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="{StaticResource Primary}" WidthRequest="50" HeightRequest="50"/>
-                    <Label x:Name="LoadingLabel" Text="Enviando URL..." FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
-                    <ProgressBar Progress="0.5" ProgressColor="{StaticResource Primary}" BackgroundColor="{StaticResource Secondary}" HeightRequest="6" WidthRequest="180"/>
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="#2F2F2F" WidthRequest="50" HeightRequest="50"/>
+                    <Label x:Name="LoadingLabel" Text="Enviando URL..." FontAttributes="Bold" TextColor="#2F2F2F" HorizontalOptions="Center"/>
+                    <ProgressBar Progress="0.5" ProgressColor="#2F2F2F" BackgroundColor="#E5E7EB" HeightRequest="6" WidthRequest="180"/>
                 </VerticalStackLayout>
             </Frame>
         </AbsoluteLayout>
+
     </AbsoluteLayout>
 </ContentPage>

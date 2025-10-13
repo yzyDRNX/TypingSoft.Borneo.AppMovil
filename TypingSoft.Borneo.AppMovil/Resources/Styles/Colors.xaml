@@ -19,7 +19,7 @@
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
 
     <!-- Aplicación global -->
-    <SolidColorBrush x:Key="PageBackgroundBrush" Color="#696969"/>
+    <SolidColorBrush x:Key="PageBackgroundBrush" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="CardBackgroundBrush" Color="#696969"/>
     <SolidColorBrush x:Key="CardBorderBrush"     Color="{StaticResource CardBorder}"/>
     <SolidColorBrush x:Key="TextPrimaryBrush"    Color="{StaticResource White}"/>
