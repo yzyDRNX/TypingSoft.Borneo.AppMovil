@@ -291,6 +291,37 @@ namespace TypingSoft.Borneo.AppMovil.Services
             {
                 System.Diagnostics.Debug.WriteLine($"[SYNC][CondicionesPagoCliente] No se actualiza tabla (Exitoso={exitosoCondCli}, Count={condicionesPago?.Count ?? 0}).");
             }
+
+            // NUEVO: Descargar y guardar el folio más reciente desde la API
+            await SincronizarFolioAsync();
+        }
+
+        // NUEVO: sincronizar folio (ObtenerFolio -> guardar local)
+        private async Task SincronizarFolioAsync()
+        {
+            var idRuta = await _localDb.ObtenerIdRutaAsync(); // puede ser null o Guid.Empty
+            var folioService = new ValoresAppVentaDetalleService();
+
+            var (ok, msg, data) = await folioService.ObtenerFolioAsync(idRuta);
+
+            if (ok && data != null)
+            {
+                var local = new ValoresAppVentaDetalleLocal
+                {
+                    Id = data.Id,
+                    IdRuta = data.IdRuta,
+                    ValorFolioVenta = data.ValorFolioVenta,
+                    SerieVentaDetalle = data.SerieVentaDetalle ?? "S",
+                    UltimaActualizacion = data.UltimaActualicacion
+                };
+
+                await _localDb.GuardarOActualizarFolioAsync(local);
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Folio] Folio actualizado localmente a: {local.ValorFolioVenta}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SYNC][Folio] No se pudo obtener el folio. Respuesta: {msg}");
+            }
         }
     }
 }

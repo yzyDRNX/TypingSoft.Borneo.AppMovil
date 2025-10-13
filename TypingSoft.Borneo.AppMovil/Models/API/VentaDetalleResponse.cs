@@ -22,6 +22,7 @@ namespace TypingSoft.Borneo.AppMovil.Models.API
             public Guid IdClienteAsociado { get; set; }
             public Guid IdCondicionPago { get; set; }
             public Guid IdFormaPago { get; set; }
+            public int ValorFolioVenta { get; set; }
         }
 
     }

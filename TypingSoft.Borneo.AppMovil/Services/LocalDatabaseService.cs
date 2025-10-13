@@ -29,10 +29,116 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<ValoresAppVentaDetalleLocal>().Wait();
             _database.CreateTableAsync<CondicionPagoLocal>().Wait();
         }
+
         public async Task InsertarValoresAppVentaDetalleAsync(ValoresAppVentaDetalleLocal detalle)
         {
             await _database.InsertAsync(detalle);
         }
+
+        // NUEVO: obtiene (o crea) y aumenta en 1 el folio local, lo persiste y devuelve el nuevo valor.
+        public async Task<int> ReservarIncrementarFolioAsync()
+        {
+            var idRuta = await ObtenerIdRutaAsync() ?? Guid.Empty;
+            var registro = await ObtenerFolioPorRutaAsync(idRuta);
+
+            if (registro == null)
+            {
+                registro = new ValoresAppVentaDetalleLocal
+                {
+                    Id = Guid.NewGuid(),
+                    IdRuta = idRuta,
+                    ValorFolioVenta = 0,
+                    SerieVentaDetalle = "S",
+                    UltimaActualizacion = DateTime.UtcNow
+                };
+                await _database.InsertAsync(registro);
+            }
+
+            registro.ValorFolioVenta += 1;
+            registro.UltimaActualizacion = DateTime.UtcNow;
+            await GuardarOActualizarFolioAsync(registro);
+
+            System.Diagnostics.Debug.WriteLine($"[FOLIO] Reservado/Incrementado a {registro.ValorFolioVenta} (Ruta={idRuta})");
+            return registro.ValorFolioVenta;
+        }
+
+        // NUEVO: devuelve el folio actual (sin incrementar)
+        public async Task<int> ObtenerFolioActualAsync()
+        {
+            var idRuta = await ObtenerIdRutaAsync() ?? Guid.Empty;
+            var registro = await ObtenerFolioPorRutaAsync(idRuta);
+            if (registro != null) return registro.ValorFolioVenta;
+
+            var ultimo = await _database.Table<ValoresAppVentaDetalleLocal>()
+                                        .OrderByDescending(x => x.ValorFolioVenta)
+                                        .FirstOrDefaultAsync();
+            return ultimo?.ValorFolioVenta ?? 0;
+        }
+
+        // NUEVO: asigna el folio a todos los detalles de la venta general activa (opcional, para trazabilidad local)
+        public async Task AsignarFolioALaVentaActivaAsync(int folio)
+        {
+            var venta = await ObtenerVentaGeneralActiva();
+            if (venta == null) return;
+
+            var detalles = await ObtenerDetallesPorVentaGeneralAsync(venta.IdVentaGeneral);
+            foreach (var d in detalles)
+            {
+                d.ValorFolioVenta = folio;
+                await _database.UpdateAsync(d);
+            }
+            System.Diagnostics.Debug.WriteLine($"[FOLIO] Asignado folio {folio} a {detalles.Count} detalles de la venta activa {venta.IdVentaGeneral}");
+        }
+
+        // NUEVO: asigna el folio a todos los DETALLES NUEVOS de la venta general activa (folio > 0 ya asignado no se toca)
+        public async Task<int> AsignarFolioANuevosDetallesVentaActivaAsync(int? folio = null)
+        {
+            var venta = await ObtenerVentaGeneralActiva();
+            if (venta == null) return 0;
+
+            var nuevos = await _database.Table<VentaDetalleLocal>()
+                .Where(d => d.IdVentaGeneral == venta.IdVentaGeneral && d.ValorFolioVenta <= 0)
+                .ToListAsync();
+
+            if (nuevos.Count == 0) return 0;
+
+            // Si no me pasaron folio, reservo uno (+1) y lo persisto
+            var folioAsignado = folio ?? await ReservarIncrementarFolioAsync();
+
+            foreach (var d in nuevos)
+            {
+                d.ValorFolioVenta = folioAsignado;
+                await _database.UpdateAsync(d);
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[FOLIO] Asignado folio {folioAsignado} a {nuevos.Count} detalles nuevos de la venta activa {venta.IdVentaGeneral}");
+            return folioAsignado;
+        }
+
+        // NUEVO: obtener el registro de folio por ruta (modelo single-row por ruta)
+        public async Task<ValoresAppVentaDetalleLocal?> ObtenerFolioPorRutaAsync(Guid idRuta)
+        {
+            return await _database.Table<ValoresAppVentaDetalleLocal>()
+                                  .FirstOrDefaultAsync(x => x.IdRuta == idRuta);
+        }
+
+        // NUEVO: upsert del folio por ruta (inserta si no existe, actualiza si existe)
+        public async Task GuardarOActualizarFolioAsync(ValoresAppVentaDetalleLocal folio)
+        {
+            var existente = await ObtenerFolioPorRutaAsync(folio.IdRuta);
+            if (existente == null)
+            {
+                await _database.InsertAsync(folio);
+            }
+            else
+            {
+                existente.ValorFolioVenta = folio.ValorFolioVenta;
+                existente.SerieVentaDetalle = folio.SerieVentaDetalle;
+                existente.UltimaActualizacion = folio.UltimaActualizacion;
+                await _database.UpdateAsync(existente);
+            }
+        }
+
         public async Task<bool?> ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(Guid idClienteAsociado)
         {
             var clienteApp = await _database.Table<ClientesAplicacionesLocal>()
@@ -48,10 +154,11 @@ namespace TypingSoft.Borneo.AppMovil.Services
         {
             return await _database.Table<ClientesAplicacionesLocal>().ToListAsync();
         }
-        public async Task GuardarFacturacionAsync(List<FacturacionLocal> facturacion)
+        public async Task GuardarFacturacionAsync(List<FacturacionLocal> facturacion
+)
         {
             await _database.DeleteAllAsync<FacturacionLocal>();
-            await _database.InsertAllAsync(facturacion); // <-- Usa InsertAllAsync para listas
+            await _database.InsertAllAsync(facturacion);
         }
         public async Task<List<FacturacionLocal>> ObtenerFacturacionesAsync()
         {
@@ -65,10 +172,9 @@ namespace TypingSoft.Borneo.AppMovil.Services
         public async Task<List<TicketDetalleLocal>> ObtenerDetallesPorTicketAsync(Guid idTicket)
         {
             return await _database.Table<TicketDetalleLocal>()
-                .Where(d => d.IdTicket == idTicket) // ✅ Buscar por ticket real
+                .Where(d => d.IdTicket == idTicket)
                 .ToListAsync();
         }
-
 
         public async Task InsertarTicketAsync(TicketDetalleLocal ticket)
         {
@@ -102,7 +208,6 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return ruta?.Id;
         }
 
-        // Método para obtener la ruta guardada
         public async Task<RutaLocal?> ObtenerRutaAsync()
         {
             return await _database.Table<RutaLocal>().FirstOrDefaultAsync();
@@ -423,29 +528,12 @@ namespace TypingSoft.Borneo.AppMovil.Services
             return (ultima?.Vuelta ?? 0) + 1;
         }
 
-        //public async Task GuardarValorFolioVentaAsync(int nuevoFolio)
-        //{
-        //    // Supongamos que tienes una tabla single-row o por ruta.
-        //    // Ejemplo simple (ajusta a tu modelo real):
-        //    var lista = await _database.Table<ValoresAppVentaDetalleLocal>().ToListAsync();
-        //    ValoresAppVentaDetalleLocal registro;
-        //    if (lista.Count == 0)
-        //    {
-        //        registro = new ValoresAppVentaDetalleLocal
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            IdRuta = await ObtenerIdRutaAsync() ?? Guid.Empty,
-        //            ValorFolioVenta = nuevoFolio,
-        //            SerieVentaDetalle = "A"
-        //        };
-        //        await _database.InsertAsync(registro);
-        //    }
-        //    else
-        //    {
-        //        registro = lista[0];
-        //        registro.ValorFolioVenta = nuevoFolio;
-        //        await _database.UpdateAsync(registro);
-        //    }
-        //}
+        public async Task<int> ObtenerFolioMaximoEnDetallesAsync()
+        {
+            var maxDetalle = await _database.Table<VentaDetalleLocal>()
+                                            .OrderByDescending(d => d.ValorFolioVenta)
+                                            .FirstOrDefaultAsync();
+            return maxDetalle?.ValorFolioVenta ?? 0;
+        }
     }
 }

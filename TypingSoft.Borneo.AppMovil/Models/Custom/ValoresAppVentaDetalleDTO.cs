@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TypingSoft.Borneo.AppMovil.Models.Custom
 {
@@ -12,6 +9,9 @@ namespace TypingSoft.Borneo.AppMovil.Models.Custom
         public Guid IdRuta { get; set; }
         public int ValorFolioVenta { get; set; }
         public string? SerieVentaDetalle { get; set; }
-        public DateTime UltimaActualicacion { get; set; }
+
+        // Enviar null para que el SP use SYSUTCDATETIME()
+        [JsonProperty("UltimaActualizacion", NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? UltimaActualicacion { get; set; }
     }
 }

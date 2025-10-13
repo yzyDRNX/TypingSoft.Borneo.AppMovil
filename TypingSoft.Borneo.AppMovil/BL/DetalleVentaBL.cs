@@ -39,7 +39,8 @@ namespace TypingSoft.Borneo.AppMovil.BL
                             ImporteTotal = detalle.ImporteTotal,
                             IdClienteAsociado = detalle.IdClienteAsociado,
                             IdCondicionPago = detalle.IdCondicionPago,
-                            IdFormaPago = detalle.IdFormaPago
+                            IdFormaPago = detalle.IdFormaPago,
+                            ValorFolioVenta = detalle.ValorFolioVenta
 
                         });
                     }
@@ -64,7 +65,8 @@ namespace TypingSoft.Borneo.AppMovil.BL
                 ImporteTotal = detalle.ImporteTotal,
                 IdClienteAsociado = detalle.IdClienteAsociado,
                 IdCondicionPago = detalle.IdCondicionPago,
-                IdFormaPago = detalle.IdFormaPago
+                IdFormaPago = detalle.IdFormaPago,
+                ValorFolioVenta = detalle.ValorFolioVenta
             };
             var resultado = await DetalleVentaService.CallPostAsync<Models.Custom.VentaDetalleRequestDTO, Models.API.VentaDetalleResponse>("VentaDetalle", dto);
             return (resultado.StatusCode == System.Net.HttpStatusCode.OK, "sin mensajes");

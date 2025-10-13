@@ -28,5 +28,7 @@ namespace TypingSoft.Borneo.AppMovil.Local
 
         [Column("IdFormaPago")]
         public Guid IdFormaPago { get; set; }
+        [Column("ValorFolioVenta")]
+        public int ValorFolioVenta { get; set; }
     }
 }

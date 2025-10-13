@@ -103,10 +103,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            var detalles = await ViewModel._localDb.ObtenerDetallesAsync();
-            foreach (var d in detalles)
+            // Asignar folio SOLO a los detalles nuevos (si los hay)
+            if (ViewModel?._localDb != null)
             {
-                Debug.WriteLine($"IdDetalle: {d.IdVentaDetalle}, IdVentaGeneral: {d.IdVentaGeneral}, IdProducto: {d.IdProducto}, Cantidad: {d.Cantidad}, ImporteTotal: {d.ImporteTotal}, IdClienteAsociado: {d.IdClienteAsociado}");
+                var folio = await ViewModel._localDb.AsignarFolioANuevosDetallesVentaActivaAsync();
+                Debug.WriteLine($"[FOLIO] Concluir: folio asignado (si había nuevos) => {folio}");
             }
 
             await Navigation.PushAsync(new UtileriasPage());

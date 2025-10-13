@@ -192,6 +192,18 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [RelayCommand]
         public async Task SiguienteEntregaAsync()
         {
+            // Garantiza folio por venta concluida si no se imprimió
+            var ventaActiva = await _localDb.ObtenerVentaGeneralActiva();
+            if (ventaActiva != null)
+            {
+                var dets = await _localDb.ObtenerDetallesPorVentaGeneralAsync(ventaActiva.IdVentaGeneral);
+                if (dets?.Count > 0 && dets.All(d => d.ValorFolioVenta <= 0))
+                {
+                    var folio = await _localDb.ReservarIncrementarFolioAsync();
+                    await _localDb.AsignarFolioALaVentaActivaAsync(folio);
+                }
+            }
+
             _folioImpresion = null;
             _numeroImpresiones = 1;
 
@@ -220,23 +232,26 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 clientePageInstance.LimpiarCamposYListas();
         }
 
-        // Método único que reserva folio
+        // Método único que obtiene el folio de la venta (si existe) o lo reserva (si faltó)
         private async Task<int> ReservarSiguienteFolioAsync()
         {
-            var idRuta = await _localDb.ObtenerIdRutaAsync() ?? Guid.Empty;
-            int ultimoFolio = await _localDb.ObtenerUltimoValorFolioVentaAsync();
-            int nuevoFolio = ultimoFolio + 1;
-
-            var detalle = new ValoresAppVentaDetalleLocal
+            // Si la venta activa ya tiene folio en sus detalles, úsalo
+            var venta = await _localDb.ObtenerVentaGeneralActiva();
+            if (venta != null)
             {
-                Id = Guid.NewGuid(),
-                IdRuta = idRuta,
-                ValorFolioVenta = nuevoFolio,
-                SerieVentaDetalle = "S",
-                UltimaActualizacion = DateTime.Now
-            };
-            await _localDb.InsertarValoresAppVentaDetalleAsync(detalle);
+                var detallesVenta = await _localDb.ObtenerDetallesPorVentaGeneralAsync(venta.IdVentaGeneral);
+                var folioAsignado = detallesVenta?.Where(x => x.ValorFolioVenta > 0).Select(x => x.ValorFolioVenta).DefaultIfEmpty(0).Max() ?? 0;
+                if (folioAsignado > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[FOLIO] Utilerías: usando folio ya asignado {folioAsignado}");
+                    return folioAsignado;
+                }
+            }
 
+            // Si no tiene folio asignado (edge case), resérvalo ahora y persiste
+            var nuevoFolio = await _localDb.ReservarIncrementarFolioAsync();
+            await _localDb.AsignarFolioALaVentaActivaAsync(nuevoFolio);
+            System.Diagnostics.Debug.WriteLine($"[FOLIO] Utilerías: reservado y asignado folio {nuevoFolio}");
             return nuevoFolio;
         }
 

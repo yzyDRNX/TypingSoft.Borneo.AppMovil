@@ -299,7 +299,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 ImporteTotal = importeTotal,
                 IdClienteAsociado = idClienteAsociado,
                 IdCondicionPago = Guid.NewGuid(), // Valor temporal
-                IdFormaPago = Guid.NewGuid()      // Valor temporal
+                IdFormaPago = Guid.NewGuid(),      // Valor temporal
             };
             await _localDb.InsertarVentaDetalleAsync(detalleVenta);
 
