@@ -28,19 +28,13 @@
                 </HorizontalStackLayout>
             </Grid>
 
-            <!-- Título -->
-            <Frame Padding="15" CornerRadius="12" HasShadow="True" Margin="20,10,20,10"
-                   BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
-                <Label Text="INFORMACIÓN DE VENTA" TextColor="#FFFFFF"
-                       FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
-            </Frame>
 
             <!-- Sección productos -->
             <Frame Margin="20,0,20,15" CornerRadius="12"
                    BackgroundColor="#F3F4F6" BorderColor="#D1D5DB"
                    HasShadow="True" Padding="20">
                 <VerticalStackLayout Spacing="18">
-                    <Label Text="PRODUCTOS PARA ENTREGA" TextColor="#FFFFFF"
+                    <Label Text="SELECCION DE PRODUCTOS" TextColor="#FFFFFF"
                            FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
 
                     <VerticalStackLayout Spacing="8">
@@ -79,7 +73,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Button Text="CONCLUIR"
+            <Button Text="FINALIZAR VENTA"
                     Margin="20,0,20,20"
                     Clicked="OnConcluirClicked"
                     BackgroundColor="#2F2F2F" TextColor="#FFFFFF"

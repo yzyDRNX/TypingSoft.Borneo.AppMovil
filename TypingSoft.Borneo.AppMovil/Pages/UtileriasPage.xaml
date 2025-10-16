@@ -32,7 +32,7 @@
             <!-- Título -->
             <Frame Padding="15" CornerRadius="12" HasShadow="True" Margin="20,10,20,10"
                    BackgroundColor="#F3F4F6" BorderColor="#D1D5DB">
-                <Label Text="INFORMACIÓN DE VENTA" TextColor="#FFFFFF"
+                <Label Text="INFORMACIÓN DE LA VENTA" TextColor="#FFFFFF"
                        FontAttributes="Bold" FontSize="22" HorizontalOptions="Center"/>
             </Frame>
 
