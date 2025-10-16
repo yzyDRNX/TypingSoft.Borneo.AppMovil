@@ -133,7 +133,6 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             if (detalles == null || detalles.Count == 0)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK"); 
-
                 return;
             }
 
@@ -165,11 +164,23 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
             ticketTexto += "\n\n\n\n\n";
 
-            await printer.PrintTextAsync(ticketTexto);
-            byte[] cutCommand = { 0x1D, 0x56, 0x00 };
-            await printer.PrintBytesAsync(cutCommand);
+            try
+            {
+                await printer.PrintTextAsync(ticketTexto);
 
-            _numeroImpresiones++;
+                // Comando de corte (puede fallar si la impresora no lo soporta: lo tratamos igual, sin cerrar la app)
+                byte[] cutCommand = { 0x1D, 0x56, 0x00 };
+                await printer.PrintBytesAsync(cutCommand);
+
+                _numeroImpresiones++;
+            }
+            catch (Exception ex)
+            {
+                var mensaje = $"No se pudo imprimir en '{printerName}'. " +
+                              "Verifica que la impresora esté encendida, dentro del alcance y emparejada.\n\n" +
+                              $"Detalle: {ex.Message}";
+                await App.Current.MainPage.DisplayAlert("Impresión", mensaje, "OK");
+            }
         }
 
         [RelayCommand]
