@@ -17,33 +17,20 @@ public partial class MenuPage : ContentPage
     {
         base.OnAppearing();
 
-        // Aplicar tema guardado (si existe) y actualizar icono
+        // Aplicar tema guardado (si existe)
         var savedTheme = Settings.ObtenerValor<string>("AppTheme");
         if (!string.IsNullOrWhiteSpace(savedTheme))
             ApplyTheme(savedTheme);
 
-
-        // Animaciones
-        MainMenuLayout.Opacity = 0;
-        MainMenuLayout.Scale = 0.97;
-        await MainMenuLayout.FadeTo(1, 150, Easing.CubicInOut);
-        await MainMenuLayout.ScaleTo(1, 120, Easing.CubicOut);
+        // Sin animaciones: asegurar estado final directamente
+        MainMenuLayout.Opacity = 1;
+        MainMenuLayout.Scale = 1;
 
         var frames = new[] { FrameDescargarDatos, FrameSincronizarDatos, FrameIniciar, FrameCerrarSesion };
         foreach (var frame in frames)
         {
-            frame.Opacity = 0;
-            frame.TranslationY = 30;
-        }
-        int delay = 0;
-        foreach (var frame in frames)
-        {
-            await Task.Delay(delay);
-            await Task.WhenAll(
-                frame.FadeTo(1, 350, Easing.CubicIn),
-                frame.TranslateTo(0, 0, 350, Easing.CubicOut)
-            );
-            delay += 80;
+            frame.Opacity = 1;
+            frame.TranslationY = 0;
         }
 
         // Solicitar permiso de dispositivos cercanos (Bluetooth)
