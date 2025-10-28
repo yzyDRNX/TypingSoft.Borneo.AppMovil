@@ -29,7 +29,7 @@
                         <VerticalStackLayout Spacing="15">
                             <Frame BackgroundColor="#2F2F2F" CornerRadius="100" Padding="0"
                                    HeightRequest="120" WidthRequest="120" HorizontalOptions="Center" HasShadow="False">
-                                <Image Source="camera_icon.png" HeightRequest="50" Aspect="AspectFit"
+                                <Image Source="logo.jpg" HeightRequest="50" Aspect="AspectFit"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Frame>
                             <Label Text="Foto" TextColor="#FFFFFF" HorizontalOptions="Center"/>

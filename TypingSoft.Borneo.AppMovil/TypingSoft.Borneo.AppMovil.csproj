@@ -34,21 +34,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <MauiIcon Include="Resources\AppIcon\appicon.jpg" Color="#0084cb" />
+    <MauiSplashScreen Include="Resources\Splash\logo.jpg" Color="#0084cb" BaseSize="128,128">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </MauiSplashScreen>
     <MauiImage Include="Resources\Images\*" />
-    <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+    <MauiImage Update="Resources\Images\logo.jpg" Resize="True" BaseSize="300,185" />
     <MauiFont Include="Resources\Fonts\*" />
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AndroidResource Remove="CustomControls\**" />
+    <AndroidResource Remove="CustomViews\**" />
+    <Compile Remove="CustomControls\**" />
+    <Compile Remove="CustomViews\**" />
+    <EmbeddedResource Remove="CustomControls\**" />
+    <EmbeddedResource Remove="CustomViews\**" />
+    <MauiCss Remove="CustomControls\**" />
+    <MauiCss Remove="CustomViews\**" />
+    <MauiXaml Remove="CustomControls\**" />
+    <MauiXaml Remove="CustomViews\**" />
+    <None Remove="CustomControls\**" />
+    <None Remove="CustomViews\**" />
   </ItemGroup>
 
   <ItemGroup>
     <AndroidResource Remove="Platforms\Android\Resources\xmll\networksecurityconfig.xml" />
   </ItemGroup>
 
-  <ItemGroup>
-    <MauiImage Remove="Resources\Images\logo.jpg" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -74,19 +88,13 @@
 
   <ItemGroup>
     <Folder Include="Modals\" />
-    <Folder Include="CustomViews\" />
     <Folder Include="MopUps\" />
-    <Folder Include="CustomControls\" />
   </ItemGroup>
 
   <ItemGroup>
     <MauiAsset Include="Resources\Images\logo.jpg">
       <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
     </MauiAsset>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiImage Include="Resources\Raw\logo.jpg" />
   </ItemGroup>
 
   <ItemGroup>
