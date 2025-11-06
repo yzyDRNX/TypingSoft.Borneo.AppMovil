@@ -26,11 +26,12 @@ namespace TypingSoft.Borneo.AppMovil
             if (IdRuta != null)
             {
                 mainPage = new NavigationPage(new MenuPage());
-            } else
+            }
+            else
             {
                 mainPage = new NavigationPage(new InicioPage());
             }
-          
+            // mainPage = new NavigationPage(new MenuPage());
             return new Window(mainPage);
         }
 

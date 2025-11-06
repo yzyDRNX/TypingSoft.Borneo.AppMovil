@@ -59,9 +59,13 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             get => urlController;
             set
             {
-                urlController = !value.EndsWith("/") ? value + "/" : value;
-                UrlBaseWebApi += (!UrlBaseWebApi.EndsWith("/") ? "/" : string.Empty) + value;
-                BaseAddress = new Uri(UrlBaseWebApi);
+                if (UrlBaseWebApi!=null)
+                {
+                    urlController = !value.EndsWith("/") ? value + "/" : value;
+                    UrlBaseWebApi += (!UrlBaseWebApi.EndsWith("/") ? "/" : string.Empty) + value;
+                    BaseAddress = new Uri(UrlBaseWebApi);
+                }
+               
             }
         }
 

@@ -131,17 +131,17 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var exito = false;
             try
             {
-                await _localDb.ImprimirVentasDebugAsync();
+               // await _localDb.ImprimirVentasDebugAsync();
 
                 // 1) Subir Ventas + Detalles
                 await _sincronizacionVentas.SincronizarVentasYDetallesAsync();
 
-                await _localDb.ImprimirVentasDebugAsync();
+                //await _localDb.ImprimirVentasDebugAsync();
 
                 // 2) Subir folio actualizado (manual al presionar este botón)
                 var valoresBL = new BL.ValoresAppVentaDetalleBL(_localDb, new Services.ValoresAppVentaDetalleService());
                 var okFolio = await valoresBL.ActualizarFolioServidorDesdeLocalAsync();
-                System.Diagnostics.Debug.WriteLine($"[SYNC][Folio->API] {(okFolio ? "OK" : "NO-OP")}");
+                //System.Diagnostics.Debug.WriteLine($"[SYNC][Folio->API] {(okFolio ? "OK" : "NO-OP")}");
 
                 exito = true;
                 this.MensajeProcesando = "Ventas y folio sincronizados correctamente.";

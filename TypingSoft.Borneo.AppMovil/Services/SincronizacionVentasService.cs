@@ -43,7 +43,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
                 var ventaMaster = ventasDelDia.First();
 
                 // Consolidar: mover detalles de ventas duplicadas hacia la master y eliminar las duplicadas
-                if (ventasDelDia.Count > 1)
+                if (ventasDelDia.Count > 0)
                 {
                     foreach (var ventaDuplicada in ventasDelDia.Skip(1))
                     {
