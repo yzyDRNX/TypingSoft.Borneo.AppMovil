@@ -4,6 +4,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 {
     public class Settings
     {
+        //private const string IdRuta = "IdRuta";
         private const string UrlBaseAPIKey = "UrlBaseAPI";
         private const string DefaultUrlBaseAPI = "http://192.168.100.8/API/";
 

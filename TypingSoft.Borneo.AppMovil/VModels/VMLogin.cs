@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TypingSoft.Borneo.AppMovil.Helpers;
 using TypingSoft.Borneo.AppMovil.Services;
 
 
@@ -51,6 +52,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                         Descripcion = rutaObj.Descripcion
                     };
                     await _localDb.GuardarRutaAsync(rutaLocal);
+                    StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdRuta, rutaObj.Id.ToString());
 
                     Helpers.Settings.IdRuta = rutaObj.Id;
                     Helpers.Settings.UltimaDescripcionRuta = rutaObj.Descripcion;
