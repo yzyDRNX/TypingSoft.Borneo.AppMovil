@@ -9,6 +9,7 @@ namespace TypingSoft.Borneo.AppMovil
          Theme = "@style/Maui.SplashTheme",
          MainLauncher = true,
          LaunchMode = LaunchMode.SingleTop,
+        ScreenOrientation = ScreenOrientation.Portrait,
          ConfigurationChanges =
              ConfigChanges.ScreenSize |
              ConfigChanges.Orientation |

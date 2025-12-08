@@ -104,10 +104,12 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             this.Procesando = true;
             try
             {
+                var url = Helpers.Settings.UrlBaseAPI;
                 await Navegacion.Navegar(nameof(Pages.LoginPage));
                 Helpers.Settings.UltimaDescripcionRuta = string.Empty;
                 this.MensajeProcesando = "Sesión cerrada correctamente.";
                 Helpers.StaticSettings.LimpiarSesion();
+                Helpers.Settings.UrlBaseAPI = url;
             }
             catch (Exception ex)
             {

@@ -6,45 +6,114 @@
              Background="{StaticResource PageBackgroundBrush}"
              Appearing="OnPageAppearing"
              NavigationPage.HasNavigationBar="False">
+
     <AbsoluteLayout>
+
         <ScrollView AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
             <StackLayout Spacing="0">
+
                 <Grid HeightRequest="80">
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="{StaticResource Primary}" Offset="0"/>
-                                <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
+                            <GradientStop Color="{StaticResource Secondary}" Offset="1"/>
                         </LinearGradientBrush>
                     </Grid.Background>
-                    <Label Text="Iniciar sesión" FontSize="24" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                    <Label Text="Iniciar sesión"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
                 </Grid>
 
                 <StackLayout x:Name="MainLayout" Padding="20" Spacing="25">
-                    <Frame BackgroundColor="{StaticResource Primary}" WidthRequest="80" HeightRequest="80" Padding="0" CornerRadius="40" HasShadow="True" HorizontalOptions="Center" Margin="0,10">
-                        <Label Text="👤" TextColor="White" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+                    <Frame Background="{StaticResource Primary}"
+                           WidthRequest="80"
+                           HeightRequest="80"
+                           Padding="0"
+                           CornerRadius="40"
+                           HasShadow="True"
+                           HorizontalOptions="Center"
+                           Margin="0,10">
+                        <Label Text="👤"
+                               TextColor="White"
+                               FontSize="40"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
                     </Frame>
 
-                    <Frame CornerRadius="18" Padding="0" HasShadow="True" BorderColor="{StaticResource Primary}" Background="{StaticResource CardBackgroundBrush}" HorizontalOptions="Center" Margin="0,10" WidthRequest="250">
+                    <Frame CornerRadius="18"
+                           Padding="0"
+                           HasShadow="True"
+                           BorderColor="{StaticResource Primary}"
+                           Background="{StaticResource CardBackgroundBrush}"
+                           HorizontalOptions="Center"
+                           Margin="0,10"
+                           WidthRequest="250">
+
                         <VerticalStackLayout Spacing="8" Padding="0,10">
-                            <Label Text="Escanea tu código QR" FontAttributes="Bold" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
-                            <BoxView HeightRequest="2" BackgroundColor="{StaticResource Primary}" Margin="40,0"/>
-                            <zxing:CameraBarcodeReaderView x:Name="cameraBarcodeReaderView" IsVisible="True" BarcodesDetected="BarcodesDetected" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="Black" HeightRequest="220" WidthRequest="180" Margin="0,10"/>
-                            <Label Text="Coloca el QR dentro del recuadro" TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                            <Label Text="Escanea tu código QR"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+
+                            <BoxView HeightRequest="2"
+                                     BackgroundColor="{StaticResource Primary}"
+                                     Margin="40,0"/>
+
+                            <zxing:CameraBarcodeReaderView 
+                                x:Name="cameraBarcodeReaderView"
+                                IsVisible="True"
+                                BarcodesDetected="BarcodesDetected"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                BackgroundColor="Black"
+                                HeightRequest="220"
+                                WidthRequest="180"
+                                Margin="0,10"/>
+
+                            <Label Text="Coloca el QR dentro del recuadro"
+                                   HorizontalOptions="Center"/>
                         </VerticalStackLayout>
+
                     </Frame>
 
                     <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
+
                 </StackLayout>
             </StackLayout>
         </ScrollView>
 
-        <AbsoluteLayout x:Name="LoadingOverlay" IsVisible="False" BackgroundColor="#80000000" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
-            <Frame Background="{StaticResource CardBackgroundBrush}" CornerRadius="20" Padding="30" HasShadow="True" AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <AbsoluteLayout x:Name="LoadingOverlay"
+                        IsVisible="False"
+                        BackgroundColor="#80000000"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+            <Frame Background="{StaticResource CardBackgroundBrush}"
+                   CornerRadius="20"
+                   Padding="30"
+                   HasShadow="True"
+                   AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                   AbsoluteLayout.LayoutFlags="PositionProportional">
+
                 <StackLayout Spacing="15" HorizontalOptions="Center">
-                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" Color="{StaticResource Primary}" WidthRequest="40" HeightRequest="40"/>
-                    <Label x:Name="LoadingLabel" Text="Verificando..." TextColor="{StaticResource TextPrimaryBrush}" HorizontalOptions="Center"/>
+                    <ActivityIndicator x:Name="LoadingIndicator"
+                                       IsRunning="False"
+                                       Color="{StaticResource Primary}"
+                                       WidthRequest="40"
+                                       HeightRequest="40"/>
+
+                    <Label x:Name="LoadingLabel"
+                           Text="Verificando..."
+                          
+                           HorizontalOptions="Center"/>
                 </StackLayout>
+
             </Frame>
         </AbsoluteLayout>
+
     </AbsoluteLayout>
 </ContentPage>

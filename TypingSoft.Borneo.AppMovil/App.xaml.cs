@@ -29,7 +29,15 @@ namespace TypingSoft.Borneo.AppMovil
             }
             else
             {
-                mainPage = new NavigationPage(new InicioPage());
+                if (Helpers.Settings.UrlBaseAPI != null)
+                {
+                    mainPage = new NavigationPage(new LoginPage());
+                }
+                else
+                {
+                    mainPage = new NavigationPage(new InicioPage());
+                }
+                
             }
             // mainPage = new NavigationPage(new MenuPage());
             return new Window(mainPage);
