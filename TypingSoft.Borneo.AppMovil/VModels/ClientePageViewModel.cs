@@ -121,8 +121,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             await _localDb.InsertarTicketAsync(nuevoTicket);
 
             // 4) Actualizar UI
-            if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
-                ClientesASurtir.Add(cliente);
+            //if (!ClientesASurtir.Any(c => c.IdCliente == cliente.IdCliente))
+            //    ClientesASurtir.Add(cliente);
 
             // Persistir el cliente seleccionado para Reparto
             Helpers.Settings.IdClienteAsociado = cliente.IdClienteAsociado;

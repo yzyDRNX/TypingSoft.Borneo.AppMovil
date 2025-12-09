@@ -56,40 +56,10 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 await DisplayAlert("Aviso", "Por favor seleccione un cliente.", "OK");
                 return;
             }
+            ViewModel.ClientesASurtir.Clear();  
+            ViewModel.ClientesASurtir.Add(clienteSeleccionado);
 
-            if (ViewModel.ClientesASurtir.Count > 0)
-            {
-                await DisplayAlert("Aviso", "Solo puede añadir un cliente a la vez.", "OK");
-                return;
-            }
-
-            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, clienteSeleccionado.IdCliente.ToString());
-            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, clienteSeleccionado.IdClienteAsociado.ToString());
-            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, clienteSeleccionado.Cliente ?? string.Empty);
-
-            var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
-            var condicionTexto = await ViewModel._localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(clienteSeleccionado.IdClienteAsociado);
-
-            var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
-            {
-                Id = Guid.NewGuid(),
-                IdCliente = clienteSeleccionado.IdClienteAsociado,
-                Cliente = clienteSeleccionado.Cliente ?? string.Empty,
-                Empleado = empleadoSeleccionado,
-                Fecha = DateTime.Now,
-                CondicionPago = condicionTexto
-            };
-            await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
-
-            await ViewModel.Surtir(clienteSeleccionado);
-
-            // Reset tras añadir
-            _clienteSeleccionado = null;
-            btnSeleccionarCliente.Text = "Seleccionar cliente";
-            previewClienteLabel.IsVisible = false;
-            previewClienteLabel.Text = string.Empty;
         }
-
         public async void OnRepartoClicked(object sender, EventArgs e)
         {
             if (ViewModel?.ClientesASurtir.Count == 0)
@@ -97,6 +67,37 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 await DisplayAlert("Advertencia", "Debe seleccionar al menos un cliente antes de continuar.", "OK");
                 return;
             }
+
+
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdCliente, _clienteSeleccionado.IdCliente.ToString());
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.IdClienteAsociado, _clienteSeleccionado.IdClienteAsociado.ToString());
+            Helpers.StaticSettings.FijarConfiguracion(Helpers.StaticSettings.Cliente, _clienteSeleccionado.Cliente ?? string.Empty);
+
+            //var empleadoSeleccionado = Helpers.StaticSettings.ObtenerValor<string>("Empleado");
+            //var condicionTexto = await ViewModel._localDb.ObtenerCondicionPagoTextoPorClienteAsociadoAsync(_clienteSeleccionado.IdClienteAsociado);
+
+            //var nuevoTicket = new TypingSoft.Borneo.AppMovil.Local.TicketDetalleLocal
+            //{
+            //    Id = Guid.NewGuid(),
+            //    IdCliente = _clienteSeleccionado.IdClienteAsociado,
+            //    Cliente = _clienteSeleccionado.Cliente ?? string.Empty,
+            //    Empleado = empleadoSeleccionado,
+            //    Fecha = DateTime.Now,
+            //    CondicionPago = condicionTexto
+            //};
+            //await ViewModel._localDb.InsertarTicketAsync(nuevoTicket);
+
+            await ViewModel.Surtir(_clienteSeleccionado);
+
+            // Reset tras añadir
+            _clienteSeleccionado = null;
+            btnSeleccionarCliente.Text = "Seleccionar cliente";
+            previewClienteLabel.IsVisible = false;
+            previewClienteLabel.Text = string.Empty;
+
+
+
+
             await Navigation.PushAsync(new RepartoPage());
         }
 
