@@ -52,7 +52,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         [ObservableProperty]
         ObservableCollection<PreciosGeneralesLocal> listadoPreciosLocal = new();
 
-        public async Task CargarProductosDesdeLocal()
+        public async Task CargarProductosDesdeLocal(Guid IdClienteAsociado)
         {
             var productosLocales = await _localDb.ObtenerProductosAsync();
 
