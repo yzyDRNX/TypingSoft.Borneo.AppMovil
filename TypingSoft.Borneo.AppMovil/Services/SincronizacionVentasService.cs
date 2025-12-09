@@ -98,6 +98,21 @@ namespace TypingSoft.Borneo.AppMovil.Services
                     await _localDb.ActualizarVentaAsync(ventaMaster);
                 }
 
+               var consultaVentaEmpleadoDiario= await _localDb.ObtenerEmpleadoVentaDiaria();
+                if (consultaVentaEmpleadoDiario.Count()>0)
+                {
+                    foreach (var item in consultaVentaEmpleadoDiario)
+                    {
+                     var resultado=   await _ventaGeneralBL.GuardarEmpleadoVentaDiaria(item);
+                        if (resultado.Exitoso)
+                        {
+
+                        }
+                    }
+                   
+
+                }
+
                 await _localDb.ImprimirVentasDebugAsync();
             }
         }

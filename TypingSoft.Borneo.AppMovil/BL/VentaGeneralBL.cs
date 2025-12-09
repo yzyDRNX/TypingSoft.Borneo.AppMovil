@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Borneo.Local;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,14 @@ namespace TypingSoft.Borneo.AppMovil.BL
                 IdStatusVenta = venta.IdStatusVenta
             };
             var resultado = await this.VentaGeneralService.CallPostAsync<Models.Custom.VentaGeneralRequestDTO, Models.API.VentaGeneralResponse>("VentaGeneral", dto);
+            return (resultado.StatusCode == System.Net.HttpStatusCode.OK, "sin mensajes");
+        }
+
+
+        public async Task<(bool Exitoso, string Mensaje)> GuardarEmpleadoVentaDiaria(VentaDiariaEmpleadoLocal venta)
+        {
+          
+            var resultado = await this.VentaGeneralService.CallPostAsync<VentaDiariaEmpleadoLocal, Models.API.ResponseBase>("VentaDiariaEmpleado", venta);
             return (resultado.StatusCode == System.Net.HttpStatusCode.OK, "sin mensajes");
         }
     }

@@ -1,6 +1,9 @@
-﻿using SQLite;
+﻿using Borneo.Local;
+using SQLite;
+using System.Collections.Generic;
 using System.IO;
 using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Models.Custom;
 using ZXing.Datamatrix;
 
 namespace TypingSoft.Borneo.AppMovil.Services
@@ -28,6 +31,7 @@ namespace TypingSoft.Borneo.AppMovil.Services
             _database.CreateTableAsync<ClientesAplicacionesLocal>().Wait();
             _database.CreateTableAsync<ValoresAppVentaDetalleLocal>().Wait();
             _database.CreateTableAsync<CondicionPagoLocal>().Wait();
+            _database.CreateTableAsync<VentaDiariaEmpleadoLocal>().Wait();
         }
 
         public async Task InsertarValoresAppVentaDetalleAsync(ValoresAppVentaDetalleLocal detalle)
@@ -534,6 +538,56 @@ namespace TypingSoft.Borneo.AppMovil.Services
                                             .OrderByDescending(d => d.ValorFolioVenta)
                                             .FirstOrDefaultAsync();
             return maxDetalle?.ValorFolioVenta ?? 0;
+        }
+
+
+        public async Task GuardarEmpleadoVentaDiaria(VentaDiariaEmpleadoLocal emp)
+        {
+            try
+            {
+                await _database.InsertAsync(emp);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al insertar Venta Diaria Empleado: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<VentaDiariaEmpleadoLocal>> ObtenerEmpleadoVentaDiaria()
+        {
+            List<VentaDiariaEmpleadoLocal> Lista = new List<VentaDiariaEmpleadoLocal>();
+            try
+            {
+                Lista = await _database.Table<VentaDiariaEmpleadoLocal>().Where(e => e.Sincronizado == false).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al insertar Venta Diaria Empleado: {ex.Message}");
+                throw;
+            }
+
+            return Lista;
+        }
+
+        public async Task ActualizarEmpleadoVentaDiaria(VentaDiariaEmpleadoLocal emp)
+        {
+            try
+            {
+                var consulta= await _database.Table<VentaDiariaEmpleadoLocal>().Where(e => e.IdVentaGeneral == emp.IdVentaGeneral && e.IdEmpleado==emp.IdEmpleado).FirstOrDefaultAsync();
+                if (consulta!=null)
+                {
+                    consulta.Sincronizado = true;
+                    await _database.UpdateAsync(consulta);
+                }
+                
+            
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al insertar Venta Diaria Empleado: {ex.Message}");
+                throw;
+            }
         }
     }
 }

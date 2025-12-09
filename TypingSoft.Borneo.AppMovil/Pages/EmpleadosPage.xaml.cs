@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Borneo.Local;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +136,19 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 IdStatusVenta = Guid.NewGuid(),
                 Sincronizado = false
             };
+            foreach (var item in _empleadosSeleccionados)
+            {
+                await ViewModel._localDb.GuardarEmpleadoVentaDiaria(
+                    new     VentaDiariaEmpleadoLocal()
+                    {
+                        Id = Guid.NewGuid(),
+                        IdVentaGeneral = nuevaVenta.IdVentaGeneral,
+                        IdEmpleado = item
+                    }   
+                    );
 
+            }
+          
             await ViewModel._localDb.GuardarVentaAsync(nuevaVenta);
             await ViewModel._localDb.ImprimirVentasDebugAsync();
 
