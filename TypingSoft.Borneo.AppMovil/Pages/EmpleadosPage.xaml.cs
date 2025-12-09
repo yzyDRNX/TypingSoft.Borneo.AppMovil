@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TypingSoft.Borneo.AppMovil.Local;
+using TypingSoft.Borneo.AppMovil.Models.Custom;
 using TypingSoft.Borneo.AppMovil.Pages.Modals;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
@@ -86,11 +87,39 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             _empleadosSeleccionados.Add(empleadoSeleccionado.Id);
             emptyStateLabel.IsVisible = false;
 
-            var item = new HorizontalStackLayout { Spacing = 10, Padding = new Thickness(0, 5) };
-            item.Children.Add(new Label { Text = "•", TextColor = Color.FromArgb("#FFFFFF"), FontSize = 16, VerticalOptions = LayoutOptions.Center });
-            item.Children.Add(new Label { Text = empleadoSeleccionado.Empleado, TextColor = Color.FromArgb("#FFFFFF"), FontSize = 16, VerticalOptions = LayoutOptions.Center });
+            var item = new HorizontalStackLayout
+            {
+                Spacing = 10,
+                Padding = new Thickness(0, 5),
+                BindingContext = empleadoSeleccionado // Guardas todo el objeto
+            };
+
+            // PUNTO
+            item.Children.Add(new Label
+            {
+                Text = "•",
+                TextColor = Color.FromArgb("#FFFFFF"),
+                FontSize = 16,
+                VerticalOptions = LayoutOptions.Center
+            });
+
+            // NOMBRE
+            item.Children.Add(new Label
+            {
+                Text = empleadoSeleccionado.Empleado,
+                TextColor = Color.FromArgb("#FFFFFF"),
+                FontSize = 16,
+                VerticalOptions = LayoutOptions.Center
+            });
+
+            // TAP GESTURE POR ITEM
+            var tap = new TapGestureRecognizer();
+            tap.Tapped += OnEmpleadoItemTapped;
+
+            item.GestureRecognizers.Add(tap);
+
+            // AGREGAS EL ITEM
             empleadosSeleccionadosStack.Children.Add(item);
-            // ...
 
 
 
@@ -104,6 +133,19 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             previewEmpleadoLabel.IsVisible = false;
             previewEmpleadoLabel.Text = string.Empty;
         }
+        private void OnEmpleadoItemTapped(object sender, TappedEventArgs e)
+        {
+            var layout = sender as HorizontalStackLayout;
+
+            var empleado = (EmpleadosLista)layout.BindingContext;
+
+            // 1. ELIMINAR EL ITEM DEL STACK
+            empleadosSeleccionadosStack.Children.Remove(layout);
+
+            // 2. ELIMINAR EL GUID DE LA LISTA
+            _empleadosSeleccionados.Remove(empleado.Id);
+        }
+
 
         private async void OnEmpezarRutaClicked(object sender, EventArgs e)
         {
@@ -170,6 +212,24 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 await ViewModel.CargarEmpleadosDesdeLocal();
                 _initialized = true;
             }
+        }
+
+        private void OnEmpleadoStackTapped(object sender, TappedEventArgs e)
+        {
+            var x = sender as StackLayout;
+           
+            //var layout = (HorizontalStackLayout)sender;
+            var empleado = (Guid)x.BindingContext; // 👈 recuperas el objeto completo
+
+            
+
+            //_empleadosSeleccionados.Add(empleadoSeleccionado.Id);
+            //emptyStateLabel.IsVisible = false;
+
+            //var item = new HorizontalStackLayout { Spacing = 10, Padding = new Thickness(0, 5) };
+            //item.Children.Add(new Label { Text = "•", TextColor = Color.FromArgb("#FFFFFF"), FontSize = 16, VerticalOptions = LayoutOptions.Center });
+            //item.Children.Add(new Label { Text = empleadoSeleccionado.Empleado, TextColor = Color.FromArgb("#FFFFFF"), FontSize = 16, VerticalOptions = LayoutOptions.Center });
+            //empleadosSeleccionadosStack.Children.Add(item);
         }
     }
 }

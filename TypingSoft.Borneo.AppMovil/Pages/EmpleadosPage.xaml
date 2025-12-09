@@ -70,7 +70,11 @@
                     <Label Text="VENEDOR(ES) SELECCIONADO(S)" TextColor="#FFFFFF"
                            FontAttributes="Bold" FontSize="22" Margin="15,10"/>
                     <BoxView HeightRequest="1" BackgroundColor="#D1D5DB"/>
-                    <StackLayout x:Name="empleadosSeleccionadosStack" Spacing="10" Padding="15,10"/>
+                    <StackLayout x:Name="empleadosSeleccionadosStack" Spacing="10" Padding="15,10"  >
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEmpleadoStackTapped"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
                     <Label Text="No hay empleados seleccionados" x:Name="emptyStateLabel"
                            TextColor="#FFFFFF" HorizontalOptions="Center" Margin="0,20" IsVisible="True"/>
                 </VerticalStackLayout>
