@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.Typingsoft.Borneo" android:versionCode="41" android:versionName="1.0.41">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.Typingsoft.Borneo" android:versionCode="42" android:versionName="1.0.42">
 	<application android:allowBackup="false" android:icon="@mipmap/appicon" android:supportsRtl="true" android:usesCleartextTraffic="true" android:label="Borneo"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />

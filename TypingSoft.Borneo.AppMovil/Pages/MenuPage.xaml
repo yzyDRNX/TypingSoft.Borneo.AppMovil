@@ -117,7 +117,7 @@
                         <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
 
                         <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
-                            <Label Text="Versión 1.0.41" TextColor="#2F2F2F"/>
+                            <Label Text="Versión 1.0.42" TextColor="#2F2F2F"/>
                             <Label Text="© 2025 Borneo Soft" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
