@@ -23,11 +23,17 @@ public partial class UtileriasPage : ContentPage
             _ = vm.CargarVentaActualYProductos();
     }
 
-    private async void Impresion(object sender, EventArgs e)
+    private async void ImpresionOriginal(object sender, EventArgs e)
     {
         var vm = BindingContext as UtileriasPageViewModel;
         if (vm != null)
-            await vm.ImprimirAsync();
+            await vm.ImprimirOriginalAsync();
+    }
+    private async void ImpresionCopia(object sender, EventArgs e)
+    {
+        var vm = BindingContext as UtileriasPageViewModel;
+        if (vm != null)
+            await vm.ImprimirCopiaAsync();
     }
 
     private async void OtraVentaMismoCliente(object sender, EventArgs e)

@@ -117,7 +117,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
         }
 
         [RelayCommand]
-        public async Task ImprimirAsync()
+        public async Task ImprimirOriginalAsync()
         {
             if (string.IsNullOrEmpty(ImpresoraSeleccionada))
             {
@@ -136,17 +136,36 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
 
-            await ImprimirTicketAsync(VentaActual, detalles, ImpresoraSeleccionada);
+            await ImprimirTicketOriginalAsync(VentaActual, detalles, ImpresoraSeleccionada);
         }
 
-        private async Task ImprimirTicketAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        [RelayCommand]
+        public async Task ImprimirCopiaAsync()
         {
-            var printer = new RawBtPrinter(printerName);
-            if (_numeroImpresiones > 2)
+            if (string.IsNullOrEmpty(ImpresoraSeleccionada))
             {
-                await App.Current.MainPage.DisplayAlert("Advertencia", "No se puede reimprimir", "OK");
+                await App.Current.MainPage.DisplayAlert("Aviso", "Selecciona una impresora Bluetooth.", "OK");
                 return;
             }
+            if (VentaActual == null)
+            {
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay venta/ticket actual.", "OK");
+                return;
+            }
+            var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
+            if (detalles == null || detalles.Count == 0)
+            {
+                await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
+                return;
+            }
+
+            await ImprimirTicketCopiaAsync(VentaActual, detalles, ImpresoraSeleccionada);
+        }
+
+        private async Task ImprimirTicketOriginalAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        {
+            var printer = new RawBtPrinter(printerName);
+       
 
             var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(ticket.IdCliente);
             bool mostrarPrecio = aplicaMuestraPrecio ?? true;
@@ -154,13 +173,45 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             // AplicaAPP ya no controla la visibilidad en ticket: siempre mostramos producto
             bool mostrarProducto = true;
 
-            if (_numeroImpresiones == 1 || _folioImpresion == null)
-            {
+           
                 _folioImpresion = await ReservarSiguienteFolioAsync();
+          
+            string ticketTexto = await TicketFormatter.FormatearTicketLocalAsync(
+                _localDb, ticket, detalles, 1, mostrarPrecio, mostrarProducto, _folioImpresion.Value);
+
+            ticketTexto += "\n\n\n\n\n";
+
+            try
+            {
+                await printer.PrintTextAsync(ticketTexto);
+
+                // Comando de corte (puede fallar si la impresora no lo soporta: lo tratamos igual, sin cerrar la app)
+                byte[] cutCommand = { 0x1D, 0x56, 0x00 };
+                await printer.PrintBytesAsync(cutCommand);
+
             }
+            catch (Exception ex)
+            {
+                var mensaje = $"No se pudo imprimir en '{printerName}'. " +
+                              "Verifica que la impresora esté encendida, dentro del alcance y emparejada.\n\n" +
+                              $"Detalle: {ex.Message}";
+                await App.Current.MainPage.DisplayAlert("Impresión", mensaje, "OK");
+            }
+        }
+        private async Task ImprimirTicketCopiaAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        {
+            var printer = new RawBtPrinter(printerName);
+          
+
+            var aplicaMuestraPrecio = await _localDb.ObtenerAplicaMuestraPrecioPorClienteAsociadoAsync(ticket.IdCliente);
+            bool mostrarPrecio = aplicaMuestraPrecio ?? true;
+
+            // AplicaAPP ya no controla la visibilidad en ticket: siempre mostramos producto
+            bool mostrarProducto = true;
+
 
             string ticketTexto = await TicketFormatter.FormatearTicketLocalAsync(
-                _localDb, ticket, detalles, _numeroImpresiones, mostrarPrecio, mostrarProducto, _folioImpresion.Value);
+                _localDb, ticket, detalles, 2, mostrarPrecio, mostrarProducto, _folioImpresion.Value);
 
             ticketTexto += "\n\n\n\n\n";
 

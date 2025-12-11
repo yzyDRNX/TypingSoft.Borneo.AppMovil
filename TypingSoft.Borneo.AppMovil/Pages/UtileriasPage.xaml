@@ -103,6 +103,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- Icono 1 -->
@@ -111,13 +112,22 @@
                                     HeightRequest="70" WidthRequest="70"
                                     BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
                                     CornerRadius="35"
-                                    Clicked="Impresion"
-                                    SemanticProperties.Description="Imprimir"/>
+                                    Clicked="ImpresionOriginal"
+                                    SemanticProperties.Description="Imprimir original"/>
+                            <Label Text="" HorizontalOptions="Center" TextColor="#2F2F2F"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
+                            <Button Text="🖨️"
+                     HeightRequest="70" WidthRequest="70"
+                     BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+                     CornerRadius="35"
+                     Clicked="ImpresionCopia"
+                     SemanticProperties.Description="Imprimir copia"/>
                             <Label Text="" HorizontalOptions="Center" TextColor="#2F2F2F"/>
                         </VerticalStackLayout>
 
                         <!-- Icono 2 -->
-                        <VerticalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center">
+                        <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
                             <Button Text="+"
                                     HeightRequest="70" WidthRequest="70"
                                     BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
@@ -128,7 +138,7 @@
                         </VerticalStackLayout>
 
                         <!-- Icono 3 -->
-                        <VerticalStackLayout Grid.Column="2" Spacing="8" HorizontalOptions="Center">
+                        <VerticalStackLayout Grid.Column="3" Spacing="8" HorizontalOptions="Center">
                             <Button Text="▶▶"
                                     HeightRequest="70" WidthRequest="70"
                                     BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
