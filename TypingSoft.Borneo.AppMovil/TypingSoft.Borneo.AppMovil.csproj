@@ -79,6 +79,9 @@
   <ItemGroup>
     <MauiXaml Update="Pages\ClientePage.xaml"><Generator>MSBuild:Compile</Generator></MauiXaml>
     <MauiXaml Update="Pages\EmpleadosPage.xaml"><Generator>MSBuild:Compile</Generator></MauiXaml>
+    <MauiXaml Update="Pages\Modals\SelectFormasPagosModal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Pages\UrlPage.xaml"><Generator>MSBuild:Compile</Generator></MauiXaml>
     <MauiXaml Update="Pages\LoginPage.xaml"><Generator>MSBuild:Compile</Generator></MauiXaml>
     <MauiXaml Update="Pages\MenuPage.xaml"><Generator>MSBuild:Compile</Generator></MauiXaml>

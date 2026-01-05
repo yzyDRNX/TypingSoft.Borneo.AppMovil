@@ -53,7 +53,14 @@
                                TextColor="#FFFFFF" PlaceholderColor="#9CA3AF"
                                BackgroundColor="Transparent" HeightRequest="56"/>
                     </VerticalStackLayout>
-
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Selecciona Forma de Pago" TextColor="#FFFFFF" FontAttributes="Bold" x:Name="previewFormaPagoLabel" IsVisible="False"/>
+                        <Button x:Name="btnSeleccionarFormaPago"
+        Text="Selecciona Forma de Pago"
+        Clicked="OnSeleccionarFormaPagoClicked"
+        BackgroundColor="#2F2F2F" TextColor="#FFFFFF"
+        CornerRadius="12" HeightRequest="56"/>
+                    </VerticalStackLayout>
                     <Button Text="AÑADIR"
                             Clicked="OnAñadirProductoClicked"
                             BackgroundColor="#2F2F2F" TextColor="#FFFFFF"

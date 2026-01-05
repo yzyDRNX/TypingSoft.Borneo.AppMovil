@@ -51,6 +51,10 @@ namespace TypingSoft.Borneo.AppMovil.VModels
 
         [ObservableProperty]
         ObservableCollection<PreciosGeneralesLocal> listadoPreciosLocal = new();
+        [ObservableProperty]
+        Guid idClienteAsociado;
+        [ObservableProperty]
+        Guid idCondicionPago;
 
         public async Task CargarProductosDesdeLocal()
         {
@@ -73,111 +77,160 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-        public async Task ObtenerFormasAsync()
+        public async Task CargarFormasPagosLocal()
         {
-            try
+            string tipoPAgo = "";
+
+            this.IdClienteAsociado= Helpers.Settings.IdClienteAsociado;
+            var conidcionespagosLocales = await _localDb.ObtenerCondicionesPagoPorClienteAsync(IdClienteAsociado);
+            if (conidcionespagosLocales!=null)
             {
-                MensajeProcesando = "Cargando Formas";
-                Procesando = true;
-
-                var (exitoso, mensaje, listaFormas) = await _catalogos.ObtenerFormas();
-
-                if (exitoso)
+                this.idCondicionPago = conidcionespagosLocales.FirstOrDefault().IdCondicionPago;
+                //4AA68BBA - 5C73 - 4028 - A4CB - B3101A4906FA->contado
+                if (conidcionespagosLocales.FirstOrDefault().IdCondicionPago.ToString().ToUpper()== "4AA68BBA-5C73-4028-A4CB-B3101A4906FA")
                 {
-                    ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>(listaFormas);
+                    tipoPAgo = "VALES,EFECTIVO";
+                }
+            }
+            var formasLocales = await _localDb.ObtenerFormasAsync();
+            if (formasLocales != null && formasLocales.Any())
+            {
+                if (tipoPAgo.Length > 0)
+                {
+                    ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>(
+                       formasLocales.Select(f => new Models.Custom.FormasLista
+                       {
+                           IdForma = f.IdForma,
+                           Forma = f.Forma
+                       }).Where(f => f.Forma == tipoPAgo.Split(",")[0] || f.Forma == tipoPAgo.Split(",")[1])
+                   );
 
-                    // Convierte y guarda en SQLite
-                    var formasLocales = listaFormas
-                        .Select(f => new Local.FormaLocal { IdForma = f.IdForma, Forma = f.Forma })
-                        .ToList();
-
-                    await _localDb.GuardarFormasAsync(formasLocales);
                 }
                 else
                 {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener formas.");
+                    ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>(
+                       formasLocales.Select(f => new Models.Custom.FormasLista
+                       {
+                           IdForma = f.IdForma,
+                           Forma = f.Forma
+                       }).Where(f=>f.Forma== "POR DEFINIR")
+                   );
                 }
+                   
+                await MostrarAlertaAsync("Modo sin conexión", "Mostrando formas de pago locales.");
             }
-            catch (Exception ex)
+            else
             {
-                await MostrarAlertaAsync("Excepción", ex.Message);
+                await MostrarAlertaAsync("Advertencia", "No hay formas de pago locales disponibles.");
             }
-            finally
-            {
-                Procesando = false;
-            }
+
         }
 
-        public async Task ObtenerCondicionesAsync()
-        {
-            try
-            {
-                MensajeProcesando = "Cargando Condiciones";
-                Procesando = true;
+        //public async Task ObtenerFormasAsync()
+        //{
+        //    try
+        //    {
+        //        MensajeProcesando = "Cargando Formas";
+        //        Procesando = true;
 
-                var (exitoso, mensaje, listaCondiciones) = await _catalogos.ObtenerCondiciones();
+        //        var (exitoso, mensaje, listaFormas) = await _catalogos.ObtenerFormas();
 
-                if (exitoso)
-                {
-                    ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>(listaCondiciones);
+        //        if (exitoso)
+        //        {
+        //            ListadoFormas = new ObservableCollection<Models.Custom.FormasLista>(listaFormas);
 
-                    // Convierte y guarda en SQLite
-                    var condicionesLocales = listaCondiciones
-                        .Select(c => new Local.CondicionLocal { IdCondicion = c.IdCondicion, Condicion = c.Condicion })
-                        .ToList();
+        //            // Convierte y guarda en SQLite
+        //            var formasLocales = listaFormas
+        //                .Select(f => new Local.FormaLocal { IdForma = f.IdForma, Forma = f.Forma })
+        //                .ToList();
 
-                    await _localDb.GuardarCondicionesAsync(condicionesLocales);
-                }
-                else
-                {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener formas.");
-                }
-            }
-            catch (Exception ex)
-            {
-                await MostrarAlertaAsync("Excepción", ex.Message);
-            }
-            finally
-            {
-                Procesando = false;
-            }
-        }
+        //            await _localDb.GuardarFormasAsync(formasLocales);
+        //        }
+        //        else
+        //        {
+        //            await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener formas.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await MostrarAlertaAsync("Excepción", ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        Procesando = false;
+        //    }
+        //}
 
-        public async Task ObtenerPreciosGeneralesAsync()
-        {
-            try
-            {
-                MensajeProcesando = "Cargando Precios";
-                Procesando = true;
+        //public async Task ObtenerCondicionesAsync()
+        //{
+        //    try
+        //    {
+        //        MensajeProcesando = "Cargando Condiciones";
+        //        Procesando = true;
 
-                Guid IdClienteAsociado = Helpers.Settings.IdClienteAsociado;
-                var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPreciosGenerales();
+        //        var (exitoso, mensaje, listaCondiciones) = await _catalogos.ObtenerCondiciones();
 
-                if (exitoso)
-                {
-                    ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>(listaPrecios);
+        //        if (exitoso)
+        //        {
+        //            ListadoCondiciones = new ObservableCollection<Models.Custom.CondicionesLista>(listaCondiciones);
 
-                    // Convierte y guarda en SQLite
-                    var preciosLocales = listaPrecios
-                        .Select(p => new Local.PreciosGeneralesLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
-                        .ToList();
+        //            // Convierte y guarda en SQLite
+        //            var condicionesLocales = listaCondiciones
+        //                .Select(c => new Local.CondicionLocal { IdCondicion = c.IdCondicion, Condicion = c.Condicion })
+        //                .ToList();
 
-                    await _localDb.GuardarPreciosGeneralesAsync(preciosLocales);
-                }
-                else
-                {
-                    await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener Precios.");
-                }
-            }
-            catch (Exception ex)
-            {
-                await MostrarAlertaAsync("Excepción", ex.Message);
-            }
-            finally
-            {
-                Procesando = false;
-            }
-        }
+        //            await _localDb.GuardarCondicionesAsync(condicionesLocales);
+        //        }
+        //        else
+        //        {
+        //            await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener formas.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await MostrarAlertaAsync("Excepción", ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        Procesando = false;
+        //    }
+        //}
+
+        //public async Task ObtenerPreciosGeneralesAsync()
+        //{
+        //    try
+        //    {
+        //        MensajeProcesando = "Cargando Precios";
+        //        Procesando = true;
+
+        //        Guid IdClienteAsociado = Helpers.Settings.IdClienteAsociado;
+        //        var (exitoso, mensaje, listaPrecios) = await _catalogos.ObtenerPreciosGenerales();
+
+        //        if (exitoso)
+        //        {
+        //            ListadoPreciosGenerales = new ObservableCollection<Models.Custom.PreciosGeneralesLista>(listaPrecios);
+
+        //            // Convierte y guarda en SQLite
+        //            var preciosLocales = listaPrecios
+        //                .Select(p => new Local.PreciosGeneralesLocal { IdProducto = p.IdProducto, Producto = p.Producto, Precio = p.Precio.ToString() })
+        //                .ToList();
+
+        //            await _localDb.GuardarPreciosGeneralesAsync(preciosLocales);
+        //        }
+        //        else
+        //        {
+        //            await MostrarAlertaAsync("Error", mensaje ?? "Fallo al obtener Precios.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await MostrarAlertaAsync("Excepción", ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        Procesando = false;
+        //    }
+        //}
 
         public async Task CargarPreciosDesdeLocal()
         {
@@ -281,7 +334,9 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             PreciosGeneralesLocal producto, 
             int cantidad, 
             decimal importeTotal, 
-            Guid idClienteAsociado)
+            Guid idClienteAsociado,
+            Guid formaPago,
+            Guid condicionPago)
         {
             if (producto == null || producto.IdProducto == Guid.Empty || cantidad <= 0)
                 return;
@@ -298,8 +353,8 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 Cantidad = cantidad,
                 ImporteTotal = importeTotal,
                 IdClienteAsociado = idClienteAsociado,
-                IdCondicionPago = Guid.NewGuid(), // Valor temporal
-                IdFormaPago = Guid.NewGuid(),      // Valor temporal
+                IdCondicionPago = condicionPago, // Valor temporal
+                IdFormaPago = formaPago,      // Valor temporal
             };
             await _localDb.InsertarVentaDetalleAsync(detalleVenta);
 
@@ -335,6 +390,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
             System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");
             DescripcionRuta = descripcion;
+           await CargarFormasPagosLocal();
         }
 
         private Task MostrarAlertaAsync(string titulo, string mensaje)

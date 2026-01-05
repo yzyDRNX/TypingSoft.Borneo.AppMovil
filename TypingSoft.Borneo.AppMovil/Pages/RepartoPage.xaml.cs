@@ -4,6 +4,8 @@ using System.Linq;
 using System.Diagnostics;
 using TypingSoft.Borneo.AppMovil.Local;
 using TypingSoft.Borneo.AppMovil.Pages.Modals;
+using Borneo.Pages.Modals;
+using TypingSoft.Borneo.AppMovil.Models.Custom;
 
 namespace TypingSoft.Borneo.AppMovil.Pages
 {
@@ -11,7 +13,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
     {
         VModels.RepartoVM ViewModel;
         private PreciosGeneralesLocal? _productoSeleccionado;
-
+        private FormasLista? _formasListaSeleccionado;
         private bool _suspendRefresh;
         private bool _initialized;
 
@@ -61,6 +63,11 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 await DisplayAlert("Aviso", "Seleccione un producto y una cantidad válida.", "OK");
                 return;
             }
+            if (_formasListaSeleccionado == null )
+            {
+                await DisplayAlert("Aviso", "Seleccione una forma de pago válida.", "OK");
+                return;
+            }
 
             if (!decimal.TryParse(productoSeleccionado.Precio, out decimal precioUnitario))
             {
@@ -78,7 +85,7 @@ namespace TypingSoft.Borneo.AppMovil.Pages
                 return;
             }
 
-            await ViewModel.AgregarDetalleVentaAsync(productoSeleccionado, cantidad, importeTotal, idClienteAsociado);
+            await ViewModel.AgregarDetalleVentaAsync(productoSeleccionado, cantidad, importeTotal, idClienteAsociado, _formasListaSeleccionado.IdForma,ViewModel.IdCondicionPago);
 
             productosSeleccionadosStack.Children.Add(new Label
             {
@@ -146,6 +153,29 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             previewProductoLabel.Text = string.Empty;
             cantidadEntry.Text = string.Empty;
             productosSeleccionadosStack.Children.Clear();
+        }
+
+        private async void OnSeleccionarFormaPagoClicked(object sender, EventArgs e)
+        {
+            if (ViewModel?.ListadoFormas == null || ViewModel.ListadoFormas.Count == 0)
+            {
+                await DisplayAlert("Aviso", "No hay Formas de pagos cargados.", "OK");
+                return;
+            }
+
+            _suspendRefresh = true;
+            var modal = new SelectFormasPagosModal(ViewModel.ListadoFormas);
+            var seleccionado = await modal.ShowAsync(Navigation);
+
+            if (seleccionado != null)
+            {
+                _formasListaSeleccionado = seleccionado;
+                // Mantener el texto del botón. Solo actualizar el label de preview.
+                previewFormaPagoLabel.Text = $"Seleccionado: {seleccionado.Forma}";
+                previewFormaPagoLabel.IsVisible = true;
+            }
+            _suspendRefresh = false;
+
         }
     }
 }
