@@ -25,7 +25,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             ListadoPreciosPreferenciales = new ObservableCollection<Models.Custom.PreciosPreferencialesLista>();
             ListadoPreciosLocal = new ObservableCollection<PreciosGeneralesLocal>();
             fechaActual = DateTime.Now.ToString("dd-MM-yyyy");
-            _ = CargarDescripcionRutaAsync();
+       
         }
 
         [ObservableProperty]
@@ -385,7 +385,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             // Si no hay ticket cabecera, puedes crear uno nuevo si tu lógica lo requiere
         }
 
-        private async Task CargarDescripcionRutaAsync()
+        public async Task CargarDescripcionRutaAsync()
         {
             var descripcion = await _localDb.ObtenerDescripcionRutaAsync() ?? "Sin descripción";
             System.Diagnostics.Debug.WriteLine($"DescripcionRuta cargada: {descripcion}");

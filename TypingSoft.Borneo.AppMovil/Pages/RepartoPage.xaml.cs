@@ -24,6 +24,8 @@ namespace TypingSoft.Borneo.AppMovil.Pages
             if (ViewModel != null)
                 this.BindingContext = ViewModel;
 
+            ViewModel.CargarDescripcionRutaAsync();
+
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 

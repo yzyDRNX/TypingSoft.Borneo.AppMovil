@@ -76,6 +76,7 @@ public partial class LoginPage : ContentPage
                     // Si no fue autenticado, la cámara sigue activa para reintentar
                     await DisplayAlert("Error", "No se pudo autenticar la ruta. Intenta escanear nuevamente.", "OK");
                     cameraBarcodeReaderView.IsVisible = true;
+                    cameraBarcodeReaderView.BarcodesDetected += BarcodesDetected;
                 }
             });
 
