@@ -98,7 +98,11 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             }
         }
 
-
+        [RelayCommand]
+        public async Task CambiarURL()
+        {
+            await Navegacion.Navegar(nameof(Pages.InicioPage));
+        }
         #endregion 
 
 

@@ -53,31 +53,34 @@
                            HorizontalOptions="Center"
                            Margin="0,10"
                            WidthRequest="250">
+                        <StackLayout>
+                            <VerticalStackLayout Spacing="8" Padding="0,10">
+                                <Label Text="Escanea tu código QR"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"/>
 
-                        <VerticalStackLayout Spacing="8" Padding="0,10">
-                            <Label Text="Escanea tu código QR"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center"/>
+                                <BoxView HeightRequest="2"
+              BackgroundColor="{StaticResource Primary}"
+              Margin="40,0"/>
 
-                            <BoxView HeightRequest="2"
-                                     BackgroundColor="{StaticResource Primary}"
-                                     Margin="40,0"/>
+                                <zxing:CameraBarcodeReaderView 
+         x:Name="cameraBarcodeReaderView"
+         IsVisible="True"
+         BarcodesDetected="BarcodesDetected"
+         HorizontalOptions="Center"
+         VerticalOptions="Center"
+         BackgroundColor="Black"
+         HeightRequest="220"
+         WidthRequest="180"
+         Margin="0,10"/>
 
-                            <zxing:CameraBarcodeReaderView 
-                                x:Name="cameraBarcodeReaderView"
-                                IsVisible="True"
-                                BarcodesDetected="BarcodesDetected"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                BackgroundColor="Black"
-                                HeightRequest="220"
-                                WidthRequest="180"
-                                Margin="0,10"/>
+                                <Label Text="Coloca el QR dentro del recuadro"
+            HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
 
-                            <Label Text="Coloca el QR dentro del recuadro"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-
+                            <Button Text="Cambiar URL" Command="{Binding CambiarURLCommand}"/>
+                        </StackLayout>
+                       
                     </Frame>
 
                     <BoxView HeightRequest="30" BackgroundColor="Transparent"/>
