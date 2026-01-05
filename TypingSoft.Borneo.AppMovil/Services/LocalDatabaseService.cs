@@ -173,11 +173,15 @@ namespace TypingSoft.Borneo.AppMovil.Services
             await _database.InsertAsync(detalle);
         }
 
-        public async Task<List<TicketDetalleLocal>> ObtenerDetallesPorTicketAsync(Guid idTicket)
+        public async Task<TicketDetalleLocal> ObtenerDetallesPorTicketAsync(Guid idTicket)
         {
+            //return await _database.Table<TicketDetalleLocal>()
+            //    .Where(d => d.IdTicket == idTicket)
+            //    .ToListAsync();
             return await _database.Table<TicketDetalleLocal>()
-                .Where(d => d.IdTicket == idTicket)
-                .ToListAsync();
+    .Where(d => d.IdTicket == idTicket)
+    .OrderByDescending(d => d.Fecha)
+    .FirstOrDefaultAsync();
         }
 
         public async Task InsertarTicketAsync(TicketDetalleLocal ticket)

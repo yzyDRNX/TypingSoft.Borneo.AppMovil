@@ -27,7 +27,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
         public static async Task<string> FormatearTicketLocalAsync(
             LocalDatabaseService localDb,
             TicketDetalleLocal ticket,
-            List<TicketDetalleLocal> detalles,
+            TicketDetalleLocal detalles,
             int numeroImpresiones,
             bool mostrarPrecio,
             bool mostrarProducto,
@@ -52,7 +52,7 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
 
         private static string ConstruirTicket(
             TicketDetalleLocal ticket,
-            List<TicketDetalleLocal> detalles,
+            TicketDetalleLocal detalles,
             int numeroImpresiones,
             bool mostrarPrecio,
             bool mostrarProducto,
@@ -149,24 +149,24 @@ namespace TypingSoft.Borneo.AppMovil.Helpers
             sb.AppendLine(SEPARADOR);
 
             decimal total = 0;
-            foreach (var d in detalles)
-            {
-                string cantidad = d.Cantidad.ToString().PadRight(anchoCantidad);
+            //foreach (var d in detalles)
+            //{
+                string cantidad = detalles.Cantidad.ToString().PadRight(anchoCantidad);
                 if (mostrarPrecio)
                 {
-                    string descripcion = TruncateToWidth(d.Descripcion ?? "", anchoDescripcion)
+                    string descripcion = TruncateToWidth(detalles.Descripcion ?? "", anchoDescripcion)
                         .PadRight(anchoDescripcion);
-                    string importe = d.ImporteTotal.ToString("N2", CultureInfo.InvariantCulture)
+                    string importe = detalles.ImporteTotal.ToString("N2", CultureInfo.InvariantCulture)
                         .PadLeft(anchoImporte);
                     sb.AppendLine($"{cantidad} {descripcion} {importe}");
-                    total += d.ImporteTotal;
+                    total += detalles.ImporteTotal;
                 }
                 else
                 {
-                    string descripcion = TruncateToWidth(d.Descripcion ?? "", TicketWidth - anchoCantidad - 1);
+                    string descripcion = TruncateToWidth(detalles.Descripcion ?? "", TicketWidth - anchoCantidad - 1);
                     sb.AppendLine($"{cantidad} {descripcion}");
                 }
-            }
+            //}
 
             sb.AppendLine(SEPARADOR);
 

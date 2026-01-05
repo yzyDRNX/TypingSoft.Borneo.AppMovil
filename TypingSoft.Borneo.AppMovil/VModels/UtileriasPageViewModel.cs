@@ -95,22 +95,28 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             OnPropertyChanged(nameof(NombreCliente));
 
             var detalles = await _localDb.ObtenerDetallesPorTicketAsync(ultimoTicket.Id);
-            var agrupados = detalles
-                .GroupBy(d => new
-                {
-                    Descripcion = d.Descripcion,
-                    PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
-                })
-                .Select(g => new ProductoVentaDTO
-                {
-                    Nombre = g.Key.Descripcion,
-                    Cantidad = g.Sum(x => x.Cantidad),
-                    Precio = g.Key.PrecioUnitario
-                });
+            //var agrupados = detalles
+            //    .GroupBy(d => new
+            //    {
+            //        Descripcion = d.Descripcion,
+            //        PrecioUnitario = d.Cantidad == 0 ? 0m : d.ImporteTotal / d.Cantidad
+            //    })
+            //    .Select(g => new ProductoVentaDTO
+            //    {
+            //        Nombre = g.Key.Descripcion,
+            //        Cantidad = g.Sum(x => x.Cantidad),
+            //        Precio = g.Key.PrecioUnitario
+            //    });
+
+            ProductoVentaDTO grupo=new ProductoVentaDTO();
+            grupo.Nombre = detalles.Descripcion;
+            grupo.Cantidad = detalles.Cantidad;
+            grupo.Precio = detalles.ImporteTotal / detalles.Cantidad;
+
 
             Productos.Clear();
-            foreach (var p in agrupados)
-                Productos.Add(p);
+            //foreach (var p in detalles)
+                Productos.Add(grupo);
 
             OnPropertyChanged(nameof(Productos));
             OnPropertyChanged(nameof(Total));
@@ -130,7 +136,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
             var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
-            if (detalles == null || detalles.Count == 0)
+            if (detalles == null )
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK"); 
                 return;
@@ -153,7 +159,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 return;
             }
             var detalles = await _localDb.ObtenerDetallesPorTicketAsync(VentaActual.Id);
-            if (detalles == null || detalles.Count == 0)
+            if (detalles == null)
             {
                 await App.Current.MainPage.DisplayAlert("Aviso", "No hay productos para imprimir.", "OK");
                 return;
@@ -162,7 +168,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
             await ImprimirTicketCopiaAsync(VentaActual, detalles, ImpresoraSeleccionada);
         }
 
-        private async Task ImprimirTicketOriginalAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        private async Task ImprimirTicketOriginalAsync(TicketDetalleLocal ticket, TicketDetalleLocal detalles, string printerName)
         {
             var printer = new RawBtPrinter(printerName);
        
@@ -198,7 +204,7 @@ namespace TypingSoft.Borneo.AppMovil.VModels
                 await App.Current.MainPage.DisplayAlert("Impresión", mensaje, "OK");
             }
         }
-        private async Task ImprimirTicketCopiaAsync(TicketDetalleLocal ticket, List<TicketDetalleLocal> detalles, string printerName)
+        private async Task ImprimirTicketCopiaAsync(TicketDetalleLocal ticket, TicketDetalleLocal detalles, string printerName)
         {
             var printer = new RawBtPrinter(printerName);
           
